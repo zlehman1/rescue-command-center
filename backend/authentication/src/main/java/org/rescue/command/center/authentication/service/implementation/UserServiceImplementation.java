@@ -6,8 +6,12 @@ import org.rescue.command.center.authentication.repository.UserRepository;
 import org.rescue.command.center.authentication.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class UserServiceImplementation implements UserService {
@@ -36,7 +40,14 @@ public class UserServiceImplementation implements UserService {
 
     @Override
     public User findByUsername(String username) {
-        return userRepository.findByUsername(username);
+        List<User> users = userRepository.findByUsername(username);
+        if (users.isEmpty()) {
+            return null;
+        } else if (users.size() > 1) {
+            throw new IllegalStateException("More than one user found with username: " + username);
+        } else {
+            return users.get(0);
+        }
     }
 
     private org.rescue.command.center.authentication.dto.base.User createUserDto(User user){
@@ -44,7 +55,7 @@ public class UserServiceImplementation implements UserService {
         userDto.setId(user.getId());
         userDto.setFirstName(user.getFirstName());
         userDto.setLastName(user.getLastName());
-        userDto.setUsername(user.getUserName());
+        userDto.setUsername(user.getUsername());
         return userDto;
     }
 }

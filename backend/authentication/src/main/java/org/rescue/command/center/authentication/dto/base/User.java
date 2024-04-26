@@ -1,7 +1,5 @@
 package org.rescue.command.center.authentication.dto.base;
 
-import jakarta.validation.constraints.Size;
-
 public class User {
     private Long id;
     private String username;
@@ -16,7 +14,6 @@ public class User {
         this.id = id;
     }
 
-    @Size(min = 1, max = 255, message = "Der Benutzername muss zwischen 1 bis 255 Zeichen lang sein!")
     public String getUsername() {
         return username;
     }

@@ -26,6 +26,9 @@ public class User {
 
     private String password;
 
+    @Relationship(type = "has_role")
+    private Set<Role> roles = new HashSet<>();
+
     public User() {
     };
 
@@ -33,23 +36,28 @@ public class User {
         this.username = username;
     }
 
-    @Relationship(type = "TEAMMATE")
-    public Set<User> teammates;
-
-    public void worksWith(User user) {
-        if (teammates == null) {
-            teammates = new HashSet<>();
-        }
-        teammates.add(user);
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
     }
 
-    public String toString() {
+    public User(String username, String firstName, String lastName, String password) {
+        this.username = username;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.password = password;
+    }
 
-        return this.username + "'s teammates => "
-                + Optional.ofNullable(this.teammates).orElse(
-                        Collections.emptySet()).stream()
-                .map(User::getUserName)
-                .collect(Collectors.toList());
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
+    public void addRole(Role role) {
+        this.roles.add(role);
     }
 
     public Long getId() {
@@ -60,7 +68,7 @@ public class User {
         this.id = id;
     }
 
-    public String getUserName() {
+    public String getUsername() {
         return username;
     }
 

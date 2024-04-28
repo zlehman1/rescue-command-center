@@ -25,9 +25,22 @@ public class SecurityConfig {
 
     private static final String[] WHITELIST_URLS = {
             "/api/v1/authentication/login",
+
             "/api/v1/authentication/api-docs/**",
             "/api/v1/authentication/swagger/**",
-            "/api/v1/authentication/swagger-ui/**"
+            "/api/v1/authentication/swagger-ui/**",
+
+            "/api/v1/users/api-docs/**",
+            "/api/v1/users/swagger/**",
+            "/api/v1/users/swagger-ui/**",
+
+            "/api/v1/emergency/api-docs/**",
+            "/api/v1/emergency/swagger/**",
+            "/api/v1/emergency/swagger-ui/**",
+
+            "/api/v1/car/api-docs/**",
+            "/api/v1/car/swagger/**",
+            "/api/v1/car/swagger-ui/**"
     };
 
     private final UserDetailsService userDetailsService;

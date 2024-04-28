@@ -1,12 +1,12 @@
-package org.rescue.command.center.authentication.model;
+package org.rescue.command.center.usermanagement.model;
 
-import java.util.HashSet;
-import java.util.Set;
-
+import org.springframework.data.neo4j.core.schema.GeneratedValue;
 import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
-import org.springframework.data.neo4j.core.schema.GeneratedValue;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Node
 public class User {
@@ -25,6 +25,25 @@ public class User {
 
     @Relationship(type = "has_role")
     private Set<Role> roles = new HashSet<>();
+
+    public User() {
+    };
+
+    public User(String username) {
+        this.username = username;
+    }
+
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+
+    public User(String username, String firstName, String lastName, String password) {
+        this.username = username;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.password = password;
+    }
 
     public Set<Role> getRoles() {
         return roles;

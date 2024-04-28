@@ -1,6 +1,6 @@
-package org.rescue.command.center.authentication.dto.request;
+package org.rescue.command.center.usermanagement.dto.request;
 
-import org.rescue.command.center.authentication.dto.base.User;
+import org.rescue.command.center.usermanagement.dto.base.User;
 
 public class CreateUserRequestDto {
     private User user;

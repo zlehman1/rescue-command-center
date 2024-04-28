@@ -1,14 +1,11 @@
-package org.rescue.command.center.authentication.service.implementation;
+package org.rescue.command.center.usermanagement.service.implementation;
 
-import org.rescue.command.center.authentication.dto.request.CreateUserRequestDto;
-import org.rescue.command.center.authentication.model.User;
-import org.rescue.command.center.authentication.repository.UserRepository;
-import org.rescue.command.center.authentication.service.UserService;
-
+import org.rescue.command.center.usermanagement.dto.request.CreateUserRequestDto;
+import org.rescue.command.center.usermanagement.model.User;
+import org.rescue.command.center.usermanagement.repository.UserRepository;
+import org.rescue.command.center.usermanagement.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,7 +21,7 @@ public class UserServiceImplementation implements UserService {
     }
 
     @Override
-    public org.rescue.command.center.authentication.dto.base.User saveUser(CreateUserRequestDto createUserRequestDto) {
+    public org.rescue.command.center.usermanagement.dto.base.User saveUser(CreateUserRequestDto createUserRequestDto) {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 
         User user = new User();
@@ -50,8 +47,8 @@ public class UserServiceImplementation implements UserService {
         }
     }
 
-    private org.rescue.command.center.authentication.dto.base.User createUserDto(User user){
-        org.rescue.command.center.authentication.dto.base.User userDto = new org.rescue.command.center.authentication.dto.base.User();
+    private org.rescue.command.center.usermanagement.dto.base.User createUserDto(User user){
+        org.rescue.command.center.usermanagement.dto.base.User userDto = new org.rescue.command.center.usermanagement.dto.base.User();
         userDto.setId(user.getId());
         userDto.setFirstName(user.getFirstName());
         userDto.setLastName(user.getLastName());

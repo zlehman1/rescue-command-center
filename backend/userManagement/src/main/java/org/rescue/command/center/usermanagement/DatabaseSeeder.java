@@ -1,15 +1,12 @@
-package org.rescue.command.center.authentication;
+package org.rescue.command.center.usermanagement;
 
-import org.rescue.command.center.authentication.enums.RoleType;
-import org.rescue.command.center.authentication.model.Role;
-import org.rescue.command.center.authentication.model.User;
-import org.rescue.command.center.authentication.repository.RoleRepository;
-import org.rescue.command.center.authentication.repository.UserRepository;
-
+import org.rescue.command.center.usermanagement.enums.RoleType;
+import org.rescue.command.center.usermanagement.model.Role;
+import org.rescue.command.center.usermanagement.model.User;
+import org.rescue.command.center.usermanagement.repository.RoleRepository;
+import org.rescue.command.center.usermanagement.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
-
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
 import org.springframework.stereotype.Component;
 
 import java.util.List;

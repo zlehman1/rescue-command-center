@@ -19,7 +19,7 @@ import java.util.function.Function;
 public class JwtTokenService {
 
     private String secretKey = "NllmZHptNVVrNG9RRUs3NllmZHptNVVrNG9RRUs3NllmZHptNVVrNG9RRUs3NllmZHptNVVrNG9RRUs3NllmZHptNVVrNG9RRUs3NllmZHptNVVrNG9RRUs3NllmZHptNVVrNG9RRUs3Nl";
-    private static final long ACCESS_TOKEN_VALIDITY_SECONDS = 60;
+    private static final long ACCESS_TOKEN_VALIDITY_SECONDS = 86400; // 24 hours
 
     public String generateToken(String username, Set<Role> authorities) {
         return Jwts.builder().subject(username)

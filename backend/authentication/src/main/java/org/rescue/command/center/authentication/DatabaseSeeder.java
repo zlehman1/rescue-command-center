@@ -1,5 +1,6 @@
 package org.rescue.command.center.authentication;
 
+import org.rescue.command.center.authentication.enums.RoleType;
 import org.rescue.command.center.authentication.model.Role;
 import org.rescue.command.center.authentication.model.User;
 import org.rescue.command.center.authentication.repository.RoleRepository;
@@ -46,14 +47,14 @@ public class DatabaseSeeder implements CommandLineRunner {
         userRepository.save(user1);
         userRepository.save(user2);
 
-        Role role1 = new Role("User");
-        Role role2 = new Role("Admin");
+        Role role1 = new Role(RoleType.USER);
+        Role role2 = new Role(RoleType.ADMIN);
 
         roleRepository.save(role1);
         roleRepository.save(role2);
 
-        Role roleUser = roleRepository.findByName("User");
-        Role roleAdmin = roleRepository.findByName("Admin");
+        Role roleUser = roleRepository.findByName(RoleType.USER);
+        Role roleAdmin = roleRepository.findByName(RoleType.ADMIN);
 
         User user_1 = userRepository.findById(user1.getId()).orElseThrow();
         User user_2 = userRepository.findById(user2.getId()).orElseThrow();

@@ -1,4 +1,4 @@
-package org.rescue.command.center.authentication.security;
+package org.rescue.command.center.usermanagement.config;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;

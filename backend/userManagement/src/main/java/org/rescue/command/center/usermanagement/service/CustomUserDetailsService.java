@@ -1,7 +1,7 @@
-package org.rescue.command.center.authentication.security;
+package org.rescue.command.center.usermanagement.service;
 
-import org.rescue.command.center.authentication.model.User;
-import org.rescue.command.center.authentication.repository.UserRepository;
+import org.rescue.command.center.usermanagement.model.User;
+import org.rescue.command.center.usermanagement.repository.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -44,7 +44,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                             .map(role -> new SimpleGrantedAuthority(role.toString()))
                             .collect(Collectors.toList()));
         }
-            else {
+        else {
             throw new UsernameNotFoundException("Invalid Benutzername oder Passwort");
         }
     }

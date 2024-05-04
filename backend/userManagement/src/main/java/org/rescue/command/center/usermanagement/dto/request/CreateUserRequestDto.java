@@ -1,9 +1,9 @@
 package org.rescue.command.center.usermanagement.dto.request;
 
-import org.rescue.command.center.usermanagement.dto.base.User;
+import org.rescue.command.center.usermanagement.dto.base.UserDto;
 
 public class CreateUserRequestDto {
-    private User user;
+    private UserDto userDto;
     private String password;
 
     public String getPassword() {
@@ -14,11 +14,11 @@ public class CreateUserRequestDto {
         this.password = password;
     }
 
-    public User getUser() {
-        return user;
+    public UserDto getUser() {
+        return userDto;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUser(UserDto userDto) {
+        this.userDto = userDto;
     }
 }

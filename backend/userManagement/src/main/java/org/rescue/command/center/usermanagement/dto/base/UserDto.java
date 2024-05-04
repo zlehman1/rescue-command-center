@@ -1,6 +1,6 @@
 package org.rescue.command.center.usermanagement.dto.base;
 
-public class User {
+public class UserDto {
     private Long id;
     private String username;
     private String firstName;

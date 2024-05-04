@@ -1,11 +1,24 @@
 package org.rescue.command.center.usermanagement.service;
 
+import org.rescue.command.center.usermanagement.dto.base.HttpResponseCodeDto;
+import org.rescue.command.center.usermanagement.dto.base.UserDto;
 import org.rescue.command.center.usermanagement.dto.request.CreateUserRequestDto;
-import org.rescue.command.center.usermanagement.model.User;
+import org.rescue.command.center.usermanagement.dto.request.UpdateUserRequestDto;
+import org.rescue.command.center.usermanagement.dto.response.UserResponseDto;
+
+import java.util.List;
 
 public interface UserService {
 
-    org.rescue.command.center.usermanagement.dto.base.User saveUser(CreateUserRequestDto createUserRequestDto);
+    UserResponseDto<UserDto> saveUser(CreateUserRequestDto createUserRequestDto);
 
-    User findByUsername(String username);
+    UserResponseDto<UserDto> getUserById(long id, String token);
+
+    UserResponseDto<UserDto> getUserByUsername(String username, String token);
+
+    UserResponseDto<List<UserDto>> getAllUsers(String token);
+
+    UserResponseDto<UserDto> updateUserById(long id, UpdateUserRequestDto requestDto, String token);
+
+    HttpResponseCodeDto deleteUser(long id, String token);
 }

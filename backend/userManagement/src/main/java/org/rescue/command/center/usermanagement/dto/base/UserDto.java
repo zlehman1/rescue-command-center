@@ -1,18 +1,9 @@
 package org.rescue.command.center.usermanagement.dto.base;
 
 public class UserDto {
-    private Long id;
     private String username;
     private String firstName;
     private String lastName;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getUsername() {
         return username;

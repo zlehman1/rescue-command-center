@@ -26,23 +26,8 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getUserById(
-            @PathVariable Long id,
-            @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
-        UserResponseDto responseDto = userService.getUserById(id, token.substring(7).trim());
-
-        if(responseDto == null)
-            return ResponseEntity.notFound().build();
-
-        if(responseDto.getHttpCodeDetails() != null && responseDto.getHttpCodeDetails().getCode() == 403)
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-
-        return ResponseEntity.ok(responseDto);
-    }
-
     @GetMapping("/user")
-    public ResponseEntity<?> getUserByUsername(
+    public ResponseEntity<?> getUserById(
             @RequestParam String username,
             @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
         UserResponseDto responseDto = userService.getUserByUsername(username, token.substring(7).trim());
@@ -67,12 +52,12 @@ public class UserController {
         return ResponseEntity.ok(responseDto);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/user")
     public ResponseEntity<?> updateUser(
-            @PathVariable Long id,
+            @RequestParam String username,
             @RequestBody UpdateUserRequestDto requestDto,
             @RequestHeader(HttpHeaders.AUTHORIZATION) String token){
-        UserResponseDto responseDto = userService.updateUserById(id, requestDto, token.substring(7).trim());
+        UserResponseDto responseDto = userService.updateUserByUsername(username, requestDto, token.substring(7).trim());
 
         if(responseDto.getHttpCodeDetails().getCode() == 404)
             return ResponseEntity.notFound().build();
@@ -94,11 +79,11 @@ public class UserController {
         return ResponseEntity.ok(responseDto);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/user")
     public ResponseEntity<?> deleteUser(
-            @PathVariable Long id,
+            @RequestParam String username,
             @RequestHeader(HttpHeaders.AUTHORIZATION) String token){
-        HttpResponseCodeDto responseCodeDto = userService.deleteUser(id, token.substring(7).trim());
+        HttpResponseCodeDto responseCodeDto = userService.deleteUser(username, token.substring(7).trim());
 
         if (responseCodeDto.getCode() == 404)
             return ResponseEntity.notFound().build();

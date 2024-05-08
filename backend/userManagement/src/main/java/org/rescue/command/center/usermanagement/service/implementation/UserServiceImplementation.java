@@ -1,17 +1,18 @@
 package org.rescue.command.center.usermanagement.service.implementation;
 
-import org.rescue.command.center.usermanagement.config.JwtTokenService;
+import org.rescue.command.center.base.authentication.service.JwtTokenService;
+import org.rescue.command.center.base.userManagement.enums.RoleType;
 import org.rescue.command.center.usermanagement.dto.base.HttpResponseCodeDto;
 import org.rescue.command.center.usermanagement.dto.base.UserDto;
 import org.rescue.command.center.usermanagement.dto.request.CreateUserRequestDto;
 import org.rescue.command.center.usermanagement.dto.request.UpdateUserRequestDto;
 import org.rescue.command.center.usermanagement.dto.response.UserResponseDto;
-import org.rescue.command.center.usermanagement.enums.RoleType;
 import org.rescue.command.center.usermanagement.enums.UserUpdateType;
-import org.rescue.command.center.usermanagement.model.Role;
-import org.rescue.command.center.usermanagement.model.User;
-import org.rescue.command.center.usermanagement.repository.UserRepository;
 import org.rescue.command.center.usermanagement.service.UserService;
+
+import org.rescue.command.center.base.userManagement.model.Role;
+import org.rescue.command.center.base.userManagement.model.User;
+import org.rescue.command.center.base.userManagement.repository.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -56,18 +57,6 @@ public class UserServiceImplementation implements UserService {
     }
 
     @Override
-    public UserResponseDto<UserDto> getUserById(long id, String token){
-        Optional<User> user = userRepository.findById(id);
-
-        if(!user.isPresent())
-            return createUserResponseDto(new User(), String.format("No user with id '%s' found!", id), 404);
-        else if (!user.get().getUsername().equals(jwtTokenService.extractUsernameFromToken(token)))
-            return createUserResponseDto(new User(), String.format("Not allowed to access the user with id '%s'!", id), 403);
-        else
-            return createUserResponseDto(user.get(), "ok", 200);
-    }
-
-    @Override
     public UserResponseDto<UserDto> getUserByUsername(String username, String token) {
         List<User> users = userRepository.findByUsername(username);
         if (users.size() == 0) {
@@ -100,7 +89,6 @@ public class UserServiceImplementation implements UserService {
 
                 for (User user : userList) {
                     UserDto userDto = new UserDto();
-                    userDto.setId(user.getId());
                     userDto.setUsername(user.getUsername());
                     userDto.setFirstName(user.getFirstName());
                     userDto.setLastName(user.getLastName());
@@ -122,34 +110,34 @@ public class UserServiceImplementation implements UserService {
     }
 
     @Override
-    public UserResponseDto<UserDto> updateUserById(long id, UpdateUserRequestDto requestDto, String token){
-        Optional<User> user = userRepository.findById(id);
+    public UserResponseDto<UserDto> updateUserByUsername(String username, UpdateUserRequestDto requestDto, String token){
+        List<User> user = userRepository.findByUsername(username);
 
-        if(!user.isPresent())
-            return createUserResponseDto(new User(), String.format("No user with id '%s' found!", id), 404);
-        else if (!user.get().getUsername().equals(jwtTokenService.extractUsernameFromToken(token)))
-            return createUserResponseDto(new User(), String.format("Not allowed to access the user with id '%s'!", id), 403);
+        if(user.size() == 0)
+            return createUserResponseDto(new User(), String.format("No username '%s' found!", username), 404);
+        else if (!user.get(0).getUsername().equals(jwtTokenService.extractUsernameFromToken(token)))
+            return createUserResponseDto(new User(), String.format("Not allowed to access the user with the username '%s'!", username), 403);
 
-        user = userRepository.findById(update(user.get(), requestDto).getId());
+        user = userRepository.findByUsername(update(user.get(0), requestDto).getUsername());
 
-        return createUserResponseDto(user.get(), "ok", 200);
+        return createUserResponseDto(user.get(0), "ok", 200);
     }
 
     @Override
-    public HttpResponseCodeDto deleteUser(long id, String token) {
-        Optional<User> user = userRepository.findById(id);
+    public HttpResponseCodeDto deleteUser(String username, String token) {
+        List<User> user = userRepository.findByUsername(username);
         HttpResponseCodeDto responseCodeDto = new HttpResponseCodeDto();
 
-        if(!user.isPresent()){
+        if(user.size() == 0){
             responseCodeDto.setCode(404);
             return responseCodeDto;
         }
 
-        Set<Role> roles = user.get().getRoles();
+        Set<Role> roles = user.get(0).getRoles();
 
         for (Role role : roles) {
-            if (role.getName().equals(RoleType.ADMIN) && !user.get().getUsername().equals(jwtTokenService.extractUsernameFromToken(token))){
-                userRepository.delete(user.get());
+            if (role.getName().equals(RoleType.ADMIN) && !user.get(0).getUsername().equals(jwtTokenService.extractUsernameFromToken(token))){
+                userRepository.delete(user.get(0));
                 responseCodeDto.setCode(204);
             }
         }
@@ -163,7 +151,6 @@ public class UserServiceImplementation implements UserService {
         UserResponseDto userResponseDto = new UserResponseDto();
 
         UserDto userDto = new UserDto();
-        userDto.setId(user.getId());
         userDto.setFirstName(user.getFirstName());
         userDto.setLastName(user.getLastName());
         userDto.setUsername(user.getUsername());

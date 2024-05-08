@@ -1,10 +1,10 @@
 package org.rescue.command.center.usermanagement;
 
-import org.rescue.command.center.usermanagement.enums.RoleType;
-import org.rescue.command.center.usermanagement.model.Role;
-import org.rescue.command.center.usermanagement.model.User;
-import org.rescue.command.center.usermanagement.repository.RoleRepository;
-import org.rescue.command.center.usermanagement.repository.UserRepository;
+import org.rescue.command.center.base.userManagement.enums.RoleType;
+import org.rescue.command.center.base.userManagement.model.Role;
+import org.rescue.command.center.base.userManagement.model.User;
+import org.rescue.command.center.base.userManagement.repository.RoleRepository;
+import org.rescue.command.center.base.userManagement.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -53,8 +53,8 @@ public class DatabaseSeeder implements CommandLineRunner {
         Role roleUser = roleRepository.findByName(RoleType.USER);
         Role roleAdmin = roleRepository.findByName(RoleType.ADMIN);
 
-        User user_1 = userRepository.findById(user1.getId()).orElseThrow();
-        User user_2 = userRepository.findById(user2.getId()).orElseThrow();
+        User user_1 = userRepository.findById(user1.getUsername()).orElseThrow();
+        User user_2 = userRepository.findById(user2.getUsername()).orElseThrow();
 
         user_1.addRole(roleAdmin);
         user_1.addRole(roleUser);

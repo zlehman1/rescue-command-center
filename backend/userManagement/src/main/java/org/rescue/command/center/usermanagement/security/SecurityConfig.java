@@ -2,7 +2,7 @@ package org.rescue.command.center.usermanagement.security;
 
 import jakarta.servlet.http.HttpServletResponse;
 
-import org.rescue.command.center.usermanagement.config.JwtAuthenticationFilter;
+import org.rescue.command.center.base.authentication.config.JwtAuthenticationFilterConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -32,9 +32,9 @@ public class SecurityConfig {
 
     private final UserDetailsService userDetailsService;
 
-    private final JwtAuthenticationFilter jwtAuthFilter;
+    private final JwtAuthenticationFilterConfig jwtAuthFilter;
 
-    public SecurityConfig(UserDetailsService userDetailsService, JwtAuthenticationFilter jwtAuthFilter) {
+    public SecurityConfig(UserDetailsService userDetailsService, JwtAuthenticationFilterConfig jwtAuthFilter) {
             this.userDetailsService = userDetailsService;
             this.jwtAuthFilter = jwtAuthFilter;
         }

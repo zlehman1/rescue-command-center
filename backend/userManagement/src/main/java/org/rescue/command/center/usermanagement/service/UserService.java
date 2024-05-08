@@ -12,13 +12,11 @@ public interface UserService {
 
     UserResponseDto<UserDto> saveUser(CreateUserRequestDto createUserRequestDto);
 
-    UserResponseDto<UserDto> getUserById(long id, String token);
-
     UserResponseDto<UserDto> getUserByUsername(String username, String token);
 
     UserResponseDto<List<UserDto>> getAllUsers(String token);
 
-    UserResponseDto<UserDto> updateUserById(long id, UpdateUserRequestDto requestDto, String token);
+    UserResponseDto<UserDto> updateUserByUsername(String username, UpdateUserRequestDto requestDto, String token);
 
-    HttpResponseCodeDto deleteUser(long id, String token);
+    HttpResponseCodeDto deleteUser(String username, String token);
 }

@@ -1,6 +1,9 @@
 package org.rescue.command.center.authentication.security;
 
-import jakarta.servlet.http.HttpServletResponse;
+import org.rescue.command.center.base.authentication.config.JwtAuthenticationFilterConfig;
+import org.rescue.command.center.base.authentication.service.JwtTokenService;
+import org.rescue.command.center.base.authentication.service.impl.CustomUserDetailsServiceImpl;
+import org.rescue.command.center.base.userManagement.repository.UserRepository;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +19,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -23,14 +27,21 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     private final UserDetailsService userDetailsService;
+    private final JwtTokenService jwtTokenService;
 
-    public SecurityConfig(UserDetailsService userDetailsService) {
+    public SecurityConfig(UserDetailsService userDetailsService, JwtTokenService jwtTokenService) {
         this.userDetailsService = userDetailsService;
+        this.jwtTokenService = jwtTokenService;
     }
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(12);
+    }
+
+    @Bean
+    public CustomUserDetailsServiceImpl userDetailsService(UserRepository userRepository) {
+        return new CustomUserDetailsServiceImpl(userRepository);
     }
 
     @Bean
@@ -48,7 +59,14 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/**").permitAll()
-                        .anyRequest().authenticated());
+                        .anyRequest().authenticated())
+                .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
+    }
+
+    @Bean
+    public JwtAuthenticationFilterConfig jwtAuthenticationFilter() {
+        return new JwtAuthenticationFilterConfig(userDetailsService, jwtTokenService);
     }
 }

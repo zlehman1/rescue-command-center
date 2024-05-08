@@ -1,14 +1,18 @@
 package org.rescue.command.center.authentication.service.implementation;
 
 import org.rescue.command.center.authentication.dto.request.LoginRequestDto;
-import org.rescue.command.center.authentication.model.User;
-import org.rescue.command.center.authentication.repository.UserRepository;
-import org.rescue.command.center.authentication.security.JwtTokenService;
+
+import org.rescue.command.center.base.authentication.service.JwtTokenService;
+import org.rescue.command.center.base.userManagement.model.User;
+import org.rescue.command.center.base.userManagement.repository.UserRepository;
+
 import org.rescue.command.center.authentication.service.AuthenticationService;
+
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;

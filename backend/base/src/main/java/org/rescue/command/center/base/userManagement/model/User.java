@@ -22,7 +22,7 @@ public class User {
     private Set<Role> roles = new HashSet<>();
 
     public User() {
-    };
+    }
 
     public User(String username) {
         this.username = username;

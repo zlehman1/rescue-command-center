@@ -1,5 +1,6 @@
 package org.rescue.command.center.base.authentication.service.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -11,6 +12,8 @@ import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 
@@ -34,6 +37,25 @@ public class JwtTokenServiceImpl implements JwtTokenService {
             return null;
         }
         return getClaims(token, Claims::getSubject);
+    }
+
+    public Set<Role> extractRolesFromToken(String token) {
+        if (isTokenExpired(token)) {
+            return new HashSet<>();
+        }
+
+        Claims claims = getClaims(token, Function.identity());
+        List<?> rolesList = claims.get("roles", List.class);
+        Set<Role> roles = new HashSet<>();
+        ObjectMapper mapper = new ObjectMapper();
+
+        if (rolesList != null) {
+            for (Object item : rolesList) {
+                roles.add(mapper.convertValue(item, Role.class));
+            }
+        }
+
+        return roles;
     }
 
     public <T> T getClaims(String token, Function<Claims, T> resolver) {

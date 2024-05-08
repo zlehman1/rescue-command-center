@@ -11,6 +11,8 @@ public interface JwtTokenService {
 
     public String extractUsernameFromToken(String token);
 
+    public Set<Role> extractRolesFromToken(String token);
+
     public <T> T getClaims(String token, Function<Claims, T> resolver);
 
     public boolean isTokenExpired(String token);

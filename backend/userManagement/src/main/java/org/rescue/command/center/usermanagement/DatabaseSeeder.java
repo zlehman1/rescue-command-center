@@ -9,7 +9,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
+import java.util.Optional;
 
 @Component
 public class DatabaseSeeder implements CommandLineRunner {
@@ -32,11 +32,10 @@ public class DatabaseSeeder implements CommandLineRunner {
     private void createInitialData(){
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 
-        List<User> users = userRepository.findByUsername("johndoe");
+        Optional<User> user = userRepository.findByUsername("johndoe");
 
-        if (!users.isEmpty()) {
+        if (user.isPresent())
             return;
-        }
 
         User user1 = new User("johndoe", "John", "Doe",encoder.encode("Password123!"));
         User user2 = new User("janedoe", "Jane", "Doe",encoder.encode("Password123!"));

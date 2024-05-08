@@ -16,6 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AuthenticationServiceImplementation implements AuthenticationService {
@@ -42,13 +43,8 @@ public class AuthenticationServiceImplementation implements AuthenticationServic
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        List<User> userList = userRepository.findByUsername(loginRequestDto.getUsername());
-        User user = null;
+        Optional<User> user = userRepository.findByUsername(loginRequestDto.getUsername());
 
-        if (!userList.isEmpty() && userList.size() == 1) {
-            user = userList.get(0);
-        }
-
-        return jwtTokenService.generateToken(user.getUsername(), user.getRoles());
+        return jwtTokenService.generateToken(user.get().getUsername(), user.get().getRoles());
     }
 }

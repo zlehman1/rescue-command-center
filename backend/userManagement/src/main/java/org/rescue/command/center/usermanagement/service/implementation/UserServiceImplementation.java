@@ -38,9 +38,9 @@ public class UserServiceImplementation implements UserService {
     @Override
     public UserResponseDto<UserDto> saveUser(CreateUserRequestDto createUserRequestDto) {
 
-        List<User> userRepo = userRepository.findByUsername(createUserRequestDto.getUser().getUsername());
+        Optional <User> userRepo = userRepository.findByUsername(createUserRequestDto.getUser().getUsername());
 
-        if (userRepo.size() > 0)
+        if (userRepo.isPresent())
             createUserResponseDto(new User(), "Username already exists!", 409);
 
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
@@ -58,16 +58,14 @@ public class UserServiceImplementation implements UserService {
 
     @Override
     public UserResponseDto<UserDto> getUserByUsername(String username, String token) {
-        List<User> users = userRepository.findByUsername(username);
-        if (users.size() == 0) {
+        Optional <User> user = userRepository.findByUsername(username);
+        if (!user.isPresent()) {
             return createUserResponseDto(new User(), String.format("No user with name '%s' found!", username), 404);
-        } else if (users.size() > 1) {
-            return createUserResponseDto(users.get(0), String.format("More than one user with the name '%s' found!", username), 409);
         } else {
-            if (!users.get(0).getUsername().equals(jwtTokenService.extractUsernameFromToken(token)))
+            if (!user.get().getUsername().equals(jwtTokenService.extractUsernameFromToken(token)))
                 return createUserResponseDto(new User(), String.format("Not allowed to access the user with username '%s'!", username), 403);
             else
-                return createUserResponseDto(users.get(0),"ok", 200);
+                return createUserResponseDto(user.get(),"ok", 200);
         }
     }
 
@@ -77,11 +75,7 @@ public class UserServiceImplementation implements UserService {
 
         List<UserDto> list = new ArrayList<>();
 
-        String username = jwtTokenService.extractUsernameFromToken(token);
-
-        List<User> users = userRepository.findByUsername(username);
-
-        Set<Role> roles = users.get(0).getRoles();
+        Set<Role> roles = jwtTokenService.extractRolesFromToken(token);
 
         for (Role role : roles) {
             if (role.getName().equals(RoleType.ADMIN)){
@@ -111,33 +105,33 @@ public class UserServiceImplementation implements UserService {
 
     @Override
     public UserResponseDto<UserDto> updateUserByUsername(String username, UpdateUserRequestDto requestDto, String token){
-        List<User> user = userRepository.findByUsername(username);
+        Optional <User> user = userRepository.findByUsername(username);
 
-        if(user.size() == 0)
+        if(!user.isPresent())
             return createUserResponseDto(new User(), String.format("No username '%s' found!", username), 404);
-        else if (!user.get(0).getUsername().equals(jwtTokenService.extractUsernameFromToken(token)))
+        else if (!user.get().getUsername().equals(jwtTokenService.extractUsernameFromToken(token)))
             return createUserResponseDto(new User(), String.format("Not allowed to access the user with the username '%s'!", username), 403);
 
-        user = userRepository.findByUsername(update(user.get(0), requestDto).getUsername());
+        user = userRepository.findByUsername(update(user.get(), requestDto).getUsername());
 
-        return createUserResponseDto(user.get(0), "ok", 200);
+        return createUserResponseDto(user.get(), "ok", 200);
     }
 
     @Override
     public HttpResponseCodeDto deleteUser(String username, String token) {
-        List<User> user = userRepository.findByUsername(username);
+        Optional<User> user = userRepository.findByUsername(username);
         HttpResponseCodeDto responseCodeDto = new HttpResponseCodeDto();
 
-        if(user.size() == 0){
+        if(user == null){
             responseCodeDto.setCode(404);
             return responseCodeDto;
         }
 
-        Set<Role> roles = user.get(0).getRoles();
+        Set<Role> roles = user.get().getRoles();
 
         for (Role role : roles) {
-            if (role.getName().equals(RoleType.ADMIN) && !user.get(0).getUsername().equals(jwtTokenService.extractUsernameFromToken(token))){
-                userRepository.delete(user.get(0));
+            if (role.getName().equals(RoleType.ADMIN) && !user.get().getUsername().equals(jwtTokenService.extractUsernameFromToken(token))){
+                userRepository.delete(user.get());
                 responseCodeDto.setCode(204);
             }
         }

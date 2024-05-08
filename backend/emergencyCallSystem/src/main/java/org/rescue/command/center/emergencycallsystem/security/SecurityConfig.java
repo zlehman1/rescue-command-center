@@ -1,7 +1,7 @@
 package org.rescue.command.center.emergencycallsystem.security;
 
 import jakarta.servlet.http.HttpServletResponse;
-import org.rescue.command.center.emergencycallsystem.config.JwtAuthenticationFilter;
+import org.rescue.command.center.base.authentication.config.JwtAuthenticationFilterConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -29,37 +29,37 @@ public class SecurityConfig {
 
     private final UserDetailsService userDetailsService;
 
-    private final JwtAuthenticationFilter jwtAuthFilter;
+    private final JwtAuthenticationFilterConfig jwtAuthFilter;
 
-    public SecurityConfig(UserDetailsService userDetailsService, JwtAuthenticationFilter jwtAuthFilter) {
+    public SecurityConfig(UserDetailsService userDetailsService, JwtAuthenticationFilterConfig jwtAuthFilter) {
             this.userDetailsService = userDetailsService;
             this.jwtAuthFilter = jwtAuthFilter;
-        }
-
-        @Bean
-        public BCryptPasswordEncoder passwordEncoder() {
-            return new BCryptPasswordEncoder(12);
-        }
-
-        @Bean
-        public AuthenticationProvider authenticationProvider() {
-            DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-            provider.setUserDetailsService(userDetailsService);
-            provider.setPasswordEncoder(passwordEncoder());
-            return provider;
-        }
-
-        @Bean
-        public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-            http
-                    .cors(AbstractHttpConfigurer::disable)
-                    .csrf(AbstractHttpConfigurer::disable)
-                    .exceptionHandling(exception -> exception
-                            .authenticationEntryPoint((request, response, authException) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED))
-                    )
-                    .authorizeHttpRequests(auth -> auth.requestMatchers(WHITELIST_URLS).permitAll().anyRequest().authenticated())
-                    .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                    .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
-            return http.build();
-        }
     }
+
+    @Bean
+    public BCryptPasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder(12);
+    }
+
+    @Bean
+    public AuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setUserDetailsService(userDetailsService);
+        provider.setPasswordEncoder(passwordEncoder());
+        return provider;
+    }
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+                .cors(AbstractHttpConfigurer::disable)
+                .csrf(AbstractHttpConfigurer::disable)
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint((request, response, authException) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED))
+                )
+                .authorizeHttpRequests(auth -> auth.requestMatchers(WHITELIST_URLS).permitAll().anyRequest().authenticated())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+        return http.build();
+    }
+}

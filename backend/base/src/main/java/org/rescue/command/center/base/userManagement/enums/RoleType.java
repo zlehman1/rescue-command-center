@@ -1,4 +1,4 @@
-package org.rescue.command.center.authentication.enums;
+package org.rescue.command.center.base.userManagement.enums;
 
 public enum RoleType {
     USER("USER"),

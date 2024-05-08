@@ -1,13 +1,12 @@
-package org.rescue.command.center.authentication.security;
+package org.rescue.command.center.base.authentication.service.impl;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-
-import org.rescue.command.center.authentication.model.Role;
-
+import org.rescue.command.center.base.authentication.service.JwtTokenService;
+import org.rescue.command.center.base.userManagement.model.Role;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -16,7 +15,7 @@ import java.util.Set;
 import java.util.function.Function;
 
 @Component
-public class JwtTokenService {
+public class JwtTokenServiceImpl implements JwtTokenService {
 
     private String secretKey = "NllmZHptNVVrNG9RRUs3NllmZHptNVVrNG9RRUs3NllmZHptNVVrNG9RRUs3NllmZHptNVVrNG9RRUs3NllmZHptNVVrNG9RRUs3NllmZHptNVVrNG9RRUs3NllmZHptNVVrNG9RRUs3Nl";
     private static final long ACCESS_TOKEN_VALIDITY_SECONDS = 86400; // 24 hours

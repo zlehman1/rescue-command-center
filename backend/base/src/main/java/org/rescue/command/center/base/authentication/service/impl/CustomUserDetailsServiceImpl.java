@@ -1,8 +1,10 @@
-package org.rescue.command.center.emergencycallsystem.service;
+package org.rescue.command.center.base.authentication.service.impl;
 
-import org.rescue.command.center.emergencycallsystem.model.User;
-import org.rescue.command.center.emergencycallsystem.repository.UserRepository;
+import org.rescue.command.center.base.userManagement.model.User;
+import org.rescue.command.center.base.userManagement.repository.UserRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -13,11 +15,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class CustomUserDetailsService implements UserDetailsService {
+public class CustomUserDetailsServiceImpl implements UserDetailsService {
     private final UserRepository userRepository;
 
     @Autowired
-    public CustomUserDetailsService(UserRepository userRepository) {
+    public CustomUserDetailsServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 

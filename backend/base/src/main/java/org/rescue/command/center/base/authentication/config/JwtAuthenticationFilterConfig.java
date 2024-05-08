@@ -1,19 +1,20 @@
-package org.rescue.command.center.usermanagement.config;
+package org.rescue.command.center.base.authentication.config;
 
 import io.jsonwebtoken.ExpiredJwtException;
+
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import org.rescue.command.center.base.authentication.service.JwtTokenService;
+
 import org.springframework.context.annotation.Configuration;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 
 import org.springframework.util.StringUtils;
@@ -23,7 +24,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 @Configuration
-public class JwtAuthenticationFilter extends OncePerRequestFilter {
+public class JwtAuthenticationFilterConfig extends OncePerRequestFilter {
 
     private final UserDetailsService userDetailsService;
 
@@ -32,7 +33,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private static final String TOKEN_PREFIX = "Bearer ";
     private static final String HEADER_STRING = "Authorization";
 
-    public JwtAuthenticationFilter(UserDetailsService userDetailsService, JwtTokenService jwtTokenService) {
+    public JwtAuthenticationFilterConfig(UserDetailsService userDetailsService, JwtTokenService jwtTokenService) {
         this.userDetailsService = userDetailsService;
         this.jwtTokenService = jwtTokenService;
     }
@@ -40,6 +41,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         try {
+            if (req.equals("/login")) {
+                chain.doFilter(req, response);
+                return;
+            }
+
             String header = req.getHeader(HEADER_STRING);
             String username = null;
             if (header != null && header.startsWith(TOKEN_PREFIX)) {
@@ -58,6 +64,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         } catch (ExpiredJwtException e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getWriter().write("Token expired. Please log in again.");
+            response.getWriter().write(e.getMessage());
             return;
         }
 

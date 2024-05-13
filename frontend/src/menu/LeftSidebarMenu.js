@@ -3,6 +3,7 @@ import {ListItemButton, ListItemIcon, ListItemText, Tooltip} from '@mui/material
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import AddAlertIcon from '@mui/icons-material/AddAlert';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import MapIcon from '@mui/icons-material/Map';
 
 const handleNewEmergency = () => {
     window.location.href = '/emergency/create';
@@ -14,6 +15,10 @@ const handleEmergencyOverview = () => {
 
 const handleDashboard = () => {
     window.location.href = '/dashboard';
+};
+
+const handleMap = () => {
+    window.location.href = '/map';
 };
 
 export const mainListItems = (
@@ -40,6 +45,14 @@ export const mainListItems = (
                     <VisibilityIcon />
                 </ListItemIcon>
                 <ListItemText primary="Einsatzübersicht" />
+            </ListItemButton>
+        </Tooltip>
+        <Tooltip title="Karte">
+            <ListItemButton onClick={handleMap}>
+                <ListItemIcon>
+                    <MapIcon />
+                </ListItemIcon>
+                <ListItemText primary="Karte" />
             </ListItemButton>
         </Tooltip>
     </React.Fragment>

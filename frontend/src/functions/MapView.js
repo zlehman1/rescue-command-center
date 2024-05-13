@@ -3,7 +3,7 @@ import axios from "axios";
 import {MapContainer, Marker, TileLayer} from "react-leaflet";
 import * as React from "react";
 
-const MapView = ({ address }) => {
+const MapView = ({ address, height = 580, width = '100%', zoom = 17 }) => {
     const defaultPosition = [51.9377116, 7.1672926];
     const [position, setPosition] = useState(defaultPosition);
 
@@ -29,7 +29,7 @@ const MapView = ({ address }) => {
     }, [address]);
 
     return position ? (
-        <MapContainer center={position} zoom={17} style={{ height: 580, width: '100%' }} key={position}>
+        <MapContainer center={position} zoom={zoom} style={{ height: height, width: width }} key={position}>
             <TileLayer
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

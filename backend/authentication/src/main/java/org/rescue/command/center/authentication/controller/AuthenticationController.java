@@ -21,7 +21,13 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> createAuthenticationToken(@RequestBody LoginRequestDto loginRequest) throws Exception {
+    public ResponseEntity<?> createAuthenticationToken(
+            @RequestBody LoginRequestDto loginRequest){
+        String token = authenticationService.login(loginRequest);
+
+        if(token.isEmpty())
+            return ResponseEntity.notFound().build();
+
         return ResponseEntity.ok(authenticationService.login(loginRequest));
     }
 }

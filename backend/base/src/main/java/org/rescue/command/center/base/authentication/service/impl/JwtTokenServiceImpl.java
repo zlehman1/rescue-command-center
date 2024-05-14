@@ -7,6 +7,8 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.rescue.command.center.base.authentication.service.JwtTokenService;
+import org.rescue.command.center.base.emergencycallsystem.enums.BOSOrganizationEnum;
+import org.rescue.command.center.base.emergencycallsystem.model.BOSOrganization;
 import org.rescue.command.center.base.userManagement.model.Role;
 import org.springframework.stereotype.Component;
 
@@ -23,9 +25,10 @@ public class JwtTokenServiceImpl implements JwtTokenService {
     private String secretKey = "NllmZHptNVVrNG9RRUs3NllmZHptNVVrNG9RRUs3NllmZHptNVVrNG9RRUs3NllmZHptNVVrNG9RRUs3NllmZHptNVVrNG9RRUs3NllmZHptNVVrNG9RRUs3NllmZHptNVVrNG9RRUs3Nl";
     private static final long ACCESS_TOKEN_VALIDITY_SECONDS = 86400; // 24 hours
 
-    public String generateToken(String username, Set<Role> authorities) {
+    public String generateToken(String username, Set<Role> authorities, BOSOrganization organization) {
         return Jwts.builder().subject(username)
                 .claim("roles", authorities)
+                .claim("organization", organization.getName())
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_VALIDITY_SECONDS * 1000))
                 .signWith(getSecretKey(), SignatureAlgorithm.HS512)
@@ -56,6 +59,15 @@ public class JwtTokenServiceImpl implements JwtTokenService {
         }
 
         return roles;
+    }
+
+    public BOSOrganizationEnum extractBOSOrganizationFromToken(String token){
+        if (isTokenExpired(token)) {
+            return BOSOrganizationEnum.NOTDEFINED;
+        }
+
+        Claims claims = getClaims(token, Function.identity());
+        return BOSOrganizationEnum.valueOf(claims.get("organization", String.class).toUpperCase());
     }
 
     public <T> T getClaims(String token, Function<Claims, T> resolver) {

@@ -3,6 +3,8 @@ package org.rescue.command.center.authentication.service.implementation;
 import org.rescue.command.center.authentication.dto.request.LoginRequestDto;
 
 import org.rescue.command.center.base.authentication.service.JwtTokenService;
+import org.rescue.command.center.base.emergencycallsystem.model.BOSOrganization;
+import org.rescue.command.center.base.emergencycallsystem.repository.BOSOrganizationRepository;
 import org.rescue.command.center.base.userManagement.model.User;
 import org.rescue.command.center.base.userManagement.repository.UserRepository;
 
@@ -23,12 +25,19 @@ public class AuthenticationServiceImplementation implements AuthenticationServic
 
     private final UserRepository userRepository;
 
+    private final BOSOrganizationRepository organizationRepository;
+
     private final JwtTokenService jwtTokenService;
 
     private final AuthenticationProvider authenticationProvider;
 
-    public AuthenticationServiceImplementation(UserRepository userRepository, JwtTokenService jwtTokenService, AuthenticationProvider authenticationProvider) {
+    public AuthenticationServiceImplementation(
+            UserRepository userRepository,
+            BOSOrganizationRepository organizationRepository,
+            JwtTokenService jwtTokenService,
+            AuthenticationProvider authenticationProvider) {
         this.userRepository = userRepository;
+        this.organizationRepository = organizationRepository;
         this.jwtTokenService = jwtTokenService;
         this.authenticationProvider = authenticationProvider;
     }
@@ -45,6 +54,11 @@ public class AuthenticationServiceImplementation implements AuthenticationServic
 
         Optional<User> user = userRepository.findByUsername(loginRequestDto.getUsername());
 
-        return jwtTokenService.generateToken(user.get().getUsername(), user.get().getRoles());
+        if (user.isEmpty())
+            return "";
+
+        BOSOrganization organization = organizationRepository.findByUserUsername(user.get().getUsername());
+
+        return jwtTokenService.generateToken(user.get().getUsername(), user.get().getRoles(), organization);
     }
 }

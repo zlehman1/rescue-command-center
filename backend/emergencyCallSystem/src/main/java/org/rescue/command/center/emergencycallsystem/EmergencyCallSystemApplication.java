@@ -10,13 +10,12 @@ import org.springframework.data.neo4j.repository.config.EnableNeo4jRepositories;
 @EnableDiscoveryClient
 @EnableNeo4jRepositories(basePackages = {
         "org.rescue.command.center.base.userManagement.repository",
+        "org.rescue.command.center.base.emergencycallsystem.repository",
         "org.rescue.command.center.emergencycallsystem.repository"
 })
 @ComponentScan({"org.rescue.command.center.base", "org.rescue.command.center.emergencycallsystem"})
 public class EmergencyCallSystemApplication {
-
     public static void main(String[] args) {
         SpringApplication.run(EmergencyCallSystemApplication.class, args);
     }
-
 }

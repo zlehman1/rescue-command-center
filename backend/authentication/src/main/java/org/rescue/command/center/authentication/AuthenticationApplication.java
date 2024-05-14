@@ -8,10 +8,12 @@ import org.springframework.data.neo4j.repository.config.EnableNeo4jRepositories;
 
 @SpringBootApplication
 @EnableDiscoveryClient
-@EnableNeo4jRepositories(basePackages = "org.rescue.command.center.base.userManagement.repository")
+@EnableNeo4jRepositories(basePackages = {
+        "org.rescue.command.center.base.userManagement.repository",
+        "org.rescue.command.center.base.emergencycallsystem.repository"})
 @ComponentScan({"org.rescue.command.center.base", "org.rescue.command.center.authentication"})
 public class AuthenticationApplication {
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         SpringApplication.run(AuthenticationApplication.class, args);
     }
 }

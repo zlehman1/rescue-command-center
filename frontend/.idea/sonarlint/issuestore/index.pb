@@ -61,3 +61,7 @@ A
 package-lock.json,f/a/fa288d1472d29beccb489a676f68739ad365fc47
 >
 src/Map/Map.js,1/b/1b76c3e4197e519137f0a58d98364f0b8d5cfb4e
+V
+&src/functions/EmergencyOverviewGrid.js,0/6/06df1523012e1437c981aa053f8aaf421ecfdc10
+X
+(src/functions/EmergencyCallSingleView.js,9/3/937099eaa9e2613220f3dc479e7042eeefe36356

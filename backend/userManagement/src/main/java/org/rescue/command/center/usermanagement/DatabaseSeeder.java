@@ -9,6 +9,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -32,16 +33,20 @@ public class DatabaseSeeder implements CommandLineRunner {
     private void createInitialData(){
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 
-        Optional<User> user = userRepository.findByUsername("johndoe");
+        List<User> user = userRepository.findAll();
 
-        if (user.isPresent())
+        if (user.size() > 4)
             return;
 
         User user1 = new User("johndoe", "John", "Doe",encoder.encode("Password123!"));
         User user2 = new User("janedoe", "Jane", "Doe",encoder.encode("Password123!"));
+        User user3 = new User("maxmustermann", "Max", "Mustermann",encoder.encode("Password123!"));
+        User user4 = new User("erikamustermann", "Erika", "Mustermann",encoder.encode("Password123!"));
 
         userRepository.save(user1);
         userRepository.save(user2);
+        userRepository.save(user3);
+        userRepository.save(user4);
 
         Role role1 = new Role(RoleType.USER);
         Role role2 = new Role(RoleType.ADMIN);
@@ -52,14 +57,20 @@ public class DatabaseSeeder implements CommandLineRunner {
         Role roleUser = roleRepository.findByName(RoleType.USER);
         Role roleAdmin = roleRepository.findByName(RoleType.ADMIN);
 
-        User user_1 = userRepository.findById(user1.getUsername()).orElseThrow();
-        User user_2 = userRepository.findById(user2.getUsername()).orElseThrow();
+        user1 = userRepository.findById(user1.getUsername()).orElseThrow();
+        user2 = userRepository.findById(user2.getUsername()).orElseThrow();
+        user3 = userRepository.findById(user3.getUsername()).orElseThrow();
+        user4 = userRepository.findById(user4.getUsername()).orElseThrow();
 
-        user_1.addRole(roleAdmin);
-        user_1.addRole(roleUser);
-        user_2.addRole(roleUser);
+        user1.addRole(roleAdmin);
+        user1.addRole(roleUser);
+        user2.addRole(roleUser);
+        user3.addRole(roleUser);
+        user4.addRole(roleUser);
 
-        userRepository.save(user_1);
-        userRepository.save(user_2);
+        userRepository.save(user1);
+        userRepository.save(user2);
+        userRepository.save(user3);
+        userRepository.save(user4);
     }
 }

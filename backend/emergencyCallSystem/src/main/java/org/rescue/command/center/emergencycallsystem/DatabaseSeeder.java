@@ -6,10 +6,13 @@ import org.rescue.command.center.base.userManagement.model.User;
 import org.rescue.command.center.base.userManagement.repository.UserRepository;
 import org.rescue.command.center.emergencycallsystem.enums.EmergencyCallStateEnum;
 import org.rescue.command.center.emergencycallsystem.enums.FireEmergencyCallKeyword;
+import org.rescue.command.center.emergencycallsystem.enums.PoliceEmergencyCallKeyword;
 import org.rescue.command.center.emergencycallsystem.model.EmergencyCallState;
 import org.rescue.command.center.emergencycallsystem.model.fire.FireEmergencyCall;
 import org.rescue.command.center.emergencycallsystem.model.fire.FireMessage;
 
+import org.rescue.command.center.emergencycallsystem.model.police.PoliceEmergencyCall;
+import org.rescue.command.center.emergencycallsystem.model.police.PoliceMessage;
 import org.rescue.command.center.emergencycallsystem.repository.EmergencyCallStateRepository;
 import org.rescue.command.center.emergencycallsystem.repository.fire.FireEmergencyCallRepository;
 import org.rescue.command.center.emergencycallsystem.repository.fire.FireMessageRepository;
@@ -21,6 +24,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Component
@@ -58,25 +62,31 @@ public class DatabaseSeeder implements CommandLineRunner {
     }
 
     private void createInitialData() {
-        if(bOSOrganizationRepository.findAll().isEmpty()){
-            userRepository.findByUsername("johndoe").ifPresent(johndoe -> {
-                BOSOrganization feuerwehr = new BOSOrganization("Feuerwehr");
-                Set<User> userSet = new HashSet<>();
-                userSet.add(johndoe);
-                feuerwehr.setUserSet(userSet);
-                bOSOrganizationRepository.save(feuerwehr);
-
-                userRepository.findByUsername("janedoe").ifPresent(janedoe -> {
-                    BOSOrganization polizei = new BOSOrganization("Polizei");
-                    Set<User> policeUserSet = new HashSet<>();
-                    policeUserSet.add(janedoe);
-                    polizei.setUserSet(policeUserSet);
-                    bOSOrganizationRepository.save(polizei);
-                });
-            });
-        }
 
         User johndoe = userRepository.findByUsername("johndoe").get();
+        User janedoe = userRepository.findByUsername("janedoe").get();
+
+        User erikaMustermann = userRepository.findByUsername("erikamustermann").get();
+        User maxMustermann = userRepository.findByUsername("maxmustermann").get();
+
+        if(bOSOrganizationRepository.findAll().isEmpty()){
+            BOSOrganization feuerwehr = new BOSOrganization("Feuerwehr");
+            BOSOrganization polizei = new BOSOrganization("Polizei");
+            Set<User> fireUserSet = new HashSet<>();
+            Set<User> policeUserSet = new HashSet<>();
+
+            fireUserSet.add(johndoe);
+            fireUserSet.add(janedoe);
+
+            policeUserSet.add(maxMustermann);
+            policeUserSet.add(erikaMustermann);
+
+            feuerwehr.setUserSet(fireUserSet);
+            polizei.setUserSet(policeUserSet);
+
+            bOSOrganizationRepository.save(feuerwehr);
+            bOSOrganizationRepository.save(polizei);
+        }
 
         if(emergencyCallStateRepository.findAll().isEmpty()){
             EmergencyCallState createdState = new EmergencyCallState();
@@ -97,7 +107,8 @@ public class DatabaseSeeder implements CommandLineRunner {
             emergencyCallStateRepository.save(finishedState);
         }
 
-        Long emergencyCallId = 0L;
+        Long fireEmergencyCallId = 0L;
+        Long policeEmergencyCallId = 0L;
 
         if(fireEmergencyCallRepository.findAll().isEmpty()){
             FireEmergencyCall fireEmergencyCall = new FireEmergencyCall();
@@ -110,26 +121,59 @@ public class DatabaseSeeder implements CommandLineRunner {
             fireEmergencyCall.setDispatcher(johndoe);
             fireEmergencyCall.setEmergencyCallState(emergencyCallStateRepository.findByEmergencyCallStateEnum(EmergencyCallStateEnum.RUNNING));
 
-            emergencyCallId = fireEmergencyCallRepository.save(fireEmergencyCall).getId();
+            fireEmergencyCallId = fireEmergencyCallRepository.save(fireEmergencyCall).getId();
+        }
+
+        if(policeEmergencyCallRepository.findAll().isEmpty()){
+            PoliceEmergencyCall policeEmergencyCall = new PoliceEmergencyCall();
+            policeEmergencyCall.setTimestamp(LocalDateTime.now());
+            policeEmergencyCall.setKeyword(PoliceEmergencyCallKeyword.LEICHE);
+            policeEmergencyCall.setLocation("Dingdener Straße 10 46395 Bocholt");
+            policeEmergencyCall.setInformation("Leiche aufgefunden, ca. 80 jahre alt");
+            policeEmergencyCall.setCommunicatorName("Max Mustermann");
+            policeEmergencyCall.setCommunicatorPhoneNumber("+49 123 45678901");
+            policeEmergencyCall.setDispatcher(erikaMustermann);
+            policeEmergencyCall.setEmergencyCallState(emergencyCallStateRepository.findByEmergencyCallStateEnum(EmergencyCallStateEnum.RUNNING));
+
+            policeEmergencyCallId = policeEmergencyCallRepository.save(policeEmergencyCall).getId();
         }
 
         if(fireMessageRepository.findAll().isEmpty()){
-            FireEmergencyCall fireEmergencyCall = fireEmergencyCallRepository.findById(emergencyCallId).get();
+            FireEmergencyCall fireEmergencyCall = fireEmergencyCallRepository.findById(fireEmergencyCallId).get();
 
             fireMessageRepository.save(new FireMessage(LocalDateTime.now(),
                     "LST: laut EMA 4 Personen gemeldet", johndoe, fireEmergencyCall));
             fireMessageRepository.save(new FireMessage(LocalDateTime.now().plusMinutes(1),
                     "Florian Bocholt 1 - HLF 20/1: Flammenschein sichtbar, kein Mensch oder Tier in Gefahr, Brandbekämpfung mit 1 1 C-Rohr und 1 Trupp unter PA vor", johndoe, fireEmergencyCall));
             fireMessageRepository.save(new FireMessage(LocalDateTime.now().plusMinutes(2),
-                    "Florian Bocholt 1 - ELW 1: Feuer unter Kontrolle", johndoe, fireEmergencyCall));
+                    "Florian Bocholt 1 - ELW 1: Feuer unter Kontrolle", janedoe, fireEmergencyCall));
             fireMessageRepository.save(new FireMessage(LocalDateTime.now().plusMinutes(3),
                     "Florian Bocholt 1 - ELW 1: Nachlöscharbeiten laufen, 1 Person mit Verdacht auf Rauchgasintoxikation ins KH Bocholt", johndoe, fireEmergencyCall));
             fireMessageRepository.save(new FireMessage(LocalDateTime.now().plusMinutes(4),
                     "Florian Bocholt 1 - ELW 1: Feuer aus", johndoe, fireEmergencyCall));
             fireMessageRepository.save(new FireMessage(LocalDateTime.now().plusMinutes(5),
-                    "Florian Bocholt 1 - ELW 1: Aufräumarbeiten im Gange", johndoe, fireEmergencyCall));
+                    "Florian Bocholt 1 - ELW 1: Aufräumarbeiten im Gange", janedoe, fireEmergencyCall));
             fireMessageRepository.save(new FireMessage(LocalDateTime.now().plusMinutes(6),
                     "Florian Bocholt 1 - ELW 1: alle eingesetzten Fahrzeuge rücken wieder einsatzbereit ein", johndoe, fireEmergencyCall));
+        }
+
+        if(policeMessageRepository.findAll().isEmpty()){
+            PoliceEmergencyCall policeEmergencyCall = policeEmergencyCallRepository.findById(policeEmergencyCallId).get();
+
+            policeMessageRepository.save(new PoliceMessage(LocalDateTime.now(),
+                    "LST: laut EMA 4 Personen gemeldet", erikaMustermann, policeEmergencyCall));
+            policeMessageRepository.save(new PoliceMessage(LocalDateTime.now().plusMinutes(1),
+                    "1121: Leiche verwest, NA Anforderung", erikaMustermann, policeEmergencyCall));
+            policeMessageRepository.save(new PoliceMessage(LocalDateTime.now().plusMinutes(2),
+                    "LST: Dr. Mustermann erreicht, kommt", maxMustermann, policeEmergencyCall));
+            policeMessageRepository.save(new PoliceMessage(LocalDateTime.now().plusMinutes(3),
+                    "1121: ungeklärte Todesursache", erikaMustermann, policeEmergencyCall));
+            policeMessageRepository.save(new PoliceMessage(LocalDateTime.now().plusMinutes(4),
+                    "LST: K-Wache alarmiert", erikaMustermann, policeEmergencyCall));
+            policeMessageRepository.save(new PoliceMessage(LocalDateTime.now().plusMinutes(5),
+                    "1121: ES an K-Wache übergeben", maxMustermann, policeEmergencyCall));
+            policeMessageRepository.save(new PoliceMessage(LocalDateTime.now().plusMinutes(6),
+                    "9121: ein Leichenbericht geschrieben, Bestatter hat Leichnam abgeholt", erikaMustermann, policeEmergencyCall));
         }
     }
 }

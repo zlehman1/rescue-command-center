@@ -28,4 +28,11 @@ public class PoliceMessage {
 
     @Relationship(type = "belong_to", direction = Relationship.Direction.OUTGOING)
     private PoliceEmergencyCall policeEmergencyCall;
+
+    public PoliceMessage(LocalDateTime timestamp, String text, User dispatcher, PoliceEmergencyCall policeEmergencyCall) {
+        this.timestamp = timestamp;
+        this.text = text;
+        this.dispatcher = dispatcher;
+        this.policeEmergencyCall = policeEmergencyCall;
+    }
 }

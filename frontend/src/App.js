@@ -6,6 +6,7 @@ import Map from './Map/Map';
 import EmergencyCreation from './emergency/Create';
 import EmergencyOverview from './emergency/Overview';
 import ProtectedRoute from './functions/ProtectedRoute';
+import EmergencyCallSingleView from "./functions/EmergencyCallSingleView";
 
 function App() {
     return (
@@ -19,6 +20,7 @@ function App() {
 
                 <Route path="/emergency/create" element={<ProtectedRoute><EmergencyCreation /></ProtectedRoute>} />
                 <Route path="/emergency/overview" element={<ProtectedRoute><EmergencyOverview /></ProtectedRoute>} />
+                <Route path="/emergency/detail" element={<ProtectedRoute><EmergencyCallSingleView /></ProtectedRoute>} />
             </Routes>
         </Router>
     );

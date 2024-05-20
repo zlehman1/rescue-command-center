@@ -13,8 +13,7 @@ import org.springframework.data.neo4j.core.schema.Relationship;
 import java.time.LocalDateTime;
 
 @Node
-@Getter
-@Setter
+@Getter @Setter
 public class FireMessage {
     @Id
     @GeneratedValue
@@ -23,7 +22,7 @@ public class FireMessage {
     private LocalDateTime timestamp;
     private String text;
 
-    @Relationship(type = "created_by", direction = Relationship.Direction.INCOMING)
+    @Relationship(type = "created_by", direction = Relationship.Direction.OUTGOING)
     private User dispatcher;
 
     @Relationship(type = "belong_to", direction = Relationship.Direction.OUTGOING)

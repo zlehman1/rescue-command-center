@@ -7,12 +7,15 @@ import Drawer from "../functions/Drawer";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import {mainListItems} from "./LeftSidebarMenu";
 import * as React from "react";
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 export default function MenuBar({title = 'default menu title'}){
     const [open, setOpen] = React.useState(false);
     const toggleDrawer = () => {
         setOpen(!open);
     };
+
+    const isMobile = useMediaQuery('(max-width:600px)');
 
     return (
         <div>
@@ -44,7 +47,7 @@ export default function MenuBar({title = 'default menu title'}){
                     >
                         {title}
                     </Typography>
-                    <DateTime />
+                    {!isMobile && <DateTime />}
                     <Profile/>
                 </Toolbar>
             </AppBar>

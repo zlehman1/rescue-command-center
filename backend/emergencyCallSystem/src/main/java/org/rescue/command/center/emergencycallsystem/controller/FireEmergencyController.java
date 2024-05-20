@@ -1,8 +1,13 @@
 package org.rescue.command.center.emergencycallsystem.controller;
 
+import org.javatuples.Pair;
+
 import org.rescue.command.center.emergencycallsystem.dto.base.FireEmergencyDto;
+import org.rescue.command.center.emergencycallsystem.dto.base.FireMessageDto;
 import org.rescue.command.center.emergencycallsystem.dto.request.CreateFireEmergencyDto;
+import org.rescue.command.center.emergencycallsystem.dto.request.CreateFireMessageRequestDto;
 import org.rescue.command.center.emergencycallsystem.dto.response.FireEmergencyResponseDto;
+import org.rescue.command.center.emergencycallsystem.model.fire.FireEmergencyCall;
 import org.rescue.command.center.emergencycallsystem.service.EmergencyCallService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +35,7 @@ public class FireEmergencyController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getFireEmergencyCalls(
+    public ResponseEntity<FireEmergencyResponseDto<List<FireEmergencyDto>>> getFireEmergencyCalls(
             @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
         FireEmergencyResponseDto<List<FireEmergencyDto>> responseDto = emergencyCallService.getFireEmergencyCalls(token.substring(7).trim());
 
@@ -41,7 +46,7 @@ public class FireEmergencyController {
     public ResponseEntity<?> getFireEmergencyCalls(
             @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
             @PathVariable long id) {
-        FireEmergencyResponseDto<FireEmergencyDto> responseDto = emergencyCallService.getFireEmergencyCallById(id, token.substring(7).trim());
+        FireEmergencyResponseDto<Pair<FireEmergencyDto, List<FireMessageDto>>> responseDto = emergencyCallService.getFireEmergencyCallById(id, token.substring(7).trim());
 
         return ResponseEntity.ok(responseDto);
     }
@@ -54,6 +59,18 @@ public class FireEmergencyController {
 
         if(responseDto == null)
             return ResponseEntity.internalServerError().body("Failed to create fire emergency call");
+
+        return ResponseEntity.ok(responseDto);
+    }
+
+    @PostMapping("/message")
+    public ResponseEntity<?> createFireMessage(
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
+            @RequestBody CreateFireMessageRequestDto requestDto) {
+        FireEmergencyResponseDto<FireMessageDto> responseDto = emergencyCallService.createFireMessage(requestDto, token.substring(7).trim());
+
+        if(responseDto == null)
+            return ResponseEntity.internalServerError().body("Failed to create fire emergency message");
 
         return ResponseEntity.ok(responseDto);
     }

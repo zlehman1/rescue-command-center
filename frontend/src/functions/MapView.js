@@ -9,7 +9,7 @@ const MapView = ({ address, height = 580, width = '100%', zoom = 17 }) => {
 
     useEffect(() => {
         if (address) {
-            const apiKey = '849980996329428785d88960dd5ae716';
+            const apiKey = '8632dd4ed2ad48ccb6c52216742b6c88';
             const requestUrl = `https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(address)}&key=${apiKey}`;
 
             axios.get(requestUrl)

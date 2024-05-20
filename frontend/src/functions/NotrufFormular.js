@@ -4,7 +4,8 @@ import {Autocomplete, Button, Paper, TextField} from "@mui/material";
 import * as React from "react";
 import {useState} from "react";
 import axios from "axios";
-import {useNavigate} from "react-router-dom";
+import {Navigate, useNavigate} from "react-router-dom";
+import {jwtDecode} from "jwt-decode";
 
 function NotrufFormular({onAddressChange}) {
     const { einsatzStichworte, additionalStichworte } = useStichworte();
@@ -16,12 +17,21 @@ function NotrufFormular({onAddressChange}) {
     const [communicatorName, setCommunicatorName] = useState('');
     const [communicatorPhoneNumber, setCommunicatorPhoneNumber] = useState('');
 
-    const navigate = useNavigate();
+    const [emergencyData, setEmergencyData] = useState(null);
+    const [navigate, setNavigate] = useState(false);
 
     const handleAddressChange = debounce((value) => {
         setLocation(value);
         onAddressChange(value);
     }, 300);
+
+    const token = localStorage.getItem('jwt');
+    const decodedToken = jwtDecode(token)
+    let color = ''
+    if(decodedToken.organization === 'Feuerwehr')
+        color = '#C40C0C'
+    else
+        color = '#0000ff'
 
     const handleSubmit = async () => {
         const data = {
@@ -32,21 +42,37 @@ function NotrufFormular({onAddressChange}) {
             communicatorPhoneNumber,
         };
 
-        const token = localStorage.getItem('jwt');
-
         try {
-            const response = await axios.post('http://localhost:9191/api/v1/emergency/fire', data, {
+            let path = ''
+            if(decodedToken.organization === 'Feuerwehr')
+                path = 'fire'
+            else
+                path = 'police'
+
+            const response = await axios.post(`http://localhost:9191/api/v1/emergency/${path}`, data, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
             });
             if (response.status === 200) {
-                navigate('/emergency/overview');
+
+                const response2 = await fetch(`http://localhost:9191/api/v1/emergency/${path}/${response.data.data.id}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                const responseData = await response2.json();
+                setEmergencyData(responseData.data);
+                setNavigate(true);
             }
         } catch (error) {
             console.error('Error:', error);
         }
     };
+
+    if (navigate && emergencyData) {
+        return <Navigate to={`/emergency/detail`} state={{ emergencyData }} />;
+    }
 
     return (
         <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
@@ -94,7 +120,7 @@ function NotrufFormular({onAddressChange}) {
             <Button
                 fullWidth
                 variant="contained"
-                color="primary"
+                sx={{ backgroundColor: color }}
                 onClick={handleSubmit}
             >
                 Notruf erstellen

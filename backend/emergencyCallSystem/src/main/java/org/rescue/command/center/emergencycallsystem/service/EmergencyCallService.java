@@ -1,8 +1,13 @@
 package org.rescue.command.center.emergencycallsystem.service;
 
+import org.javatuples.Pair;
 import org.rescue.command.center.emergencycallsystem.dto.base.FireEmergencyDto;
+import org.rescue.command.center.emergencycallsystem.dto.base.FireMessageDto;
+import org.rescue.command.center.emergencycallsystem.dto.base.PoliceEmergencyDto;
 import org.rescue.command.center.emergencycallsystem.dto.request.CreateFireEmergencyDto;
+import org.rescue.command.center.emergencycallsystem.dto.request.CreateFireMessageRequestDto;
 import org.rescue.command.center.emergencycallsystem.dto.response.FireEmergencyResponseDto;
+import org.rescue.command.center.emergencycallsystem.dto.response.PoliceEmergencyResponseDto;
 import org.rescue.command.center.emergencycallsystem.model.police.PoliceEmergencyCall;
 
 import java.util.List;
@@ -21,7 +26,7 @@ public interface EmergencyCallService {
      * @param token JWT token of the requesting user
      * @return requested emergency call
      */
-    FireEmergencyResponseDto<FireEmergencyDto> getFireEmergencyCallById(long id, String token);
+    FireEmergencyResponseDto<Pair<FireEmergencyDto, List<FireMessageDto>>> getFireEmergencyCallById(long id, String token);
 
     /**
      * Create a new fire emergency call
@@ -32,10 +37,18 @@ public interface EmergencyCallService {
     FireEmergencyResponseDto<FireEmergencyDto> createFireEmergencyCall(CreateFireEmergencyDto requestDto, String token);
 
     /**
+     * Creates a new message for a fire emergency
+     * @param requestDto information about the message and emergency id
+     * @param token JWT token of the requesting user
+     * @return new message
+     */
+    FireEmergencyResponseDto<FireMessageDto> createFireMessage(CreateFireMessageRequestDto requestDto, String token);
+
+    /**
      * Gets all police emergency calls.
      * @return List with police emergency calls
      */
-    List<PoliceEmergencyCall> getPoliceEmergencyCalls();
+    PoliceEmergencyResponseDto<List<PoliceEmergencyDto>> getPoliceEmergencyCalls(String token);
 
     /**
      * Gets the police emergency call by id.

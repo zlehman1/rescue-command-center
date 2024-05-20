@@ -1,18 +1,23 @@
 package org.rescue.command.center.emergencycallsystem.service.impl;
 
+import org.javatuples.Pair;
 import org.rescue.command.center.base.authentication.service.JwtTokenService;
 import org.rescue.command.center.base.emergencycallsystem.enums.BOSOrganizationEnum;
-import org.rescue.command.center.base.userManagement.enums.RoleType;
-import org.rescue.command.center.base.userManagement.model.Role;
 import org.rescue.command.center.base.userManagement.model.User;
 import org.rescue.command.center.base.userManagement.repository.UserRepository;
 import org.rescue.command.center.emergencycallsystem.dto.base.FireEmergencyDto;
+import org.rescue.command.center.emergencycallsystem.dto.base.FireMessageDto;
+import org.rescue.command.center.emergencycallsystem.dto.base.PoliceEmergencyDto;
+import org.rescue.command.center.emergencycallsystem.dto.base.PoliceMessageDto;
 import org.rescue.command.center.emergencycallsystem.dto.request.CreateFireEmergencyDto;
+import org.rescue.command.center.emergencycallsystem.dto.request.CreateFireMessageRequestDto;
 import org.rescue.command.center.emergencycallsystem.dto.response.FireEmergencyResponseDto;
+import org.rescue.command.center.emergencycallsystem.dto.response.PoliceEmergencyResponseDto;
 import org.rescue.command.center.emergencycallsystem.enums.EmergencyCallStateEnum;
 import org.rescue.command.center.emergencycallsystem.enums.FireEmergencyCallKeyword;
 import org.rescue.command.center.emergencycallsystem.model.EmergencyCallState;
 import org.rescue.command.center.emergencycallsystem.model.fire.FireEmergencyCall;
+import org.rescue.command.center.emergencycallsystem.model.fire.FireMessage;
 import org.rescue.command.center.emergencycallsystem.model.police.PoliceEmergencyCall;
 import org.rescue.command.center.emergencycallsystem.repository.EmergencyCallStateRepository;
 import org.rescue.command.center.emergencycallsystem.repository.fire.FireEmergencyCallRepository;
@@ -26,7 +31,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 public class EmergencyCallServiceImpl implements EmergencyCallService {
@@ -71,7 +75,7 @@ public class EmergencyCallServiceImpl implements EmergencyCallService {
     }
 
     @Override
-    public FireEmergencyResponseDto<FireEmergencyDto> getFireEmergencyCallById(long id, String token) {
+    public FireEmergencyResponseDto<Pair<FireEmergencyDto, List<FireMessageDto>>> getFireEmergencyCallById(long id, String token) {
         BOSOrganizationEnum organization = jwtTokenService.extractBOSOrganizationFromToken(token);
 
         if(organization.equals(BOSOrganizationEnum.POLIZEI) || organization.equals(BOSOrganizationEnum.NOTDEFINED))
@@ -79,8 +83,20 @@ public class EmergencyCallServiceImpl implements EmergencyCallService {
 
         Optional<FireEmergencyCall> fireEmergencyCall = fireEmergencyCallRepository.findById(id);
 
-        return fireEmergencyCall.map(emergencyCall ->
-                new FireEmergencyResponseDto<>(createFireEmergencyDto(emergencyCall))).orElse(new FireEmergencyResponseDto<>(null));
+        if(fireEmergencyCall.isEmpty())
+            return null;
+
+        List<FireMessage> messages = fireMessageRepository.findAll();
+
+        List<FireMessageDto> response = new ArrayList<>();
+        FireEmergencyDto fireEmergencyDto = createFireEmergencyDto(fireEmergencyCall.get());
+
+        for (FireMessage message : messages) {
+            if (message.getFireEmergencyCall().getId().equals(fireEmergencyCall.get().getId()))
+                response.add(new FireMessageDto(message.getId(), message.getTimestamp(), message.getText(), message.getDispatcher().getUsername()));
+        }
+
+        return new FireEmergencyResponseDto<>(new Pair<>(fireEmergencyDto, response));
     }
 
     @Override
@@ -118,8 +134,45 @@ public class EmergencyCallServiceImpl implements EmergencyCallService {
     }
 
     @Override
-    public List<PoliceEmergencyCall> getPoliceEmergencyCalls() {
-        return List.of();
+    public FireEmergencyResponseDto<FireMessageDto> createFireMessage(CreateFireMessageRequestDto requestDto, String token){
+        BOSOrganizationEnum organization = jwtTokenService.extractBOSOrganizationFromToken(token);
+
+        if(organization.equals(BOSOrganizationEnum.POLIZEI) || organization.equals(BOSOrganizationEnum.NOTDEFINED))
+            return null;
+
+        String username = jwtTokenService.extractUsernameFromToken(token);
+
+        Optional<User> dispatcher = userRepository.findByUsername(username);
+        if(dispatcher.isEmpty())
+            return null;
+
+        Optional<FireEmergencyCall> fireEmergencyCall = fireEmergencyCallRepository.findById(requestDto.getEmergencyId());
+
+        if(fireEmergencyCall.isEmpty())
+            return null;
+
+        FireMessage fireMessage = new FireMessage(LocalDateTime.now(), requestDto.getMessage(), dispatcher.get(), fireEmergencyCall.get());
+        fireMessage = fireMessageRepository.save(fireMessage);
+        FireMessageDto response = new FireMessageDto(fireMessage.getId(), fireMessage.getTimestamp(), fireMessage.getText(), fireMessage.getDispatcher().getUsername());
+        return new FireEmergencyResponseDto<>(response);
+    }
+
+    @Override
+    public PoliceEmergencyResponseDto<List<PoliceEmergencyDto>> getPoliceEmergencyCalls(String token) {
+        BOSOrganizationEnum organization = jwtTokenService.extractBOSOrganizationFromToken(token);
+
+        if(organization.equals(BOSOrganizationEnum.FEUERWEHR) || organization.equals(BOSOrganizationEnum.NOTDEFINED))
+            return null;
+
+        List<PoliceEmergencyCall> emergencyCalls = policeEmergencyCallRepository.findAll();
+        List<PoliceEmergencyDto> response = new ArrayList<>();
+
+        for (PoliceEmergencyCall emergencyCall : emergencyCalls) {
+            if(emergencyCall.getEmergencyCallState().getEmergencyCallStateEnum() != EmergencyCallStateEnum.FINISHED)
+                response.add(createPoliceEmergencyDto(emergencyCall));
+        }
+
+        return new PoliceEmergencyResponseDto<>(response);
     }
 
     @Override
@@ -129,6 +182,20 @@ public class EmergencyCallServiceImpl implements EmergencyCallService {
 
     private FireEmergencyDto createFireEmergencyDto(FireEmergencyCall emergencyCall){
         return new FireEmergencyDto(
+                emergencyCall.getId(),
+                emergencyCall.getTimestamp(),
+                emergencyCall.getKeyword(),
+                emergencyCall.getLocation(),
+                emergencyCall.getInformation(),
+                emergencyCall.getCommunicatorName(),
+                emergencyCall.getCommunicatorPhoneNumber(),
+                emergencyCall.getEmergencyCallState(),
+                emergencyCall.getDispatcher().getUsername()
+        );
+    }
+
+    private PoliceEmergencyDto createPoliceEmergencyDto(PoliceEmergencyCall emergencyCall){
+        return new PoliceEmergencyDto(
                 emergencyCall.getId(),
                 emergencyCall.getTimestamp(),
                 emergencyCall.getKeyword(),

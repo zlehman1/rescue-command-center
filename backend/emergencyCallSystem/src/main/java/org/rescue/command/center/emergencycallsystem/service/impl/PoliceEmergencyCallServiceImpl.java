@@ -94,7 +94,7 @@ public class PoliceEmergencyCallServiceImpl implements PoliceEmergencyCallServic
     public PoliceEmergencyResponseDto<Pair<PoliceEmergencyDto, List<PoliceMessageDto>>> getPoliceEmergencyCallById(long id, String token) {
         BOSOrganizationEnum organization = jwtTokenService.extractBOSOrganizationFromToken(token);
 
-        if(organization.equals(BOSOrganizationEnum.POLIZEI) || organization.equals(BOSOrganizationEnum.NOTDEFINED))
+        if(organization.equals(BOSOrganizationEnum.FEUERWEHR) || organization.equals(BOSOrganizationEnum.NOTDEFINED))
             return null;
 
         Optional<PoliceEmergencyCall> policeEmergencyCall = policeEmergencyCallRepository.findById(id);

@@ -202,11 +202,6 @@ export default function EmergencyCallSingleView(){
                                     </Typography>
                                 </Box>
                             </Grid>
-                            <Grid item xs={12} md={6} sx={{ display: 'flex', alignItems: 'center' }}>
-                                <Box sx={{ width: '100%', height: mapHeight }}>
-                                    <MapView address={emergencyData.value0.location} height={mapHeight} />
-                                </Box>
-                            </Grid>
                             <Grid item xs={12} sx={{ mt: 4 }}>
                                 <Typography variant="h6">Einsatzverlauf:</Typography>
                                 <Box ref={boxRef} sx={{ maxHeight: 300, overflowY: 'auto', mb: 2 }}>

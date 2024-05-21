@@ -1,7 +1,10 @@
 package org.rescue.command.center.emergencycallsystem;
 
+import org.rescue.command.center.base.emergencycallsystem.enums.BOSOrganizationEnum;
 import org.rescue.command.center.base.emergencycallsystem.model.BOSOrganization;
+import org.rescue.command.center.base.emergencycallsystem.model.District;
 import org.rescue.command.center.base.emergencycallsystem.repository.BOSOrganizationRepository;
+import org.rescue.command.center.base.emergencycallsystem.repository.DistrictRepository;
 import org.rescue.command.center.base.userManagement.model.User;
 import org.rescue.command.center.base.userManagement.repository.UserRepository;
 import org.rescue.command.center.emergencycallsystem.enums.EmergencyCallStateEnum;
@@ -24,7 +27,6 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Component
@@ -37,6 +39,7 @@ public class DatabaseSeeder implements CommandLineRunner {
     private final PoliceMessageRepository policeMessageRepository;
     private final FireEmergencyCallRepository fireEmergencyCallRepository;
     private final EmergencyCallStateRepository emergencyCallStateRepository;
+    private final DistrictRepository districtRepository;
 
 
     public DatabaseSeeder(
@@ -46,7 +49,8 @@ public class DatabaseSeeder implements CommandLineRunner {
             FireMessageRepository fireMessageRepository,
             PoliceEmergencyCallRepository policeEmergencyCallRepository,
             PoliceMessageRepository policeMessageRepository,
-            EmergencyCallStateRepository emergencyCallStateRepository) {
+            EmergencyCallStateRepository emergencyCallStateRepository,
+            DistrictRepository districtRepository) {
         this.userRepository = userRepository;
         this.bOSOrganizationRepository = bOSOrganizationRepository;
         this.fireEmergencyCallRepository = fireEmergencyCallRepository;
@@ -54,6 +58,7 @@ public class DatabaseSeeder implements CommandLineRunner {
         this.policeEmergencyCallRepository = policeEmergencyCallRepository;
         this.policeMessageRepository = policeMessageRepository;
         this.emergencyCallStateRepository = emergencyCallStateRepository;
+        this.districtRepository = districtRepository;
     }
 
     @Override
@@ -69,9 +74,10 @@ public class DatabaseSeeder implements CommandLineRunner {
         User erikaMustermann = userRepository.findByUsername("erikamustermann").get();
         User maxMustermann = userRepository.findByUsername("maxmustermann").get();
 
+        BOSOrganization feuerwehr = new BOSOrganization(BOSOrganizationEnum.FEUERWEHR.toString());
+        BOSOrganization polizei = new BOSOrganization(BOSOrganizationEnum.POLIZEI.toString());
+
         if(bOSOrganizationRepository.findAll().isEmpty()){
-            BOSOrganization feuerwehr = new BOSOrganization("Feuerwehr");
-            BOSOrganization polizei = new BOSOrganization("Polizei");
             Set<User> fireUserSet = new HashSet<>();
             Set<User> policeUserSet = new HashSet<>();
 
@@ -107,6 +113,30 @@ public class DatabaseSeeder implements CommandLineRunner {
             emergencyCallStateRepository.save(finishedState);
         }
 
+        if(districtRepository.findAll().isEmpty()){
+            Set<User> userSetOne  = new HashSet<>();
+            Set<User> userSetTwo  = new HashSet<>();
+
+            userSetOne.add(johndoe);
+            userSetOne.add(janedoe);
+
+            userSetTwo.add(maxMustermann);
+            userSetTwo.add(erikaMustermann);
+
+            District coesfeld = new District("Coesfeld", userSetOne);
+            District steinfurt = new District("Steinfurt", userSetTwo);
+
+            District wesel = new District("Wesel");
+            District borken = new District("Borken");
+            District recklinghausen = new District("Recklinghausen");
+
+            districtRepository.save(coesfeld);
+            districtRepository.save(steinfurt);
+            districtRepository.save(wesel);
+            districtRepository.save(borken);
+            districtRepository.save(recklinghausen);
+        }
+
         Long fireEmergencyCallId = 0L;
         Long policeEmergencyCallId = 0L;
 
@@ -114,12 +144,16 @@ public class DatabaseSeeder implements CommandLineRunner {
             FireEmergencyCall fireEmergencyCall = new FireEmergencyCall();
             fireEmergencyCall.setTimestamp(LocalDateTime.now());
             fireEmergencyCall.setKeyword(FireEmergencyCallKeyword.FEUER);
-            fireEmergencyCall.setLocation("Dingdener Straße 10 46395 Bocholt");
+            fireEmergencyCall.setLocation("Rottkamp 15 48653 Coesfeld ");
             fireEmergencyCall.setInformation("Wohnungsbrand, starke Verrauchung im Treppenhaus, Flammen schlagen aus dem Fenster");
             fireEmergencyCall.setCommunicatorName("Max Mustermann");
             fireEmergencyCall.setCommunicatorPhoneNumber("+49 123 45678901");
             fireEmergencyCall.setDispatcher(johndoe);
             fireEmergencyCall.setEmergencyCallState(emergencyCallStateRepository.findByEmergencyCallStateEnum(EmergencyCallStateEnum.RUNNING));
+            fireEmergencyCall.setDistrict(districtRepository.findByName("Coesfeld"));
+            Set<BOSOrganization> bosOrganizations = new HashSet<>();
+            bosOrganizations.add(feuerwehr);
+            fireEmergencyCall.setBosOrganization(bosOrganizations);
 
             fireEmergencyCallId = fireEmergencyCallRepository.save(fireEmergencyCall).getId();
         }
@@ -128,12 +162,16 @@ public class DatabaseSeeder implements CommandLineRunner {
             PoliceEmergencyCall policeEmergencyCall = new PoliceEmergencyCall();
             policeEmergencyCall.setTimestamp(LocalDateTime.now());
             policeEmergencyCall.setKeyword(PoliceEmergencyCallKeyword.LEICHE);
-            policeEmergencyCall.setLocation("Dingdener Straße 10 46395 Bocholt");
+            policeEmergencyCall.setLocation("Liedekerker Straße 70 48565 Steinfurt");
             policeEmergencyCall.setInformation("Leiche aufgefunden, ca. 80 jahre alt");
             policeEmergencyCall.setCommunicatorName("Max Mustermann");
             policeEmergencyCall.setCommunicatorPhoneNumber("+49 123 45678901");
             policeEmergencyCall.setDispatcher(erikaMustermann);
             policeEmergencyCall.setEmergencyCallState(emergencyCallStateRepository.findByEmergencyCallStateEnum(EmergencyCallStateEnum.RUNNING));
+            policeEmergencyCall.setDistrict(districtRepository.findByName("Steinfurt"));
+            Set<BOSOrganization> bosOrganizations = new HashSet<>();
+            bosOrganizations.add(polizei);
+            policeEmergencyCall.setBosOrganization(bosOrganizations);
 
             policeEmergencyCallId = policeEmergencyCallRepository.save(policeEmergencyCall).getId();
         }

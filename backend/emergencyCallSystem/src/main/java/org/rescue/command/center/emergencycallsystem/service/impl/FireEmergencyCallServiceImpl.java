@@ -3,12 +3,13 @@ package org.rescue.command.center.emergencycallsystem.service.impl;
 import org.javatuples.Pair;
 import org.rescue.command.center.base.authentication.service.JwtTokenService;
 import org.rescue.command.center.base.emergencycallsystem.enums.BOSOrganizationEnum;
+import org.rescue.command.center.base.emergencycallsystem.model.BOSOrganization;
+import org.rescue.command.center.base.emergencycallsystem.repository.BOSOrganizationRepository;
 import org.rescue.command.center.base.userManagement.model.User;
 import org.rescue.command.center.base.userManagement.repository.UserRepository;
 import org.rescue.command.center.emergencycallsystem.dto.base.FireEmergencyDto;
 import org.rescue.command.center.emergencycallsystem.dto.base.FireMessageDto;
 import org.rescue.command.center.emergencycallsystem.dto.base.PoliceEmergencyDto;
-import org.rescue.command.center.emergencycallsystem.dto.base.PoliceMessageDto;
 import org.rescue.command.center.emergencycallsystem.dto.request.CreateFireEmergencyDto;
 import org.rescue.command.center.emergencycallsystem.dto.request.CreateFireMessageRequestDto;
 import org.rescue.command.center.emergencycallsystem.dto.response.FireEmergencyResponseDto;
@@ -23,7 +24,7 @@ import org.rescue.command.center.emergencycallsystem.repository.EmergencyCallSta
 import org.rescue.command.center.emergencycallsystem.repository.fire.FireEmergencyCallRepository;
 import org.rescue.command.center.emergencycallsystem.repository.fire.FireMessageRepository;
 import org.rescue.command.center.emergencycallsystem.repository.police.PoliceEmergencyCallRepository;
-import org.rescue.command.center.emergencycallsystem.service.EmergencyCallService;
+import org.rescue.command.center.emergencycallsystem.service.FireEmergencyCallService;
 
 import org.springframework.stereotype.Service;
 
@@ -33,7 +34,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class EmergencyCallServiceImpl implements EmergencyCallService {
+public class FireEmergencyCallServiceImpl implements FireEmergencyCallService {
 
     private final FireEmergencyCallRepository fireEmergencyCallRepository;
 
@@ -43,35 +44,54 @@ public class EmergencyCallServiceImpl implements EmergencyCallService {
     private final FireMessageRepository fireMessageRepository;
     private final UserRepository userRepository;
     private final EmergencyCallStateRepository emergencyCallStateRepository;
+    private final BOSOrganizationRepository bosOrganizationRepository;
 
-    public EmergencyCallServiceImpl(
+    public FireEmergencyCallServiceImpl(
             FireEmergencyCallRepository fireEmergencyCallRepository,
             PoliceEmergencyCallRepository policeEmergencyCallRepository,
-            JwtTokenService jwtTokenService, FireMessageRepository fireMessageRepository, UserRepository userRepository, EmergencyCallStateRepository emergencyCallStateRepository){
+            JwtTokenService jwtTokenService, FireMessageRepository fireMessageRepository, UserRepository userRepository, EmergencyCallStateRepository emergencyCallStateRepository, BOSOrganizationRepository bosOrganizationRepository){
         this.fireEmergencyCallRepository = fireEmergencyCallRepository;
         this.policeEmergencyCallRepository = policeEmergencyCallRepository;
         this.jwtTokenService = jwtTokenService;
         this.fireMessageRepository = fireMessageRepository;
         this.userRepository = userRepository;
         this.emergencyCallStateRepository = emergencyCallStateRepository;
+        this.bosOrganizationRepository = bosOrganizationRepository;
     }
 
     @Override
     public FireEmergencyResponseDto<List<FireEmergencyDto>> getFireEmergencyCalls(String token) {
         BOSOrganizationEnum organization = jwtTokenService.extractBOSOrganizationFromToken(token);
+        String district = jwtTokenService.extractDistrictNameFromToken(token);
 
-        if(organization.equals(BOSOrganizationEnum.POLIZEI) || organization.equals(BOSOrganizationEnum.NOTDEFINED))
+        if (organization.getOrganizationName().equals(BOSOrganizationEnum.NOTDEFINED.toString()))
             return null;
 
         List<FireEmergencyCall> emergencyCalls = fireEmergencyCallRepository.findAll();
-        List<FireEmergencyDto> response = new ArrayList<>();
+        List<FireEmergencyCall> finalEmergencyCalls = new ArrayList<>();
+
+        BOSOrganization bosOrganization = bosOrganizationRepository.findByName(organization.getOrganizationName());
 
         for (FireEmergencyCall emergencyCall : emergencyCalls) {
-            if(emergencyCall.getEmergencyCallState().getEmergencyCallStateEnum() != EmergencyCallStateEnum.FINISHED)
-                response.add(createFireEmergencyDto(emergencyCall));
+            if (emergencyCall.getDistrict().getName().equals(district) && emergencyCall.getEmergencyCallState().getEmergencyCallStateEnum() != EmergencyCallStateEnum.FINISHED) {
+                for (BOSOrganization emergencyBosOrganization : emergencyCall.getBosOrganization()){
+                    if(isSameBosOrganization(emergencyBosOrganization, bosOrganization))
+                        finalEmergencyCalls.add(emergencyCall);
+                }
+            }
+        }
+
+        List<FireEmergencyDto> response = new ArrayList<>();
+
+        for (FireEmergencyCall emergencyCall : finalEmergencyCalls) {
+            response.add(createFireEmergencyDto(emergencyCall));
         }
 
         return new FireEmergencyResponseDto<>(response);
+    }
+
+    private boolean isSameBosOrganization(BOSOrganization firstBosOrganization, BOSOrganization secondBosOrganization){
+        return firstBosOrganization.getName().equals(secondBosOrganization.getName());
     }
 
     @Override

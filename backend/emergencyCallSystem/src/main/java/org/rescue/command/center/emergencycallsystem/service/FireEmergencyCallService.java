@@ -12,7 +12,7 @@ import org.rescue.command.center.emergencycallsystem.model.police.PoliceEmergenc
 
 import java.util.List;
 
-public interface EmergencyCallService {
+public interface FireEmergencyCallService {
     /**
      * Gets all fire emergency calls.
      * @param token JWT token of the requesting user

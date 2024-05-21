@@ -5,6 +5,7 @@ import org.rescue.command.center.authentication.dto.request.LoginRequestDto;
 import org.rescue.command.center.base.authentication.service.JwtTokenService;
 import org.rescue.command.center.base.emergencycallsystem.model.BOSOrganization;
 import org.rescue.command.center.base.emergencycallsystem.repository.BOSOrganizationRepository;
+import org.rescue.command.center.base.emergencycallsystem.repository.DistrictRepository;
 import org.rescue.command.center.base.userManagement.model.User;
 import org.rescue.command.center.base.userManagement.repository.UserRepository;
 
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class AuthenticationServiceImplementation implements AuthenticationService {
@@ -31,15 +33,19 @@ public class AuthenticationServiceImplementation implements AuthenticationServic
 
     private final AuthenticationProvider authenticationProvider;
 
+    private final DistrictRepository districtRepository;
+
     public AuthenticationServiceImplementation(
             UserRepository userRepository,
             BOSOrganizationRepository organizationRepository,
             JwtTokenService jwtTokenService,
-            AuthenticationProvider authenticationProvider) {
+            AuthenticationProvider authenticationProvider,
+            DistrictRepository districtRepository) {
         this.userRepository = userRepository;
         this.organizationRepository = organizationRepository;
         this.jwtTokenService = jwtTokenService;
         this.authenticationProvider = authenticationProvider;
+        this.districtRepository = districtRepository;
     }
 
     @Override
@@ -59,6 +65,9 @@ public class AuthenticationServiceImplementation implements AuthenticationServic
 
         BOSOrganization organization = organizationRepository.findByUserUsername(user.get().getUsername());
 
-        return jwtTokenService.generateToken(user.get().getUsername(), user.get().getRoles(), organization);
+        String district = districtRepository.findDistrictNameByUsername(user.get().getUsername());
+
+
+        return jwtTokenService.generateToken(user.get().getUsername(), user.get().getRoles(), organization, district);
     }
 }

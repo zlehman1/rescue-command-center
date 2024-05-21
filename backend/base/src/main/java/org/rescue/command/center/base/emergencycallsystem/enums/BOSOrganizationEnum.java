@@ -1,9 +1,9 @@
 package org.rescue.command.center.base.emergencycallsystem.enums;
 
 public enum BOSOrganizationEnum {
-    NOTDEFINED("NOTDEFINED"),
-    FEUERWEHR("FEUERWEHR"),
-    POLIZEI("POLIZEI");
+    NOTDEFINED("NotDefined"),
+    FEUERWEHR("Feuerwehr"),
+    POLIZEI("Polizei");
 
     private final String organizationName;
 

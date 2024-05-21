@@ -9,6 +9,7 @@ import io.jsonwebtoken.security.Keys;
 import org.rescue.command.center.base.authentication.service.JwtTokenService;
 import org.rescue.command.center.base.emergencycallsystem.enums.BOSOrganizationEnum;
 import org.rescue.command.center.base.emergencycallsystem.model.BOSOrganization;
+import org.rescue.command.center.base.emergencycallsystem.model.District;
 import org.rescue.command.center.base.userManagement.model.Role;
 import org.springframework.stereotype.Component;
 
@@ -25,10 +26,11 @@ public class JwtTokenServiceImpl implements JwtTokenService {
     private String secretKey = "NllmZHptNVVrNG9RRUs3NllmZHptNVVrNG9RRUs3NllmZHptNVVrNG9RRUs3NllmZHptNVVrNG9RRUs3NllmZHptNVVrNG9RRUs3NllmZHptNVVrNG9RRUs3NllmZHptNVVrNG9RRUs3Nl";
     private static final long ACCESS_TOKEN_VALIDITY_SECONDS = 86400; // 24 hours
 
-    public String generateToken(String username, Set<Role> authorities, BOSOrganization organization) {
+    public String generateToken(String username, Set<Role> authorities, BOSOrganization organization, String districtName) {
         return Jwts.builder().subject(username)
                 .claim("roles", authorities)
                 .claim("organization", organization.getName())
+                .claim("district", districtName)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_VALIDITY_SECONDS * 1000))
                 .signWith(getSecretKey(), SignatureAlgorithm.HS512)
@@ -68,6 +70,15 @@ public class JwtTokenServiceImpl implements JwtTokenService {
 
         Claims claims = getClaims(token, Function.identity());
         return BOSOrganizationEnum.valueOf(claims.get("organization", String.class).toUpperCase());
+    }
+
+    public String extractDistrictNameFromToken(String token){
+        if (isTokenExpired(token)) {
+            return "";
+        }
+
+        Claims claims = getClaims(token, Function.identity());
+        return claims.get("district", String.class);
     }
 
     public <T> T getClaims(String token, Function<Claims, T> resolver) {

@@ -9,6 +9,9 @@ import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Node
 @Getter @Setter
 public class District {
@@ -16,5 +19,19 @@ public class District {
     private String name;
 
     @Relationship(type = "works_in", direction = Relationship.Direction.INCOMING)
-    private User userSet;
+    private Set<User> userSet;
+
+    public District() {
+
+    }
+
+    public District(String name) {
+        this.name = name;
+        this.userSet = new HashSet<>();
+    }
+
+    public District(String name, Set<User> userSet) {
+        this.name = name;
+        this.userSet = userSet;
+    }
 }

@@ -9,9 +9,11 @@ import java.util.Set;
 import java.util.function.Function;
 
 public interface JwtTokenService {
-    public String generateToken(String username, Set<Role> authorities, BOSOrganization organization);
+    public String generateToken(String username, Set<Role> authorities, BOSOrganization organization, String districtName);
 
     public String extractUsernameFromToken(String token);
+
+    String extractDistrictNameFromToken(String token);
 
     public Set<Role> extractRolesFromToken(String token);
 

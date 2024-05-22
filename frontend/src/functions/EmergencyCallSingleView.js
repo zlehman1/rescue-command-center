@@ -1,15 +1,8 @@
+import React, { useEffect, useRef, useState } from 'react';
 import {
-    Box, Button, ButtonBase,
-    Container,
-    Grid,
-    List,
-    ListItem,
-    ListItemText, TextField,
-    Toolbar,
-    Typography
+    Box, Button, ButtonBase, Container, Grid, List, ListItem, ListItemText, TextField, Toolbar, Typography
 } from "@mui/material";
-import * as React from "react";
-import {createTheme, ThemeProvider} from "@mui/material/styles";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 import MenuBar from "../menu/MenuBar";
 import Copyright from "./Copyright";
 import { useLocation } from "react-router-dom";
@@ -17,9 +10,7 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import InfoIcon from '@mui/icons-material/Info';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import WarningIcon from '@mui/icons-material/Warning';
-import {jwtDecode} from "jwt-decode";
-import MapView from "./MapView";
-import {useEffect, useRef, useState} from "react";
+import { jwtDecode } from "jwt-decode";
 
 const defaultTheme = createTheme();
 
@@ -40,18 +31,18 @@ const formatTimestamp = (timestamp) => {
 
 const token = localStorage.getItem('jwt');
 const decodedToken = jwtDecode(token);
-let color = ''
-let path = ''
-if (decodedToken.organization === 'Feuerwehr'){
+let color = '';
+let path = '';
+if (decodedToken.organization === 'Feuerwehr') {
     color = '#C40C0C';
-    path = 'fire'
+    path = 'fire';
 }
-else{
+else {
     color = '#0000ff';
     path = 'police';
 }
 
-export default function EmergencyCallSingleView(){
+export default function EmergencyCallSingleView() {
     const location = useLocation();
     const initialEmergencyData = useRef(location.state.emergencyData);
     const [emergencyData, setEmergencyData] = useState(location.state.emergencyData);
@@ -59,6 +50,7 @@ export default function EmergencyCallSingleView(){
     const [mapHeight, setMapHeight] = useState(0);
     const gridRef = useRef(null);
     const messageRef = useRef(null);
+    const [isUpdating, setIsUpdating] = useState(true);
 
     useEffect(() => {
         if (gridRef.current) {
@@ -74,43 +66,47 @@ export default function EmergencyCallSingleView(){
         }
     }, [emergencyData.value1]);
 
-    useEffect(() => {
-        const handleRefresh = async () => {
-            try {
-                const jwt = localStorage.getItem('jwt');
+    const fetchEmergencyData = async () => {
+        try {
+            const jwt = localStorage.getItem('jwt');
 
-                if (!jwt) {
-                    console.error('JWT not found in localStorage');
-                    return;
-                }
-
-                const response = await fetch(`http://localhost:9191/api/v1/emergency/${path}/${emergencyData.value0.id}`, {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${jwt}`,
-                        'Content-Type': 'application/json'
-                    }
-                });
-
-                if (!response.ok) {
-                    console.error('Failed to fetch emergency data', response.statusText);
-                    return;
-                }
-
-                const data = await response.json();
-                initialEmergencyData.current = data.data;
-                setEmergencyData(data.data);  // Update state with the new data
-            } catch (error) {
-                console.error('Error fetching emergency data', error);
+            if (!jwt) {
+                console.error('JWT not found in localStorage');
+                return;
             }
-        };
 
-        window.addEventListener('load', handleRefresh);
+            const response = await fetch(`http://localhost:9191/api/v1/emergency/${path}/${emergencyData.value0.id}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${jwt}`,
+                    'Content-Type': 'application/json'
+                }
+            });
 
-        return () => {
-            window.removeEventListener('load', handleRefresh);
-        };
-    }, [emergencyData]);
+            if (!response.ok) {
+                console.error('Failed to fetch emergency data', response.statusText);
+                return;
+            }
+
+            const data = await response.json();
+            initialEmergencyData.current = data.data;
+            setEmergencyData(data.data);  // Update state with the new data
+        } catch (error) {
+            console.error('Error fetching emergency data', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchEmergencyData();
+
+        const interval = setInterval(() => {
+            if (isUpdating) {
+                fetchEmergencyData();
+            }
+        }, 1000); // Refresh every 5 seconds
+
+        return () => clearInterval(interval);
+    }, [isUpdating]);
 
     const handleSendMessage = async () => {
         const message = messageRef.current.value;
@@ -145,12 +141,14 @@ export default function EmergencyCallSingleView(){
                 return;
             }
 
-            window.location.reload();  // Reload the page after the message is sent
+            messageRef.current.value = '';  // Clear the input field after sending the message
+            fetchEmergencyData();  // Refresh the list after sending a message
         } catch (error) {
             console.error('Error sending message', error);
         }
     };
 
+    const sortedMessages = [...emergencyData.value1].sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
 
     return (
         <ThemeProvider theme={defaultTheme}>
@@ -206,18 +204,13 @@ export default function EmergencyCallSingleView(){
                                 <Typography variant="h6">Einsatzverlauf:</Typography>
                                 <Box ref={boxRef} sx={{ maxHeight: 300, overflowY: 'auto', mb: 2 }}>
                                     <List>
-                                        {emergencyData.value1.map((message) => (
-                                            <ButtonBase
-                                                key={message.id}
-                                                sx={{ width: '100%', textAlign: 'left', '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.08)' } }}
-                                            >
-                                                <ListItem alignItems="flex-start">
-                                                    <ListItemText
-                                                        primary={message.text}
-                                                        secondary={`${message.dispatcherName} - ${new Date(message.timestamp).toLocaleString()}`}
-                                                    />
-                                                </ListItem>
-                                            </ButtonBase>
+                                        {sortedMessages.map((message) => (
+                                            <ListItem alignItems="flex-start" key={message.timestamp}>
+                                                <ListItemText
+                                                    primary={message.text}
+                                                    secondary={`${message.dispatcherName} - ${new Date(message.timestamp).toLocaleString()}`}
+                                                />
+                                            </ListItem>
                                         ))}
                                     </List>
                                 </Box>
@@ -231,7 +224,10 @@ export default function EmergencyCallSingleView(){
                                         sx={{ mb: 2 }}
                                         inputRef={messageRef}
                                     />
-                                    <Button variant="contained" color="primary" onClick={handleSendMessage}>Absenden</Button>
+                                    <Button variant="contained" color="primary" onClick={handleSendMessage} sx={{backgroundColor: color }}>Absenden</Button>
+                                    <Button variant="contained" color="secondary" onClick={() => setIsUpdating(!isUpdating)} sx={{ ml: 2, backgroundColor: color }}>
+                                        {isUpdating ? 'Aktualisierung stoppen' : 'Aktualisierung starten'}
+                                    </Button>
                                 </Box>
                             </Grid>
                         </Grid>

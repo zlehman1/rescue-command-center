@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
-    Box, Button, ButtonBase, Container, Grid, List, ListItem, ListItemText, TextField, Toolbar, Typography
+    Box, Button, Container, Grid, List, ListItem, ListItemText, TextField, Toolbar, Typography
 } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import MenuBar from "../menu/MenuBar";
@@ -11,6 +11,18 @@ import InfoIcon from '@mui/icons-material/Info';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import WarningIcon from '@mui/icons-material/Warning';
 import { jwtDecode } from "jwt-decode";
+import MapView from "./MapView";
+
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+
+delete L.Icon.Default.prototype._getIconUrl;
+
+L.Icon.Default.mergeOptions({
+    iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
+    iconUrl: require('leaflet/dist/images/marker-icon.png'),
+    shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
+});
 
 const defaultTheme = createTheme();
 
@@ -198,6 +210,11 @@ export default function EmergencyCallSingleView() {
                                     <Typography variant="body2" sx={{ marginLeft: '8px' }}>
                                         {formatTimestamp(emergencyData.value0.timestamp)}
                                     </Typography>
+                                </Box>
+                            </Grid>
+                            <Grid item xs={12} md={6} sx={{ display: 'flex', alignItems: 'center', height: mapHeight }}>
+                                <Box sx={{ width: '100%', height: '100%' }}>
+                                    <MapView address={emergencyData.value0.location} height={mapHeight} />
                                 </Box>
                             </Grid>
                             <Grid item xs={12} sx={{ mt: 4 }}>

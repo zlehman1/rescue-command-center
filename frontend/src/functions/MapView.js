@@ -33,6 +33,7 @@ const MapView = ({ address, height = 580, width = '100%', zoom = 17 }) => {
             <TileLayer
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                errorTileUrl="https://via.placeholder.com/256?text=Error" // Placeholder für fehlgeschlagene Tiles
             />
             <Marker position={position} />
         </MapContainer>

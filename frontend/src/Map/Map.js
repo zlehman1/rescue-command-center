@@ -6,6 +6,17 @@ import * as React from "react";
 import MapView from "../functions/MapView";
 import {useState} from "react";
 
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+
+delete L.Icon.Default.prototype._getIconUrl;
+
+L.Icon.Default.mergeOptions({
+    iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
+    iconUrl: require('leaflet/dist/images/marker-icon.png'),
+    shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
+});
+
 const defaultTheme = createTheme();
 
 export default function Map() {
@@ -18,7 +29,7 @@ export default function Map() {
     return (
         <ThemeProvider theme={defaultTheme}>
             <Box sx={{ display: 'flex' }}>
-                <MenuBar title="Karte"/>
+                <MenuBar title="Karte" />
                 <Box
                     component="main"
                     sx={{
@@ -34,7 +45,7 @@ export default function Map() {
                     <Toolbar />
                     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
                         <Grid container spacing={3}>
-                            <Grid item xs={12}>  {/* Make sure this Grid item takes full width */}
+                            <Grid item xs={12}>
                                 <TextField
                                     label="Ort"
                                     variant="outlined"

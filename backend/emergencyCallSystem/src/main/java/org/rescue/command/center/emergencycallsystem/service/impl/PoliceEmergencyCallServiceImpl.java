@@ -119,7 +119,7 @@ public class PoliceEmergencyCallServiceImpl implements PoliceEmergencyCallServic
     public PoliceEmergencyResponseDto<PoliceEmergencyDto> createPoliceEmergencyCall(CreatePoliceEmergencyDto requestDto, String token){
         BOSOrganizationEnum organization = jwtTokenService.extractBOSOrganizationFromToken(token);
 
-        if(organization.equals(BOSOrganizationEnum.POLIZEI) || organization.equals(BOSOrganizationEnum.NOTDEFINED))
+        if(organization.equals(BOSOrganizationEnum.FEUERWEHR) || organization.equals(BOSOrganizationEnum.NOTDEFINED))
             return null;
 
         String username = jwtTokenService.extractUsernameFromToken(token);
@@ -153,7 +153,7 @@ public class PoliceEmergencyCallServiceImpl implements PoliceEmergencyCallServic
     public PoliceEmergencyResponseDto<PoliceMessageDto> createPoliceMessage(CreatePoliceMessageRequestDto requestDto, String token){
         BOSOrganizationEnum organization = jwtTokenService.extractBOSOrganizationFromToken(token);
 
-        if(organization.equals(BOSOrganizationEnum.POLIZEI) || organization.equals(BOSOrganizationEnum.NOTDEFINED))
+        if(organization.equals(BOSOrganizationEnum.FEUERWEHR) || organization.equals(BOSOrganizationEnum.NOTDEFINED))
             return null;
 
         String username = jwtTokenService.extractUsernameFromToken(token);

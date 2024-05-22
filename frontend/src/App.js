@@ -1,13 +1,13 @@
 import React, { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import ProtectedRoute from './functions/ProtectedRoute';
-import MapView from "./functions/MapView";
 import SignIn from "./SignIn";
 
 const Dashboard = lazy(() => import('./dashboard/Dashboard'));
 const EmergencyCreation = lazy(() => import('./emergency/Create'));
 const EmergencyOverview = lazy(() => import('./emergency/Overview'));
 const EmergencyCallSingleView = lazy(() => import('./functions/EmergencyCallSingleView'));
+const MapView = lazy(() => import('./Map/Map'));
 
 function App() {
     return (

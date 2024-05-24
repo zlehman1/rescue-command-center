@@ -6,5 +6,5 @@ import whs.master.rescuecommandcenter.usermanagement.model.Role;
 import org.springframework.data.neo4j.repository.Neo4jRepository;
 
 public interface RoleRepository extends Neo4jRepository<Role, Long> {
-    Role findByRoleType(RoleType roleType);
+    Role findByName(RoleType roleType);
 }

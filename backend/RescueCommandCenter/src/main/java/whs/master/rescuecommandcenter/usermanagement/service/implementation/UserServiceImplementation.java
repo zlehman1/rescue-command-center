@@ -79,7 +79,7 @@ public class UserServiceImplementation implements UserService {
         Set<Role> roles = jwtTokenService.extractRolesFromToken(token);
 
         for (Role role : roles) {
-            if (role.getRoleType().equals(RoleType.ADMIN)){
+            if (role.getName().equals(RoleType.ADMIN)){
                 List<User> userList = userRepository.findAll();
 
                 for (User user : userList) {
@@ -131,7 +131,7 @@ public class UserServiceImplementation implements UserService {
         Set<Role> roles = user.getRoles();
 
         for (Role role : roles) {
-            if (role.getRoleType().equals(RoleType.ADMIN) && !user.getUsername().equals(jwtTokenService.extractUsernameFromToken(token))){
+            if (role.getName().equals(RoleType.ADMIN) && !user.getUsername().equals(jwtTokenService.extractUsernameFromToken(token))){
                 userRepository.delete(user);
                 responseCodeDto.setCode(204L);
             }

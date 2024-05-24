@@ -42,6 +42,9 @@ const formatTimestamp = (timestamp) => {
 
 const token = localStorage.getItem('jwt');
 const decodedToken = jwtDecode(token);
+const roles = decodedToken.roles.map(role => role.roleType);
+const isDispatcher = roles.includes('DISPATCHER');
+
 let color = '';
 let path = '';
 if (decodedToken.organization === 'Feuerwehr') {
@@ -212,18 +215,20 @@ export default function EmergencyCallSingleView() {
                                         ))}
                                     </List>
                                 </Box>
-                                <Box>
-                                    <TextField
-                                        multiline
-                                        rows={4}
-                                        variant="outlined"
-                                        fullWidth
-                                        placeholder="Neue Bemerkung..."
-                                        sx={{ mb: 2 }}
-                                        inputRef={messageRef}
-                                    />
-                                    <Button variant="contained" color="primary" onClick={handleSendMessage} sx={{ backgroundColor: color }}>Absenden</Button>
-                                </Box>
+                                {isDispatcher && (
+                                    <Box>
+                                        <TextField
+                                            multiline
+                                            rows={4}
+                                            variant="outlined"
+                                            fullWidth
+                                            placeholder="Neue Bemerkung..."
+                                            sx={{ mb: 2 }}
+                                            inputRef={messageRef}
+                                        />
+                                        <Button variant="contained" color="primary" onClick={handleSendMessage} sx={{ backgroundColor: color }}>Absenden</Button>
+                                    </Box>
+                                )}
                             </Grid>
                         </Grid>
                         <Copyright sx={{ pt: 4 }} />

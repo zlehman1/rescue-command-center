@@ -2,7 +2,8 @@ package whs.master.rescuecommandcenter.usermanagement.enums;
 
 public enum RoleType {
     USER("USER"),
-    ADMIN("ADMIN");
+    ADMIN("ADMIN"),
+    DISPATCHER("DISPATCHER");
 
     private String value;
 

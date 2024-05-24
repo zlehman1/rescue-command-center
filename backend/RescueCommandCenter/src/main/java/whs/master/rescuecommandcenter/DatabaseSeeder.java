@@ -245,12 +245,15 @@ public class DatabaseSeeder implements CommandLineRunner {
 
         Role role1 = new Role(RoleType.USER);
         Role role2 = new Role(RoleType.ADMIN);
+        Role role3 = new Role(RoleType.DISPATCHER);
 
         roleRepository.save(role1);
         roleRepository.save(role2);
+        roleRepository.save(role3);
 
-        Role roleUser = roleRepository.findByRoleType(RoleType.USER);
-        Role roleAdmin = roleRepository.findByRoleType(RoleType.ADMIN);
+        Role roleUser = roleRepository.findByName(RoleType.USER);
+        Role roleAdmin = roleRepository.findByName(RoleType.ADMIN);
+        Role roleDispatcher = roleRepository.findByName(RoleType.DISPATCHER);
 
         user1 = userRepository.findById(user1.getUsername()).orElseThrow();
         user2 = userRepository.findById(user2.getUsername()).orElseThrow();
@@ -259,8 +262,11 @@ public class DatabaseSeeder implements CommandLineRunner {
 
         user1.addRole(roleAdmin);
         user1.addRole(roleUser);
+        user1.addRole(roleDispatcher);
         user2.addRole(roleUser);
+        user2.addRole(roleDispatcher);
         user3.addRole(roleUser);
+        user3.addRole(roleDispatcher);
         user4.addRole(roleUser);
 
         userRepository.save(user1);

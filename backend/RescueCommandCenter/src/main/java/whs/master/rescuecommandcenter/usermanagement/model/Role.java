@@ -13,17 +13,17 @@ public class Role {
     @GeneratedValue
     private Long id;
 
-    private RoleType roleType;
+    private RoleType name;
 
     public Role() { }
 
-    public Role(RoleType roleType) {
-        this.roleType = roleType;
+    public Role(RoleType name) {
+        this.name = name;
     }
 
-    public Role(Long id, RoleType roleType) {
+    public Role(Long id, RoleType name) {
         this.id = id;
-        this.roleType = roleType;
+        this.name = name;
     }
 
     public Role(Long id) {
@@ -38,16 +38,16 @@ public class Role {
         this.id = id;
     }
 
-    public RoleType getRoleType() {
-        return roleType;
+    public RoleType getName() {
+        return name;
     }
 
-    public void setRoleType(RoleType roleType) {
-        this.roleType = roleType;
+    public void setName(RoleType name) {
+        this.name = name;
     }
 
     @Override
     public String toString(){
-        return this.roleType.toString();
+        return this.name.toString();
     }
 }

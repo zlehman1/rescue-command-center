@@ -10,9 +10,8 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import InfoIcon from '@mui/icons-material/Info';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import WarningIcon from '@mui/icons-material/Warning';
-import { jwtDecode } from "jwt-decode";
+import {jwtDecode} from "jwt-decode";
 import MapView from "./MapView";
-
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
@@ -48,8 +47,7 @@ let path = '';
 if (decodedToken.organization === 'Feuerwehr') {
     color = '#C40C0C';
     path = 'fire';
-}
-else {
+} else {
     color = '#0000ff';
     path = 'police';
 }
@@ -58,17 +56,35 @@ export default function EmergencyCallSingleView() {
     const location = useLocation();
     const initialEmergencyData = useRef(location.state.emergencyData);
     const [emergencyData, setEmergencyData] = useState(location.state.emergencyData);
-
     const [mapHeight, setMapHeight] = useState(0);
     const gridRef = useRef(null);
     const messageRef = useRef(null);
-    const [isUpdating, setIsUpdating] = useState(true);
+    let socket;
+    socket = new WebSocket("ws://localhost:9191/ws");
 
     useEffect(() => {
         if (gridRef.current) {
             setMapHeight(gridRef.current.clientHeight);
         }
     }, [initialEmergencyData.current.value1]);
+
+    useEffect(() => {
+        socket.onopen = () => {
+            console.log("WebSocket connection established.");
+        };
+
+        socket.onmessage = (event) => {
+            const messageData = JSON.parse(event.data);
+            setEmergencyData((prevData) => ({
+                ...prevData,
+                value1: [...prevData.value1, messageData].sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
+            }));
+        };
+
+        return () => {
+            socket.close();
+        };
+    }, [socket]);
 
     const boxRef = useRef(null);
 
@@ -78,51 +94,8 @@ export default function EmergencyCallSingleView() {
         }
     }, [emergencyData.value1]);
 
-    const fetchEmergencyData = async () => {
-        try {
-            const jwt = localStorage.getItem('jwt');
-
-            if (!jwt) {
-                console.error('JWT not found in localStorage');
-                return;
-            }
-
-            const response = await fetch(`http://localhost:9191/api/v1/emergency/${path}/${emergencyData.value0.id}`, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${jwt}`,
-                    'Content-Type': 'application/json'
-                }
-            });
-
-            if (!response.ok) {
-                console.error('Failed to fetch emergency data', response.statusText);
-                return;
-            }
-
-            const data = await response.json();
-            initialEmergencyData.current = data.data;
-            setEmergencyData(data.data);  // Update state with the new data
-        } catch (error) {
-            console.error('Error fetching emergency data', error);
-        }
-    };
-
-    useEffect(() => {
-        fetchEmergencyData();
-
-        const interval = setInterval(() => {
-            if (isUpdating) {
-                fetchEmergencyData();
-            }
-        }, 1000); // Refresh every 5 seconds
-
-        return () => clearInterval(interval);
-    }, [isUpdating]);
-
     const handleSendMessage = async () => {
         const message = messageRef.current.value;
-
         if (!message) {
             alert("Nachricht darf nicht leer sein!");
             return;
@@ -153,8 +126,16 @@ export default function EmergencyCallSingleView() {
                 return;
             }
 
-            messageRef.current.value = '';  // Clear the input field after sending the message
-            fetchEmergencyData();  // Refresh the list after sending a message
+            messageRef.current.value = '';
+
+            const socketMessage = JSON.stringify({
+                emergencyId: emergencyData.value0.id,
+                text: message,
+                dispatcherName: decodedToken.sub,
+                timestamp: new Date().toISOString()
+            });
+            socket.send(socketMessage);
+
         } catch (error) {
             console.error('Error sending message', error);
         }
@@ -241,10 +222,7 @@ export default function EmergencyCallSingleView() {
                                         sx={{ mb: 2 }}
                                         inputRef={messageRef}
                                     />
-                                    <Button variant="contained" color="primary" onClick={handleSendMessage} sx={{backgroundColor: color }}>Absenden</Button>
-                                    <Button variant="contained" color="secondary" onClick={() => setIsUpdating(!isUpdating)} sx={{ ml: 2, backgroundColor: color }}>
-                                        {isUpdating ? 'Aktualisierung stoppen' : 'Aktualisierung starten'}
-                                    </Button>
+                                    <Button variant="contained" color="primary" onClick={handleSendMessage} sx={{ backgroundColor: color }}>Absenden</Button>
                                 </Box>
                             </Grid>
                         </Grid>

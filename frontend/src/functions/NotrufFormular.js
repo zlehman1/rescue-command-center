@@ -1,15 +1,15 @@
-import useStichworte from "./useStichworte";
-import {debounce} from "lodash";
-import {Autocomplete, Button, Paper, TextField} from "@mui/material";
+import useKeywords from "./useKeyword";
+import { debounce } from "lodash";
+import { Autocomplete, Button, Paper, TextField } from "@mui/material";
 import * as React from "react";
-import {useState} from "react";
+import { useState } from "react";
 import axios from "axios";
-import {Navigate, useNavigate} from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import {jwtDecode} from "jwt-decode";
 
-function NotrufFormular({onAddressChange}) {
-    const { einsatzStichworte, additionalStichworte } = useStichworte();
-    const combinedStichworte = [...einsatzStichworte, ...additionalStichworte];
+function NotrufFormular({ onAddressChange }) {
+    const token = localStorage.getItem('jwt');
+    const { keywords } = useKeywords(token); // Destructure correctly
 
     const [keyword, setKeyword] = useState('');
     const [location, setLocation] = useState('');
@@ -25,13 +25,12 @@ function NotrufFormular({onAddressChange}) {
         onAddressChange(value);
     }, 300);
 
-    const token = localStorage.getItem('jwt');
-    const decodedToken = jwtDecode(token)
-    let color = ''
-    if(decodedToken.organization === 'Feuerwehr')
-        color = '#C40C0C'
+    const decodedToken = jwtDecode(token);
+    let color = '';
+    if (decodedToken.organization === 'Feuerwehr')
+        color = '#C40C0C';
     else
-        color = '#0000ff'
+        color = '#0000ff';
 
     const handleSubmit = async () => {
         const data = {
@@ -43,11 +42,11 @@ function NotrufFormular({onAddressChange}) {
         };
 
         try {
-            let path = ''
-            if(decodedToken.organization === 'Feuerwehr')
-                path = 'fire'
+            let path = '';
+            if (decodedToken.organization === 'Feuerwehr')
+                path = 'fire';
             else
-                path = 'police'
+                path = 'police';
 
             const response = await axios.post(`http://localhost:9191/api/v1/emergency/${path}`, data, {
                 headers: {
@@ -77,7 +76,7 @@ function NotrufFormular({onAddressChange}) {
     return (
         <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
             <Autocomplete
-                options={combinedStichworte.sort()}
+                options={keywords.sort()} // Ensure keywords is sorted array
                 onChange={(event, value) => setKeyword(value)}
                 renderInput={(params) => (
                     <TextField

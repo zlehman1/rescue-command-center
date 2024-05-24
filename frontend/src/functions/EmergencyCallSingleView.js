@@ -42,7 +42,7 @@ const formatTimestamp = (timestamp) => {
 
 const token = localStorage.getItem('jwt');
 const decodedToken = jwtDecode(token);
-const roles = decodedToken.roles.map(role => role.roleType);
+const roles = decodedToken.roles.map(role => role.name);
 const isDispatcher = roles.includes('DISPATCHER');
 
 let color = '';

@@ -14,6 +14,9 @@ const MapView = lazy(() => import('./Map/Map'));
 const SettingDashboard = lazy(() => import('./settings/SettingDashboard'));
 const PersonalSettings = lazy(() => import('./settings/PersonalSettings'));
 const AdminSettings = lazy(() => import('./settings/AdminSettings'));
+const AdminUsermanagement = lazy(() => import('./settings/AdminUsermanagement'));
+const AdminRolemanagement = lazy(() => import('./settings/AdminRolemanagement'));
+const AdminCreateNewUser = lazy(() => import('./settings/AdminCreateNewUser'));
 
 function App() {
     return (
@@ -32,6 +35,9 @@ function App() {
                     <Route path="/settings/dashboard" element={<ProtectedRoute><SettingDashboard /></ProtectedRoute>} />
                     <Route path="/settings/personal" element={<ProtectedRoute><PersonalSettings /></ProtectedRoute>} />
                     <Route path="/settings/admin" element={<ProtectedRoute><AdminSettings /></ProtectedRoute>} />
+                    <Route path="/settings/admin/users" element={<ProtectedRoute><AdminUsermanagement /></ProtectedRoute>} />
+                    <Route path="/settings/admin/users/creation" element={<ProtectedRoute><AdminCreateNewUser /></ProtectedRoute>} />
+                    <Route path="/settings/admin/roles" element={<ProtectedRoute><AdminRolemanagement /></ProtectedRoute>} />
                 </Routes>
             </Suspense>
         </Router>

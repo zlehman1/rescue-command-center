@@ -58,6 +58,10 @@ const Profile = () => {
         navigate('/');
     };
 
+    const handleSettings = () => {
+        navigate('/settings/dashboard');
+    };
+
     return (
         <div>
             <IconButton
@@ -94,6 +98,7 @@ const Profile = () => {
                 <MenuItem disabled>
                     <Typography>Session gültig: {timeRemaining}</Typography>
                 </MenuItem>
+                <MenuItem onClick={handleSettings}>Einstellungen</MenuItem>
                 <MenuItem onClick={handleLogout}>Abmelden</MenuItem>
             </Menu>
         </div>

@@ -1,0 +1,54 @@
+import { createRouter, createWebHistory } from 'vue-router'
+import Dashboard from '../components/Dashboard/Dashboard.vue'
+import Login from '../components/Login/Login.vue'
+import EmergencyDashboard from "../components/emergency/EmergencyDashboard.vue";
+import EmergencyForm from "../components/emergency/EmergencyForm.vue";
+import Map from "../components/Map/Map.vue";
+
+const requireAuth = (to, from, next) => {
+    const token = localStorage.getItem('jwt')
+    if (!token) {
+        next({ name: 'Login' })
+    } else {
+        next()
+    }
+}
+
+const routes = [
+    {
+        path: '/',
+        name: 'Home',
+        component: Dashboard,
+        beforeEnter: requireAuth
+    },
+    {
+        path: '/emergency/create',
+        name: 'EmergencyForm',
+        component: EmergencyForm,
+        beforeEnter: requireAuth
+    },
+    {
+        path: '/emergency/overview',
+        name: 'EmergencyDashboard',
+        component: EmergencyDashboard,
+        beforeEnter: requireAuth
+    },
+    {
+        path: '/login',
+        name: 'Login',
+        component: Login
+    },
+    {
+        path: '/map',
+        name: 'Map',
+        component: Map,
+        beforeEnter: requireAuth
+    }
+]
+
+const router = createRouter({
+    history: createWebHistory(),
+    routes
+})
+
+export default router

@@ -5,11 +5,11 @@ import { useI18n } from 'vue-i18n';
 import { useTokenData } from '../../composables/useTokenData.js';
 import Papa from 'papaparse';
 import { useFetch } from '@vueuse/core';
-import EmergencyDetails from './EmergencyDetails.vue'; // Import the new component
+import EmergencyDetails from './EmergencyDetails.vue';
 import { useRouter } from 'vue-router';
 
 const { t } = useI18n();
-const router = useRouter(); // Use the router for navigation
+const router = useRouter();
 
 const keyword = ref('');
 const location = ref('');
@@ -20,7 +20,7 @@ let tokenData;
 const organization = ref('');
 const keywords = ref([]);
 const path = ref([]);
-const emergencyData = ref(null); // Define a ref to hold the emergency data
+const emergencyData = ref(null);
 
 try {
   tokenData = useTokenData();

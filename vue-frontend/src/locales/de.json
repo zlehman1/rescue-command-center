@@ -1,6 +1,7 @@
 {
   "dashboardTitle": "Dashboard",
-  "emergencyFormTitle": "Einsatz erstellen",
   "emergencyDashboardTitle": "Einsatzübersicht",
+  "emergencyFormTitle": "Einsatz erstellen",
+  "emergencyDetailsTitle": "Einsatzdetails",
   "mapTitle": "Karte"
 }

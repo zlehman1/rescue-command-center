@@ -1,6 +1,10 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
+import Header from "../menu/Header.vue";
+import { useI18n } from "vue-i18n";
+import {VIcon} from "vuetify/components";
 
+const { t } = useI18n();
 const emergencyData = ref(null);
 
 onMounted(() => {
@@ -9,28 +13,63 @@ onMounted(() => {
     emergencyData.value = JSON.parse(storedData);
   }
 });
+
+const formatTimestamp = (timestamp) => {
+  const date = new Date(timestamp);
+  const formattedDate = date.toLocaleDateString('de-DE', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric'
+  });
+  const formattedTime = date.toLocaleTimeString('de-DE', {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit'
+  });
+  return `${formattedTime} ${formattedDate}`;
+};
 </script>
 
 <template>
-  <div v-if="emergencyData">
-    <h2>Emergency Details</h2>
-    <p><strong>ID:</strong> {{ emergencyData.id }}</p>
-    <p><strong>Timestamp:</strong> {{ emergencyData.timestamp }}</p>
-    <p><strong>Keyword:</strong> {{ emergencyData.keyword }}</p>
-    <p><strong>Location:</strong> {{ emergencyData.location }}</p>
-    <p><strong>Information:</strong> {{ emergencyData.information }}</p>
-    <p><strong>Communicator Name:</strong> {{ emergencyData.communicatorName }}</p>
-    <p><strong>Communicator Phone Number:</strong> {{ emergencyData.communicatorPhoneNumber }}</p>
-    <p><strong>Dispatcher Username:</strong> {{ emergencyData.dispatcherUsername }}</p>
-    <p><strong>Emergency Call State:</strong> {{ emergencyData.emergencyCallState.emergencyCallStateEnum }}</p>
-  </div>
+  <v-app>
+    <Header :componentName="t('emergencyDetailsTitle')"/>
+    <v-container class="content-container">
+      <v-card>
+        <v-card-text>
+          <v-list dense v-if="emergencyData">
+            <v-list-item>
+              <v-icon>mdi-alert</v-icon> {{ emergencyData.keyword }}
+            </v-list-item>
+            <v-list-item>
+              <v-icon>mdi-map-marker</v-icon> {{ emergencyData.location }}
+            </v-list-item>
+            <v-list-item>
+              <v-icon>mdi-information</v-icon> {{ emergencyData.information }}
+            </v-list-item>
+            <v-list-item>
+              <v-icon>mdi-clock</v-icon> {{ formatTimestamp(emergencyData.timestamp) }}
+            </v-list-item>
+            <v-list-item>
+              <v-icon>mdi-account</v-icon> {{emergencyData.communicatorName}}
+            </v-list-item>
+            <v-list-item>
+              <v-icon>mdi-phone</v-icon> {{ emergencyData.communicatorPhoneNumber }}
+            </v-list-item>
+            <v-list-item>
+              <v-icon>mdi-alert</v-icon> {{emergencyData.emergencyCallState.emergencyCallStateEnum}}
+            </v-list-item>
+          </v-list>
+          <div v-else>
+            No emergency data available.
+          </div>
+        </v-card-text>
+      </v-card>
+    </v-container>
+  </v-app>
 </template>
 
 <style scoped>
-h2 {
-  margin-bottom: 1rem;
-}
-p {
-  margin: 0.5rem 0;
+.content-container {
+  padding-top: 80px;
 }
 </style>

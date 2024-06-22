@@ -1,6 +1,7 @@
 {
   "dashboardTitle": "Dashboard",
-  "emergencyFormTitle": "Create emergency",
   "emergencyDashboardTitle": "Emergency Overview",
+  "emergencyFormTitle": "Create emergency",
+  "emergencyDetailsTitle": "Emergency Details",
   "mapTitle": "Map"
 }

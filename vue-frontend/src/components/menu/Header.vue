@@ -44,6 +44,7 @@ onMounted(() => {
 
 const logout = () => {
   localStorage.removeItem('jwt');
+  localStorage.removeItem('emergencyData');
   window.location.reload();
 };
 

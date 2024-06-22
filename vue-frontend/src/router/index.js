@@ -1,18 +1,19 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import Dashboard from '../components/Dashboard/Dashboard.vue'
-import Login from '../components/Login/Login.vue'
+import { createRouter, createWebHistory } from 'vue-router';
+import Dashboard from '../components/Dashboard/Dashboard.vue';
+import Login from '../components/Login/Login.vue';
 import EmergencyDashboard from "../components/emergency/EmergencyDashboard.vue";
 import EmergencyForm from "../components/emergency/EmergencyForm.vue";
+import EmergencyDetails from "../components/emergency/EmergencyDetails.vue";
 import Map from "../components/Map/Map.vue";
 
 const requireAuth = (to, from, next) => {
-    const token = localStorage.getItem('jwt')
+    const token = localStorage.getItem('jwt');
     if (!token) {
-        next({ name: 'Login' })
+        next({ name: 'Login' });
     } else {
-        next()
+        next();
     }
-}
+};
 
 const routes = [
     {
@@ -34,6 +35,12 @@ const routes = [
         beforeEnter: requireAuth
     },
     {
+        path: '/emergency/details',
+        name: 'EmergencyDetails',
+        component: EmergencyDetails,
+        beforeEnter: requireAuth
+    },
+    {
         path: '/login',
         name: 'Login',
         component: Login
@@ -44,11 +51,11 @@ const routes = [
         component: Map,
         beforeEnter: requireAuth
     }
-]
+];
 
 const router = createRouter({
     history: createWebHistory(),
     routes
-})
+});
 
-export default router
+export default router;

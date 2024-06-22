@@ -94,9 +94,16 @@ const toggleProfileCard = () => {
   </v-app-bar>
 
   <v-card v-if="profileCardVisible" class="profile-card" style="position: absolute; top: 60px; right: 20px; width: 300px;">
-    <v-card-text>{{ username }}</v-card-text>
+    <v-card-text class="d-flex align-center">
+      <v-avatar class="mr-3" size="40">
+        <v-icon>mdi-account-circle</v-icon>
+      </v-avatar>
+      <span class="username-text">{{ username }}</span>
+    </v-card-text>
     <v-card-actions>
-      <v-btn text="Abmelden" @click="logout">Abmelden</v-btn>
+      <v-list-item @click="logout" style="width: 100%; cursor: pointer;">
+        <v-list-item-title>Abmelden</v-list-item-title>
+      </v-list-item>
     </v-card-actions>
   </v-card>
 </template>
@@ -104,5 +111,25 @@ const toggleProfileCard = () => {
 <style scoped>
 .v-app-bar {
   color: white;
+}
+
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
+
+.profile-card {
+  z-index: 1000;
+}
+
+.username-text {
+  font-weight: bold;
+  font-size: 16px;
+  color: black;
 }
 </style>

@@ -135,7 +135,6 @@ const sendEmergencyRequest = async () => {
             Send Request
           </v-btn>
         </v-form>
-        <EmergencyDetails v-if="emergencyData" :emergencyData="emergencyData" /> <!-- Display the emergency details if available -->
       </v-container>
     </v-main>
   </v-app>

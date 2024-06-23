@@ -3,6 +3,7 @@ import { onMounted, ref } from 'vue';
 import Header from "../menu/Header.vue";
 import { useI18n } from "vue-i18n";
 import { VIcon } from "vuetify/components";
+import Footer from "../../components/menu/Footer.vue";
 
 const { t } = useI18n();
 const emergencyData = ref(null);
@@ -65,11 +66,13 @@ const formatTimestamp = (timestamp) => {
         </v-card-text>
       </v-card>
     </v-container>
+    <Footer/>
   </v-app>
 </template>
 
 <style scoped>
 .content-container {
   padding-top: 80px;
+  padding-bottom: 3rem;
 }
 </style>

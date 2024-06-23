@@ -7,6 +7,7 @@ import Papa from 'papaparse';
 import { useFetch } from '@vueuse/core';
 import EmergencyDetails from './EmergencyDetails.vue';
 import { useRouter } from 'vue-router';
+import Footer from "../../components/menu/Footer.vue";
 
 const { t } = useI18n();
 const router = useRouter();
@@ -96,7 +97,7 @@ const sendEmergencyRequest = async () => {
 <template>
   <v-app>
     <Header :componentName="t('emergencyFormTitle')" />
-    <v-main>
+    <v-main class="main-content">
       <v-container>
         <v-form>
           <v-autocomplete
@@ -137,8 +138,12 @@ const sendEmergencyRequest = async () => {
         </v-form>
       </v-container>
     </v-main>
+    <Footer/>
   </v-app>
 </template>
 
 <style scoped>
+.main-content {
+  padding-bottom: 3rem;
+}
 </style>

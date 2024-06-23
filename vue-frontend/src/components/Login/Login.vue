@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { VTextField, VBtn, VCard, VCardText, VCardTitle, VContainer, VRow, VCol, VAlert } from 'vuetify/components'
 import {useI18n} from "vue-i18n";
+import Footer from "../../components/menu/Footer.vue";
 
 const { t } = useI18n();
 const username = ref('')
@@ -75,6 +76,7 @@ const requiredRule = value => !!value || 'Required.'
       </v-col>
     </v-row>
   </v-container>
+  <Footer/>
 </template>
 
 <style>

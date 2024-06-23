@@ -4,6 +4,7 @@ import {ref, onMounted} from 'vue';
 import {useI18n} from 'vue-i18n';
 import {useTokenData} from '../../composables/useTokenData.js';
 import { useRouter } from 'vue-router';
+import Footer from "../../components/menu/Footer.vue";
 
 const {t} = useI18n();
 const router = useRouter();
@@ -51,7 +52,7 @@ const handleCardClick = async (emergency) => {
 
   const result = await response.json();
   localStorage.setItem('emergencyData', JSON.stringify(result.data));
-  router.push({ name: 'EmergencyDetails' });
+  router.push({name: 'EmergencyDetails'});
 };
 
 onMounted(() => {
@@ -61,8 +62,8 @@ onMounted(() => {
 
 <template>
   <v-app>
-    <v-main>
-      <Header :componentName="t('emergencyDashboardTitle')"/>
+    <Header :componentName="t('emergencyDashboardTitle')"/>
+    <v-main class="main-content">
       <v-container>
         <v-row>
           <v-col
@@ -102,6 +103,7 @@ onMounted(() => {
         </v-row>
       </v-container>
     </v-main>
+    <Footer/>
   </v-app>
 </template>
 
@@ -109,5 +111,9 @@ onMounted(() => {
 .v-card {
   min-height: 200px;
   cursor: pointer;
+}
+
+.main-content {
+  padding-bottom: 3rem;
 }
 </style>

@@ -5,13 +5,20 @@ import EmergencyDashboard from "../components/emergency/EmergencyDashboard.vue";
 import EmergencyForm from "../components/emergency/EmergencyForm.vue";
 import EmergencyDetails from "../components/emergency/EmergencyDetails.vue";
 import Map from "../components/Map/Map.vue";
+import { useTokenData } from '../composables/useTokenData.js'
 
 const requireAuth = (to, from, next) => {
     const token = localStorage.getItem('jwt');
     if (!token) {
         next({ name: 'Login' });
     } else {
-        next();
+        if (useTokenData().tokenValid.value){
+            next();
+        } else{
+            localStorage.removeItem('jwt');
+            localStorage.removeItem('emergencyData');
+            next({ name: 'Login' });
+        }
     }
 };
 

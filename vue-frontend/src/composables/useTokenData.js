@@ -11,6 +11,7 @@ export function useTokenData() {
     const color = ref('');
     const path = ref('');
     const organization = ref('');
+    const tokenValid = ref(false);
 
     if (!token.value) {
         throw new Error('Token not found');
@@ -23,6 +24,9 @@ export function useTokenData() {
         isAdmin.value = roles.value.includes('ADMIN');
         username.value = decodedToken.value.sub;
         organization.value = decodedToken.value.organization;
+
+        const currentTime = Date.now() / 1000;
+        tokenValid.value = currentTime < decodedToken.value.exp;
 
         if (decodedToken.value.organization === 'Feuerwehr') {
             color.value = '#C40C0C';
@@ -45,6 +49,7 @@ export function useTokenData() {
         color,
         path,
         username,
-        organization
+        organization,
+        tokenValid
     };
 }

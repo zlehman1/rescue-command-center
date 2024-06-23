@@ -2,7 +2,7 @@
 import { onMounted, ref } from 'vue';
 import Header from "../menu/Header.vue";
 import { useI18n } from "vue-i18n";
-import {VIcon} from "vuetify/components";
+import { VIcon } from "vuetify/components";
 
 const { t } = useI18n();
 const emergencyData = ref(null);
@@ -38,25 +38,25 @@ const formatTimestamp = (timestamp) => {
         <v-card-text>
           <v-list dense v-if="emergencyData">
             <v-list-item>
-              <v-icon>mdi-alert</v-icon> {{ emergencyData.keyword }}
+              <v-icon>mdi-alert</v-icon> {{ emergencyData.value0.keyword }}
             </v-list-item>
             <v-list-item>
-              <v-icon>mdi-map-marker</v-icon> {{ emergencyData.location }}
+              <v-icon>mdi-map-marker</v-icon> {{ emergencyData.value0.location }}
             </v-list-item>
             <v-list-item>
-              <v-icon>mdi-information</v-icon> {{ emergencyData.information }}
+              <v-icon>mdi-information</v-icon> {{ emergencyData.value0.information }}
             </v-list-item>
             <v-list-item>
-              <v-icon>mdi-clock</v-icon> {{ formatTimestamp(emergencyData.timestamp) }}
+              <v-icon>mdi-clock</v-icon> {{ formatTimestamp(emergencyData.value0.timestamp) }}
             </v-list-item>
             <v-list-item>
-              <v-icon>mdi-account</v-icon> {{emergencyData.communicatorName}}
+              <v-icon>mdi-account</v-icon> {{ emergencyData.value0.communicatorName }}
             </v-list-item>
             <v-list-item>
-              <v-icon>mdi-phone</v-icon> {{ emergencyData.communicatorPhoneNumber }}
+              <v-icon>mdi-phone</v-icon> {{ emergencyData.value0.communicatorPhoneNumber }}
             </v-list-item>
             <v-list-item>
-              <v-icon>mdi-alert</v-icon> {{emergencyData.emergencyCallState.emergencyCallStateEnum}}
+              <v-icon>mdi-alert</v-icon> {{ emergencyData.value0.emergencyCallState.emergencyCallStateEnum }}
             </v-list-item>
           </v-list>
           <div v-else>

@@ -1,7 +1,12 @@
 {
+  "communicatorName": "Communicator",
+  "communicatorPhoneNumber": "Phone number",
   "dashboardTitle": "Dashboard",
+  "dispatcherUsername": "Dispatcher",
+  "emergencyCallState": "Status",
   "emergencyDashboardTitle": "Emergency Overview",
   "emergencyFormTitle": "Create emergency",
   "emergencyDetailsTitle": "Emergency Details",
+  "information": "Einsatzinformationen",
   "mapTitle": "Map"
 }

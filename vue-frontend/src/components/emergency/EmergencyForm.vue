@@ -75,12 +75,17 @@ const sendEmergencyRequest = async () => {
     }
 
     const result = await response.json();
-    console.log('Request successful:', result);
     emergencyData.value = result.data;
+    const routingResponse = await fetch(`/api/v1/emergency/${path.value}/${emergencyData.value.id}`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
 
-    // Speichern Sie die emergencyData in localStorage
-    localStorage.setItem('emergencyData', JSON.stringify(result.data));
-
+    const routingResult = await routingResponse.json();
+    localStorage.setItem('emergencyData', JSON.stringify(routingResult.data));
     router.push({ name: 'EmergencyDetails' });
   } catch (error) {
     console.error('Error sending request:', error);

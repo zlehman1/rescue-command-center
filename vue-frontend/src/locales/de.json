@@ -1,7 +1,12 @@
 {
+  "communicatorName": "Mitteiler",
+  "communicatorPhoneNumber": "Rufnummer",
   "dashboardTitle": "Dashboard",
+  "dispatcherUsername": "Disponent",
+  "emergencyCallState": "Status",
   "emergencyDashboardTitle": "Einsatzübersicht",
   "emergencyFormTitle": "Einsatz erstellen",
   "emergencyDetailsTitle": "Einsatzdetails",
+  "information": "Einsatzinformationen",
   "mapTitle": "Karte"
 }

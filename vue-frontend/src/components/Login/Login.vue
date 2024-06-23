@@ -26,6 +26,8 @@ const login = async () => {
     console.error('Error during login:', error)
   }
 }
+
+const requiredRule = value => !!value || 'Required.'
 </script>
 
 <template>
@@ -40,12 +42,16 @@ const login = async () => {
                 v-model="username"
                 prepend-inner-icon="mdi-account"
                 type="text"
+                @keyup.enter="login"
+                :rules="[requiredRule]"
             />
             <v-text-field
                 label="Password"
                 v-model="password"
                 prepend-inner-icon="mdi-lock"
                 type="password"
+                @keyup.enter="login"
+                :rules="[requiredRule]"
             />
             <v-btn color="primary" @click="login" block>Login</v-btn>
           </v-card-text>

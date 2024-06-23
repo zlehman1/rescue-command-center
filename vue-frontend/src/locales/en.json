@@ -3,10 +3,11 @@
   "communicatorPhoneNumber": "Phone number",
   "dashboardTitle": "Dashboard",
   "dispatcherUsername": "Dispatcher",
-  "emergencyCallState": "Status",
+  "emergencyCallState": "State",
   "emergencyDashboardTitle": "Emergency Overview",
   "emergencyFormTitle": "Create emergency",
   "emergencyDetailsTitle": "Emergency Details",
-  "information": "Einsatzinformationen",
+  "information": "Emergency information",
+  "loginError": "Login failed. Please check your credentials and try again.",
   "mapTitle": "Map"
 }

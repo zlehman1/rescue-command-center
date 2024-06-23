@@ -1,10 +1,14 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { VTextField, VBtn, VCard, VCardText, VCardTitle, VContainer, VRow, VCol } from 'vuetify/components'
+import { VTextField, VBtn, VCard, VCardText, VCardTitle, VContainer, VRow, VCol, VAlert } from 'vuetify/components'
+import {useI18n} from "vue-i18n";
 
+const { t } = useI18n();
 const username = ref('')
 const password = ref('')
+const errorMessage = ref('')
+const showError = ref(false)
 const router = useRouter()
 
 const login = async () => {
@@ -23,7 +27,11 @@ const login = async () => {
     localStorage.setItem('jwt', token)
     router.push({ name: 'Home' })
   } catch (error) {
-    console.error('Error during login:', error)
+    errorMessage.value = t('loginError')
+    showError.value = true
+    setTimeout(() => {
+      showError.value = false
+    }, 10000)
   }
 }
 
@@ -37,6 +45,14 @@ const requiredRule = value => !!value || 'Required.'
         <v-card>
           <v-card-title>Login</v-card-title>
           <v-card-text>
+            <v-alert
+                v-if="showError"
+                type="error"
+                dismissible
+                prominent
+            >
+              {{ errorMessage }}
+            </v-alert>
             <v-text-field
                 label="Username"
                 v-model="username"

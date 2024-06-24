@@ -1,10 +1,10 @@
 <script setup>
-import { onMounted, ref, onBeforeUnmount } from 'vue';
+import { onMounted, ref, onBeforeUnmount, nextTick, watch } from 'vue';
 import Header from "../menu/Header.vue";
 import { useI18n } from "vue-i18n";
-import { VIcon, VList, VListItem, VTextField, VBtn, VContainer, VCard, VCardText } from "vuetify/components";
+import { VIcon, VList, VListItem, VBtn, VContainer, VCard, VCardText } from "vuetify/components";
 import Footer from "../../components/menu/Footer.vue";
-import {useTokenData} from "../../composables/useTokenData.js";
+import { useTokenData } from "../../composables/useTokenData.js";
 
 const { t } = useI18n();
 const emergencyData = ref(null);
@@ -13,14 +13,33 @@ let socket;
 const newMessage = ref('');
 const path = ref('');
 const username = ref('');
+const isDispatcher = ref(false);
+const bottomOfMessages = ref(null);
 
 path.value = useTokenData().path.value;
 username.value = useTokenData().username.value;
+isDispatcher.value = useTokenData().isDispatcher.value;
+
+const scrollToBottom = () => {
+  nextTick(() => {
+    if (bottomOfMessages.value) {
+      bottomOfMessages.value.scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+};
 
 onMounted(() => {
   const storedData = localStorage.getItem('emergencyData');
   if (storedData) {
     emergencyData.value = JSON.parse(storedData);
+
+    if (emergencyData.value && emergencyData.value.value1) {
+      messages.value = emergencyData.value.value1.map((msg) => ({
+        text: msg.text,
+        dispatcherName: msg.dispatcherName,
+        timestamp: msg.timestamp,
+      })).sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+    }
   }
 
   try {
@@ -33,6 +52,8 @@ onMounted(() => {
     socket.onmessage = (event) => {
       const messageData = JSON.parse(event.data);
       messages.value.push(messageData);
+      messages.value.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+      scrollToBottom();
     };
 
     socket.onclose = () => {
@@ -45,11 +66,18 @@ onMounted(() => {
   } catch (error) {
     console.error("WebSocket connection failed:", error);
   }
+  scrollToBottom();
 });
 
 onBeforeUnmount(() => {
-  if (socket.value) {
-    socket.value.close();
+  if (socket) {
+    socket.close();
+  }
+});
+
+watch(messages, (newMessages, oldMessages) => {
+  if (newMessages.length !== oldMessages.length) {
+    scrollToBottom();
   }
 });
 
@@ -107,6 +135,7 @@ const sendMessage = async () => {
     };
     socket.send(JSON.stringify(socketMessage));
     newMessage.value = '';
+    scrollToBottom();
   } catch (error) {
     console.error('Error sending message', error);
   }
@@ -155,20 +184,28 @@ const sendMessage = async () => {
         </v-card-text>
       </v-card>
       <v-card>
-        <v-card-text>
+        <v-card-text class="scrollable-box">
           <v-list dense>
-            <v-list-item v-for="message in messages" :key="message.timestamp">
-                <v-list-item-title>{{ message.text }}</v-list-item-title>
-                <v-list-item-subtitle>{{ message.dispatcherName }} - {{
-                    formatTimestamp(message.timestamp)
-                  }}
-                </v-list-item-subtitle>
+            <v-list-item
+                v-for="message in messages"
+                :key="message.timestamp"
+                class="mb-4"
+            >
+              <v-list-item-title>{{ message.text }}</v-list-item-title>
+              <v-list-item-subtitle>{{ message.dispatcherName }} - {{
+                  formatTimestamp(message.timestamp)
+                }}
+              </v-list-item-subtitle>
             </v-list-item>
+            <div ref="bottomOfMessages"></div>
           </v-list>
-          <v-text-field
+        </v-card-text>
+      </v-card>
+      <v-card v-if="isDispatcher">
+        <v-card-text>
+          <v-textarea
               v-model="newMessage"
               label="Neue Bemerkung..."
-              multiline
               rows="4"
               variant="outlined"
               full-width
@@ -187,5 +224,14 @@ const sendMessage = async () => {
 .content-container {
   padding-top: 80px;
   padding-bottom: 3rem;
+}
+
+.mb-4 {
+  margin-bottom: 1rem;
+}
+
+.scrollable-box {
+  max-height: 300px;
+  overflow-y: auto;
 }
 </style>

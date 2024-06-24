@@ -8,7 +8,7 @@ export default defineConfig({
       vuetify({ autoImport: true })
   ],
   build: {
-    sourcemap: true, // Enable source maps
+    sourcemap: true,
   },
   server: {
     proxy: {

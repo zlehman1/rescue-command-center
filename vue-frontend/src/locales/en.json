@@ -1,4 +1,6 @@
 {
+  "buttonCreateEmergency": "Create Emergency",
+  "buttonSend": "Senden",
   "communicatorName": "Communicator",
   "communicatorPhoneNumber": "Phone number",
   "dashboardTitle": "Dashboard",

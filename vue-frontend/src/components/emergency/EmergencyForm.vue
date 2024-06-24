@@ -5,7 +5,6 @@ import { useI18n } from 'vue-i18n';
 import { useTokenData } from '../../composables/useTokenData.js';
 import Papa from 'papaparse';
 import { useFetch } from '@vueuse/core';
-import EmergencyDetails from './EmergencyDetails.vue';
 import { useRouter } from 'vue-router';
 import Footer from "../../components/menu/Footer.vue";
 
@@ -19,6 +18,7 @@ const communicatorName = ref('');
 const communicatorPhoneNumber = ref('');
 let tokenData;
 const organization = ref('');
+const color = ref('');
 const keywords = ref([]);
 const path = ref([]);
 const emergencyData = ref(null);
@@ -26,6 +26,7 @@ const emergencyData = ref(null);
 try {
   tokenData = useTokenData();
   organization.value = tokenData.organization.value;
+  color.value = tokenData.color.value;
   path.value = tokenData.path.value;
 } catch (error) {
   console.error(error.message);
@@ -132,8 +133,8 @@ const sendEmergencyRequest = async () => {
               type="tel"
           ></v-text-field>
 
-          <v-btn @click="sendEmergencyRequest">
-            Send Request
+          <v-btn @click="sendEmergencyRequest" :color="color">
+            {{ t('buttonCreateEmergency') }}
           </v-btn>
         </v-form>
       </v-container>

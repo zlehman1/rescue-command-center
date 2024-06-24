@@ -1,4 +1,6 @@
 {
+  "buttonCreateEmergency": "Einsatz anlegen",
+  "buttonSend": "Senden",
   "communicatorName": "Mitteiler",
   "communicatorPhoneNumber": "Rufnummer",
   "dashboardTitle": "Dashboard",

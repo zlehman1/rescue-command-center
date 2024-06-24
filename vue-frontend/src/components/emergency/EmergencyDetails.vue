@@ -15,10 +15,12 @@ const path = ref('');
 const username = ref('');
 const isDispatcher = ref(false);
 const bottomOfMessages = ref(null);
+const color = ref('');
 
 path.value = useTokenData().path.value;
 username.value = useTokenData().username.value;
 isDispatcher.value = useTokenData().isDispatcher.value;
+color.value = useTokenData().color.value;
 
 const scrollToBottom = () => {
   nextTick(() => {
@@ -148,36 +150,47 @@ const sendMessage = async () => {
     <v-container class="content-container">
       <v-card>
         <v-card-text>
-          <v-list dense v-if="emergencyData">
-            <v-list-item>
-              <v-icon>mdi-alert</v-icon>
-              {{ emergencyData.value0.keyword }}
-            </v-list-item>
-            <v-list-item>
-              <v-icon>mdi-map-marker</v-icon>
-              {{ emergencyData.value0.location }}
-            </v-list-item>
-            <v-list-item>
-              <v-icon>mdi-information</v-icon>
-              {{ emergencyData.value0.information }}
-            </v-list-item>
-            <v-list-item>
-              <v-icon>mdi-clock</v-icon>
-              {{ formatTimestamp(emergencyData.value0.timestamp) }}
-            </v-list-item>
-            <v-list-item>
-              <v-icon>mdi-account</v-icon>
-              {{ emergencyData.value0.communicatorName }}
-            </v-list-item>
-            <v-list-item>
-              <v-icon>mdi-phone</v-icon>
-              {{ emergencyData.value0.communicatorPhoneNumber }}
-            </v-list-item>
-            <v-list-item>
-              <v-icon>mdi-alert</v-icon>
-              {{ emergencyData.value0.emergencyCallState.emergencyCallStateEnum }}
-            </v-list-item>
-          </v-list>
+          <div v-if="emergencyData">
+            <v-row>
+              <v-col cols="4">
+                <v-list dense>
+                  <v-list-item>
+                    <v-icon>mdi-alert</v-icon>
+                    {{ emergencyData.value0.keyword }} - {{ emergencyData.value0.emergencyCallState.emergencyCallStateEnum }}
+                  </v-list-item>
+                  <v-list-item>
+                    <v-icon>mdi-map-marker</v-icon>
+                    {{ emergencyData.value0.location }}
+                  </v-list-item>
+                  <v-list-item>
+                    <v-icon>mdi-information</v-icon>
+                    {{ emergencyData.value0.information }}
+                  </v-list-item>
+                </v-list>
+              </v-col>
+              <v-col cols="4">
+                <v-list dense>
+                  <v-list-item>
+                    <v-icon>mdi-clock</v-icon>
+                    {{ formatTimestamp(emergencyData.value0.timestamp) }}
+                  </v-list-item>
+                  <v-list-item>
+                    <v-icon>mdi-account</v-icon>
+                    {{ emergencyData.value0.communicatorName }}
+                  </v-list-item>
+                  <v-list-item>
+                    <v-icon>mdi-phone</v-icon>
+                    {{ emergencyData.value0.communicatorPhoneNumber }}
+                  </v-list-item>
+                </v-list>
+              </v-col>
+              <v-col cols="4">
+                <v-list dense>
+                  <!-- MAP -->
+                </v-list>
+              </v-col>
+            </v-row>
+          </div>
           <div v-else>
             No emergency data available.
           </div>
@@ -212,7 +225,7 @@ const sendMessage = async () => {
               placeholder="Neue Bemerkung..."
               class="mb-2"
           />
-          <v-btn color="primary" @click="sendMessage">Absenden</v-btn>
+          <v-btn :color="color" @click="sendMessage">{{ t('buttonSend') }}</v-btn>
         </v-card-text>
       </v-card>
     </v-container>
@@ -231,7 +244,7 @@ const sendMessage = async () => {
 }
 
 .scrollable-box {
-  max-height: 300px;
+  max-height: 400px;
   overflow-y: auto;
 }
 </style>

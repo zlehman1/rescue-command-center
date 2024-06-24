@@ -2,6 +2,7 @@
 import Header from "../menu/Header.vue";
 import {useI18n} from 'vue-i18n';
 import Footer from "../../components/menu/Footer.vue";
+import MapComponent from "./MapComponent.vue";
 
 const {t} = useI18n();
 </script>
@@ -9,7 +10,11 @@ const {t} = useI18n();
 <template>
   <v-app>
     <Header :componentName="t('mapTitle')"/>
-    <v-main class="main-content"></v-main>
+    <v-main class="main-content">
+      <v-card>
+        <MapComponent />
+      </v-card>
+    </v-main>
     <Footer/>
   </v-app>
 </template>

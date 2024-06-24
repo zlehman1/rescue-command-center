@@ -12,7 +12,9 @@
     "@mdi/font": "^7.4.47",
     "@mdi/js": "^7.4.47",
     "@vueuse/core": "^10.11.0",
+    "axios": "^1.7.2",
     "jwt-decode": "^4.0.0",
+    "leaflet": "^1.9.4",
     "papaparse": "^5.4.1",
     "vite-plugin-vuetify": "^2.0.3",
     "vue": "^3.4.29",
@@ -21,6 +23,7 @@
     "vuetify": "^3.6.0-beta.0.0"
   },
   "devDependencies": {
+    "@types/leaflet": "^1.9.12",
     "@types/papaparse": "^5.3.14",
     "@vitejs/plugin-vue": "^5.0.5",
     "vite": "^5.3.1"

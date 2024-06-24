@@ -1,5 +1,5 @@
 <template>
-  <div id="map" style="height: 300px;"></div>
+  <div :id="mapId" :style="{ height: height + 'px', width: width + 'px' }"></div>
 </template>
 
 <script>
@@ -9,11 +9,25 @@ import 'leaflet/dist/leaflet.css';
 
 export default {
   name: 'MapComponent',
+  props: {
+    height: {
+      type: Number,
+      default: 300
+    },
+    width: {
+      type: Number,
+      default: 600
+    },
+    mapId: {
+      type: String,
+      default: 'map'
+    }
+  },
   data() {
     return {
       map: null,
       apiKey: '8632dd4ed2ad48ccb6c52216742b6c88',
-      location: ' 46414 Rhede, Germany',
+      location: '46414 Rhede, Germany',
       lat: 52.5200,
       lng: 13.4050
     };
@@ -24,7 +38,7 @@ export default {
   },
   methods: {
     initializeMap() {
-      this.map = L.map('map').setView([this.lat, this.lng], 13);
+      this.map = L.map(this.mapId).setView([this.lat, this.lng], 13);
 
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -49,7 +63,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 #map {
   width: 100%;
   height: 100%;

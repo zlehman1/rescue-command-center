@@ -3,6 +3,7 @@ package whs.master.rescuecommandcenter.emergencycallsystem.service.impl;
 import org.javatuples.Pair;
 import whs.master.rescuecommandcenter.authentication.service.JwtTokenService;
 
+import whs.master.rescuecommandcenter.emergencycallsystem.dto.request.UpdatePoliceEmergencyRequestDto;
 import whs.master.rescuecommandcenter.emergencycallsystem.enums.BOSOrganizationEnum;
 import whs.master.rescuecommandcenter.emergencycallsystem.model.BOSOrganization;
 import whs.master.rescuecommandcenter.emergencycallsystem.model.District;
@@ -187,6 +188,51 @@ public class PoliceEmergencyCallServiceImpl implements PoliceEmergencyCallServic
         PoliceMessage = policeMessageRepository.save(PoliceMessage);
         PoliceMessageDto response = new PoliceMessageDto(PoliceMessage.getId(), PoliceMessage.getTimestamp(), PoliceMessage.getText(), PoliceMessage.getDispatcher().getUsername());
         return new PoliceEmergencyResponseDto<>(response);
+    }
+
+    @Override
+    public boolean updatePoliceEmergencyCall(String token, long id, UpdatePoliceEmergencyRequestDto requestDto){
+        if (!isValid(token, id))
+            return false;
+
+        PoliceEmergencyCall policeEmergencyCall = policeEmergencyCallRepository.findById(id).get();
+
+        switch (requestDto.getNumber()){
+            case 1:
+                policeEmergencyCall.setLocation(requestDto.getValue());
+                break;
+            case 2:
+                policeEmergencyCall.setCommunicatorName(requestDto.getValue());
+                break;
+            case 3:
+                policeEmergencyCall.setCommunicatorPhoneNumber(requestDto.getValue());
+                break;
+        }
+
+        policeEmergencyCallRepository.save(policeEmergencyCall);
+
+        return true;
+    }
+
+    private boolean isValid(String token, long id){
+        BOSOrganizationEnum organization = jwtTokenService.extractBOSOrganizationFromToken(token);
+
+        if(organization.equals(BOSOrganizationEnum.FEUERWEHR) || organization.equals(BOSOrganizationEnum.NOTDEFINED))
+            return false;
+
+        String username = jwtTokenService.extractUsernameFromToken(token);
+
+        User dispatcher = userRepository.findByUsername(username);
+
+        if(dispatcher == null)
+            return false;
+
+        Optional<PoliceEmergencyCall> policeEmergencyCall = policeEmergencyCallRepository.findById(id);
+
+        if(policeEmergencyCall.isEmpty())
+            return false;
+
+        return true;
     }
 
     private PoliceEmergencyDto createPoliceEmergencyDto(PoliceEmergencyCall emergencyCall){

@@ -50,7 +50,7 @@ public interface FireEmergencyCallService {
     /**
      * Updates the master data of an emergency call.
      * @param token JWT token of the requesting user
-     * @param id Identifier of the ermergency call
+     * @param id Identifier of the emergency call
      * @param requestDto values for the update
      * @return successful? TRUE/False
      */

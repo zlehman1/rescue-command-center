@@ -6,6 +6,7 @@ import whs.master.rescuecommandcenter.emergencycallsystem.dto.base.PoliceEmergen
 import whs.master.rescuecommandcenter.emergencycallsystem.dto.base.PoliceMessageDto;
 import whs.master.rescuecommandcenter.emergencycallsystem.dto.request.CreatePoliceEmergencyDto;
 import whs.master.rescuecommandcenter.emergencycallsystem.dto.request.CreatePoliceMessageRequestDto;
+import whs.master.rescuecommandcenter.emergencycallsystem.dto.request.UpdatePoliceEmergencyRequestDto;
 import whs.master.rescuecommandcenter.emergencycallsystem.dto.response.PoliceEmergencyResponseDto;
 import whs.master.rescuecommandcenter.emergencycallsystem.service.PoliceEmergencyCallService;
 
@@ -47,6 +48,19 @@ public class PoliceEmergencyController {
         PoliceEmergencyResponseDto<Pair<PoliceEmergencyDto, List<PoliceMessageDto>>> responseDto = policeEmergencyCallService.getPoliceEmergencyCallById(id, token.substring(7).trim());
 
         return ResponseEntity.ok(responseDto);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateFireEmergencyCalls(
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
+            @PathVariable long id,
+            @RequestBody UpdatePoliceEmergencyRequestDto requestDto){
+        boolean successful = policeEmergencyCallService.updatePoliceEmergencyCall(token.substring(7).trim(), id, requestDto);
+
+        if(successful)
+            return ResponseEntity.noContent().build();
+
+        return ResponseEntity.internalServerError().build();
     }
 
     @PostMapping

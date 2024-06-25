@@ -13,7 +13,7 @@ const props = defineProps({
 });
 
 let tokenData;
-const backgroundColor = ref('#1976d2'); // Default color
+const backgroundColor = ref('#1976d2');
 const username = ref('');
 
 try {
@@ -103,7 +103,7 @@ const toggleProfileCard = () => {
     </v-card-text>
     <v-card-actions>
       <v-list-item @click="logout" style="width: 100%; cursor: pointer;">
-        <v-list-item-title>Abmelden</v-list-item-title>
+        <v-list-item-title>{{ t('logoutTitle') }}</v-list-item-title>
       </v-list-item>
     </v-card-actions>
   </v-card>

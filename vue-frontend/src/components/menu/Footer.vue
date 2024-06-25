@@ -21,7 +21,7 @@ export default {
   position: fixed;
   width: 100%;
   bottom: 0;
-  text-align: center; /* Zentriert den Text im Footer */
+  text-align: center;
 }
 
 .footer .content {

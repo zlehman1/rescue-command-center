@@ -11,8 +11,13 @@
   "emergencyDashboardTitle": "Einsatzübersicht",
   "emergencyFormTitle": "Einsatz erstellen",
   "emergencyDetailsTitle": "Einsatzdetails",
+  "emergencyKeywordTitle": "Einsatzstichwort",
+  "emergencyLocationTitle": "Einsatzort",
   "information": "Einsatzinformationen",
+  "enterLocationTitle": "Adresse eingeben",
+  "loginTitle": "Anmelden",
   "loginError": "Anmeldung fehlgeschlagen. Bitte überprüfen Sie Ihre Anmeldedaten und versuchen Sie es erneut.",
+  "logoutTitle": "Abmelden",
   "mapTitle": "Karte",
   "updateLocationTitle": "Adresse aktualisieren"
 }

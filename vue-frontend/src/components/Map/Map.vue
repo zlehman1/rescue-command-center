@@ -15,12 +15,6 @@ const updateMapSize = () => {
   mapHeight.value = window.innerHeight * 0.8;
 };
 
-window.addEventListener('resize', updateMapSize);
-
-watch(location, (newLocation) => {
-  console.log('Location updated to:', newLocation);
-});
-
 </script>
 
 <template>
@@ -33,7 +27,7 @@ watch(location, (newLocation) => {
             <v-col cols="12">
               <v-text-field
                   v-model="location"
-                  :label="t('Enter Location')"
+                  :label="t('enterLocationTitle')"
                   outlined
                   dense
               />
@@ -53,12 +47,12 @@ watch(location, (newLocation) => {
 
 <style scoped>
 .main-content {
-  padding-top: 4rem; /* Füge oben ausreichend Abstand hinzu, um den Header nicht zu überlappen */
+  padding-top: 4rem;
   padding-bottom: 3rem;
   display: flex;
   justify-content: center;
-  align-items: flex-start; /* Ändere von center zu flex-start, um den Inhalt von oben zu beginnen */
-  min-height: calc(100vh - 8rem); /* Passe die minimale Höhe an, um Header und Footer zu berücksichtigen */
+  align-items: flex-start;
+  min-height: calc(100vh - 8rem);
 }
 
 .map-container {

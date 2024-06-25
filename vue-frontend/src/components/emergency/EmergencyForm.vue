@@ -104,31 +104,31 @@ const sendEmergencyRequest = async () => {
           <v-autocomplete
               v-model="keyword"
               :items="keywords"
-              label="Einsatzstichwort"
+              :label="t('emergencyKeywordTitle')"
               required
           ></v-autocomplete>
 
           <v-text-field
               v-model="location"
-              label="Ort"
+              :label="t('emergencyLocationTitle')"
               required
           ></v-text-field>
 
           <v-textarea
               v-model="text"
-              label="Einsatztext"
+              :label="t('information')"
               required
           ></v-textarea>
 
           <v-text-field
               v-model="communicatorName"
-              label="Name des Mitteilers"
+              :label="t('communicatorName')"
               required
           ></v-text-field>
 
           <v-text-field
               v-model="communicatorPhoneNumber"
-              label="Rufnummer des Mitteilers"
+              :label="t('communicatorPhoneNumber')"
               required
               type="tel"
           ></v-text-field>

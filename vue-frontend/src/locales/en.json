@@ -10,9 +10,14 @@
   "emergencyCallState": "State",
   "emergencyDashboardTitle": "Emergency Overview",
   "emergencyFormTitle": "Create emergency",
-  "emergencyDetailsTitle": "Emergency Details",
+  "emergencyDetailsTitle": "Emergency details",
+  "emergencyKeywordTitle": "Emergency keyword",
+  "emergencyLocationTitle": "Ermergency location",
   "information": "Emergency information",
+  "enterLocationTitle": "Enter location",
+  "loginTitle": "Login",
   "loginError": "Login failed. Please check your credentials and try again.",
+  "logoutTitle": "Logout",
   "mapTitle": "Map",
   "updateLocationTitle": "Edit location"
 }

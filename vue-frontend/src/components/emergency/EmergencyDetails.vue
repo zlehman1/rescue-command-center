@@ -2,9 +2,10 @@
 import { onMounted, ref, onBeforeUnmount, nextTick, watch } from 'vue';
 import Header from "../menu/Header.vue";
 import { useI18n } from "vue-i18n";
-import { VIcon, VList, VListItem, VBtn, VContainer, VCard, VCardText } from "vuetify/components";
+import { VIcon, VList, VListItem, VBtn, VContainer, VCard, VCardText, VRow, VCol, VTextarea } from "vuetify/components";
 import Footer from "../../components/menu/Footer.vue";
 import { useTokenData } from "../../composables/useTokenData.js";
+import MapComponent from "../Map/MapComponent.vue";
 
 const { t } = useI18n();
 const emergencyData = ref(null);
@@ -186,7 +187,7 @@ const sendMessage = async () => {
               </v-col>
               <v-col cols="4">
                 <v-list dense>
-                  <!-- MAP -->
+                  <MapComponent :location="emergencyData.value0.location" :height="200" :width="400" />
                 </v-list>
               </v-col>
             </v-row>
@@ -244,7 +245,7 @@ const sendMessage = async () => {
 }
 
 .scrollable-box {
-  max-height: 400px;
+  max-height: 300px;
   overflow-y: auto;
 }
 </style>

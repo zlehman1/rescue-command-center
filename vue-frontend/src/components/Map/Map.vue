@@ -8,6 +8,7 @@ import MapComponent from "./MapComponent.vue";
 const { t } = useI18n();
 const mapWidth = ref(window.innerWidth * 0.8);
 const mapHeight = ref(window.innerHeight * 0.8);
+const location = ref('Düsseldorf, Germany');
 
 const updateMapSize = () => {
   mapWidth.value = window.innerWidth * 0.8;
@@ -22,7 +23,7 @@ window.addEventListener('resize', updateMapSize);
     <Header :componentName="t('mapTitle')"/>
     <v-main class="main-content">
       <div class="map-container">
-        <MapComponent :height="mapHeight" :width="mapWidth" />
+        <MapComponent :height="mapHeight" :width="mapWidth" :location="location" />
       </div>
     </v-main>
     <Footer/>

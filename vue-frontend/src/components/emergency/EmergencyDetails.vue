@@ -21,6 +21,9 @@ const token = ref('');
 
 const dialog = ref(false);
 const editedLocation = ref('');
+const editedCommunicatorName = ref('');
+const editedCommunicatorPhoneNumber = ref('');
+const editField = ref('');
 
 path.value = useTokenData().path.value;
 username.value = useTokenData().username.value;
@@ -36,33 +39,66 @@ const scrollToBottom = () => {
   });
 };
 
-const openEditDialog = () => {
-  editedLocation.value = emergencyData.value.value0.location;
+const openEditDialog = (field) => {
+  editField.value = field;
+  switch (field) {
+    case 'location':
+      editedLocation.value = emergencyData.value.value0.location;
+      break;
+    case 'communicatorName':
+      editedCommunicatorName.value = emergencyData.value.value0.communicatorName;
+      break;
+    case 'communicatorPhoneNumber':
+      editedCommunicatorPhoneNumber.value = emergencyData.value.value0.communicatorPhoneNumber;
+      break;
+  }
   dialog.value = true;
 };
 
 const confirmEdit = async () => {
+  let field;
+  let value;
+  let number;
+
+  switch (editField.value) {
+    case 'location':
+      field = 'location';
+      value = editedLocation.value;
+      number = 1;
+      break;
+    case 'communicatorName':
+      field = 'communicatorName';
+      value = editedCommunicatorName.value;
+      number = 2;
+      break;
+    case 'communicatorPhoneNumber':
+      field = 'communicatorPhoneNumber';
+      value = editedCommunicatorPhoneNumber.value;
+      number = 3;
+      break;
+  }
+
   try {
-    const response = await fetch(`/api/v1/emergency/fire/${emergencyData.value.value0.id}`, {
+    const response = await fetch(`/api/v1/emergency/${path.value}/${emergencyData.value.value0.id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token.value}`
       },
       body: JSON.stringify({
-        number: 1,
-        value: editedLocation.value,
+        number: number,
+        value,
       })
     });
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-    emergencyData.value.value0.location = editedLocation.value;
+    emergencyData.value.value0[field] = value;
 
     localStorage.setItem('emergencyData', JSON.stringify(emergencyData.value));
-  }catch (error){
-    console.log('location update failed: ' + error)
+  } catch (error) {
+    console.log(`${field} update failed: ` + error)
   }
   dialog.value = false;
 };
@@ -197,9 +233,10 @@ const sendMessage = async () => {
                 <v-list dense>
                   <v-list-item>
                     <v-icon>mdi-alert</v-icon>
-                    {{ emergencyData.value0.keyword }} - {{ emergencyData.value0.emergencyCallState.emergencyCallStateEnum }}
+                    {{ emergencyData.value0.keyword }} -
+                    {{ emergencyData.value0.emergencyCallState.emergencyCallStateEnum }}
                   </v-list-item>
-                  <v-list-item @click="openEditDialog" style="cursor: pointer;">
+                  <v-list-item @click="() => openEditDialog('location')" style="cursor: pointer;">
                     <v-icon>mdi-map-marker</v-icon>
                     {{ emergencyData.value0.location }}
                   </v-list-item>
@@ -215,11 +252,11 @@ const sendMessage = async () => {
                     <v-icon>mdi-clock</v-icon>
                     {{ formatTimestamp(emergencyData.value0.timestamp) }}
                   </v-list-item>
-                  <v-list-item>
+                  <v-list-item @click="() => openEditDialog('communicatorName')" style="cursor: pointer;">
                     <v-icon>mdi-account</v-icon>
                     {{ emergencyData.value0.communicatorName }}
                   </v-list-item>
-                  <v-list-item>
+                  <v-list-item @click="() => openEditDialog('communicatorPhoneNumber')" style="cursor: pointer;">
                     <v-icon>mdi-phone</v-icon>
                     {{ emergencyData.value0.communicatorPhoneNumber }}
                   </v-list-item>
@@ -227,7 +264,7 @@ const sendMessage = async () => {
               </v-col>
               <v-col cols="4">
                 <v-list dense>
-                  <MapComponent :location="emergencyData.value0.location" :height="200" :width="400" />
+                  <MapComponent :location="emergencyData.value0.location" :height="200" :width="400"/>
                 </v-list>
               </v-col>
             </v-row>
@@ -274,7 +311,9 @@ const sendMessage = async () => {
       <v-card>
         <v-card-title class="headline">{{ t('updateLocationTitle') }}</v-card-title>
         <v-card-text>
-          <v-text-field v-model="editedLocation" label="Location"></v-text-field>
+          <v-text-field v-if="editField === 'location'" v-model="editedLocation" label="Location"></v-text-field>
+          <v-text-field v-if="editField === 'communicatorName'" v-model="editedCommunicatorName" label="Communicator Name"></v-text-field>
+          <v-text-field v-if="editField === 'communicatorPhoneNumber'" v-model="editedCommunicatorPhoneNumber" label="Communicator Phone Number"></v-text-field>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>

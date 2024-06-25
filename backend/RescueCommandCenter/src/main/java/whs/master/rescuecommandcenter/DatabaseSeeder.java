@@ -192,7 +192,7 @@ public class DatabaseSeeder implements CommandLineRunner {
             fireMessageRepository.save(new FireMessage(LocalDateTime.now(),
                     "LST: laut EMA 4 Personen gemeldet", johndoe, fireEmergencyCall));
             fireMessageRepository.save(new FireMessage(LocalDateTime.now().plusMinutes(1),
-                    "Florian Bocholt 1 - HLF 20/1: Flammenschein sichtbar, kein Mensch oder Tier in Gefahr, Brandbekämpfung mit 1 1 C-Rohr und 1 Trupp unter PA vor", johndoe, fireEmergencyCall));
+                    "Florian Bocholt 1 - HLF 20/1: Flammenschein sichtbar, kein Mensch oder Tier in Gefahr, Brandbekämpfung mit 1 C-Rohr und 1 Trupp unter PA vor", johndoe, fireEmergencyCall));
             fireMessageRepository.save(new FireMessage(LocalDateTime.now().plusMinutes(2),
                     "Florian Bocholt 1 - ELW 1: Feuer unter Kontrolle", janedoe, fireEmergencyCall));
             fireMessageRepository.save(new FireMessage(LocalDateTime.now().plusMinutes(3),

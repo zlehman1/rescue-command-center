@@ -1,6 +1,8 @@
 {
   "buttonCreateEmergency": "Create Emergency",
   "buttonSend": "Senden",
+  "buttonCancel": "Cancel",
+  "buttonSave": "Save",
   "communicatorName": "Communicator",
   "communicatorPhoneNumber": "Phone number",
   "dashboardTitle": "Dashboard",
@@ -11,5 +13,6 @@
   "emergencyDetailsTitle": "Emergency Details",
   "information": "Emergency information",
   "loginError": "Login failed. Please check your credentials and try again.",
-  "mapTitle": "Map"
+  "mapTitle": "Map",
+  "updateLocationTitle": "Edit location"
 }

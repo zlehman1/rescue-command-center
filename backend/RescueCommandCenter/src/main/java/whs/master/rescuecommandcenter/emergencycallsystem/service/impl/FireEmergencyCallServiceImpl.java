@@ -4,6 +4,7 @@ import org.javatuples.Pair;
 
 import whs.master.rescuecommandcenter.authentication.service.JwtTokenService;
 
+import whs.master.rescuecommandcenter.emergencycallsystem.dto.request.UpdateFireEmergencyRequestDto;
 import whs.master.rescuecommandcenter.emergencycallsystem.enums.BOSOrganizationEnum;
 import whs.master.rescuecommandcenter.emergencycallsystem.model.BOSOrganization;
 import whs.master.rescuecommandcenter.emergencycallsystem.model.District;
@@ -194,6 +195,30 @@ public class FireEmergencyCallServiceImpl implements FireEmergencyCallService {
     }
 
     @Override
+    public boolean updateFireEmergencyCall(String token, long id, UpdateFireEmergencyRequestDto requestDto){
+        if (!isValid(token, id))
+            return false;
+
+        FireEmergencyCall fireEmergencyCall = fireEmergencyCallRepository.findById(id).get();
+
+        switch (requestDto.getNumber()){
+            case 1:
+                fireEmergencyCall.setLocation(requestDto.getValue());
+                break;
+            case 2:
+                fireEmergencyCall.setCommunicatorName(requestDto.getValue());
+                break;
+            case 3:
+                fireEmergencyCall.setCommunicatorPhoneNumber(requestDto.getValue());
+                break;
+        }
+
+        fireEmergencyCallRepository.save(fireEmergencyCall);
+
+        return true;
+    }
+
+    @Override
     public PoliceEmergencyResponseDto<List<PoliceEmergencyDto>> getPoliceEmergencyCalls(String token) {
         BOSOrganizationEnum organization = jwtTokenService.extractBOSOrganizationFromToken(token);
 
@@ -242,5 +267,26 @@ public class FireEmergencyCallServiceImpl implements FireEmergencyCallService {
                 emergencyCall.getEmergencyCallState(),
                 emergencyCall.getDispatcher().getUsername()
         );
+    }
+
+    private boolean isValid(String token, long id){
+        BOSOrganizationEnum organization = jwtTokenService.extractBOSOrganizationFromToken(token);
+
+        if(organization.equals(BOSOrganizationEnum.POLIZEI) || organization.equals(BOSOrganizationEnum.NOTDEFINED))
+            return false;
+
+        String username = jwtTokenService.extractUsernameFromToken(token);
+
+        User dispatcher = userRepository.findByUsername(username);
+
+        if(dispatcher == null)
+            return false;
+
+        Optional<FireEmergencyCall> fireEmergencyCall = fireEmergencyCallRepository.findById(id);
+
+        if(fireEmergencyCall.isEmpty())
+            return false;
+
+        return true;
     }
 }

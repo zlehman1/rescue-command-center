@@ -32,12 +32,16 @@ export default {
       map: null,
       apiKey: '8632dd4ed2ad48ccb6c52216742b6c88',
       lat: 52.5200,
-      lng: 13.4050
+      lng: 13.4050,
+      marker: null
     };
   },
   mounted() {
     this.initializeMap();
     this.getCoordinates();
+  },
+  watch: {
+    location: 'getCoordinates'
   },
   methods: {
     initializeMap() {
@@ -46,6 +50,8 @@ export default {
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
       }).addTo(this.map);
+
+      this.marker = L.marker([this.lat, this.lng]).addTo(this.map);
     },
     async getCoordinates() {
       try {
@@ -60,7 +66,7 @@ export default {
     },
     updateMap() {
       this.map.setView([this.lat, this.lng], 13);
-      L.marker([this.lat, this.lng]).addTo(this.map);
+      this.marker.setLatLng([this.lat, this.lng]);
     }
   }
 };

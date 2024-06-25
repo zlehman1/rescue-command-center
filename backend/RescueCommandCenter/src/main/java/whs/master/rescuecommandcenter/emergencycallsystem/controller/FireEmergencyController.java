@@ -6,6 +6,7 @@ import whs.master.rescuecommandcenter.emergencycallsystem.dto.base.FireEmergency
 import whs.master.rescuecommandcenter.emergencycallsystem.dto.base.FireMessageDto;
 import whs.master.rescuecommandcenter.emergencycallsystem.dto.request.CreateFireEmergencyDto;
 import whs.master.rescuecommandcenter.emergencycallsystem.dto.request.CreateFireMessageRequestDto;
+import whs.master.rescuecommandcenter.emergencycallsystem.dto.request.UpdateFireEmergencyRequestDto;
 import whs.master.rescuecommandcenter.emergencycallsystem.dto.response.FireEmergencyResponseDto;
 import whs.master.rescuecommandcenter.emergencycallsystem.service.FireEmergencyCallService;
 
@@ -48,6 +49,20 @@ public class FireEmergencyController {
         FireEmergencyResponseDto<Pair<FireEmergencyDto, List<FireMessageDto>>> responseDto = fireEmergencyCallService.getFireEmergencyCallById(id, token.substring(7).trim());
 
         return ResponseEntity.ok(responseDto);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateFireEmergencyCalls(
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
+            @PathVariable long id,
+            @RequestBody UpdateFireEmergencyRequestDto requestDto){
+
+        boolean successful = fireEmergencyCallService.updateFireEmergencyCall(token.substring(7).trim(), id, requestDto);
+
+        if(successful)
+            return ResponseEntity.noContent().build();
+
+        return ResponseEntity.internalServerError().build();
     }
 
     @PostMapping

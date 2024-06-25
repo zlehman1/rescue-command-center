@@ -1,6 +1,8 @@
 {
   "buttonCreateEmergency": "Einsatz anlegen",
   "buttonSend": "Senden",
+  "buttonCancel": "Abbrechen",
+  "buttonSave": "Speichern",
   "communicatorName": "Mitteiler",
   "communicatorPhoneNumber": "Rufnummer",
   "dashboardTitle": "Dashboard",
@@ -11,5 +13,6 @@
   "emergencyDetailsTitle": "Einsatzdetails",
   "information": "Einsatzinformationen",
   "loginError": "Anmeldung fehlgeschlagen. Bitte überprüfen Sie Ihre Anmeldedaten und versuchen Sie es erneut.",
-  "mapTitle": "Karte"
+  "mapTitle": "Karte",
+  "updateLocationTitle": "Adresse aktualisieren"
 }

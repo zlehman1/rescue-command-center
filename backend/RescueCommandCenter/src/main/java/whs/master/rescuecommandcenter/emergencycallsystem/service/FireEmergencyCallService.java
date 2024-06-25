@@ -7,8 +7,10 @@ import whs.master.rescuecommandcenter.emergencycallsystem.dto.base.FireMessageDt
 import whs.master.rescuecommandcenter.emergencycallsystem.dto.base.PoliceEmergencyDto;
 import whs.master.rescuecommandcenter.emergencycallsystem.dto.request.CreateFireEmergencyDto;
 import whs.master.rescuecommandcenter.emergencycallsystem.dto.request.CreateFireMessageRequestDto;
+import whs.master.rescuecommandcenter.emergencycallsystem.dto.request.UpdateFireEmergencyRequestDto;
 import whs.master.rescuecommandcenter.emergencycallsystem.dto.response.FireEmergencyResponseDto;
 import whs.master.rescuecommandcenter.emergencycallsystem.dto.response.PoliceEmergencyResponseDto;
+import whs.master.rescuecommandcenter.emergencycallsystem.model.fire.FireEmergencyCall;
 import whs.master.rescuecommandcenter.emergencycallsystem.model.police.PoliceEmergencyCall;
 
 import java.util.List;
@@ -44,6 +46,15 @@ public interface FireEmergencyCallService {
      * @return new message
      */
     FireEmergencyResponseDto<FireMessageDto> createFireMessage(CreateFireMessageRequestDto requestDto, String token);
+
+    /**
+     * Updates the master data of an emergency call.
+     * @param token JWT token of the requesting user
+     * @param id Identifier of the ermergency call
+     * @param requestDto values for the update
+     * @return successful? TRUE/False
+     */
+    boolean updateFireEmergencyCall(String token, long id, UpdateFireEmergencyRequestDto requestDto);
 
     /**
      * Gets all police emergency calls.

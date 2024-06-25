@@ -2,7 +2,7 @@
 import { onMounted, ref, onBeforeUnmount, nextTick, watch } from 'vue';
 import Header from "../menu/Header.vue";
 import { useI18n } from "vue-i18n";
-import { VIcon, VList, VListItem, VBtn, VContainer, VCard, VCardText, VRow, VCol, VTextarea } from "vuetify/components";
+import { VIcon, VList, VListItem, VBtn, VContainer, VCard, VCardText, VRow, VCol, VTextarea, VDialog, VCardActions, VTextField } from "vuetify/components";
 import Footer from "../../components/menu/Footer.vue";
 import { useTokenData } from "../../composables/useTokenData.js";
 import MapComponent from "../Map/MapComponent.vue";
@@ -17,11 +17,16 @@ const username = ref('');
 const isDispatcher = ref(false);
 const bottomOfMessages = ref(null);
 const color = ref('');
+const token = ref('');
+
+const dialog = ref(false);
+const editedLocation = ref('');
 
 path.value = useTokenData().path.value;
 username.value = useTokenData().username.value;
 isDispatcher.value = useTokenData().isDispatcher.value;
 color.value = useTokenData().color.value;
+token.value = useTokenData().token.value;
 
 const scrollToBottom = () => {
   nextTick(() => {
@@ -29,6 +34,41 @@ const scrollToBottom = () => {
       bottomOfMessages.value.scrollIntoView({ behavior: 'smooth' });
     }
   });
+};
+
+const openEditDialog = () => {
+  editedLocation.value = emergencyData.value.value0.location;
+  dialog.value = true;
+};
+
+const confirmEdit = async () => {
+  try {
+    const response = await fetch(`/api/v1/emergency/fire/${emergencyData.value.value0.id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token.value}`
+      },
+      body: JSON.stringify({
+        number: 1,
+        value: editedLocation.value,
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    emergencyData.value.value0.location = editedLocation.value;
+
+    localStorage.setItem('emergencyData', JSON.stringify(emergencyData.value));
+  }catch (error){
+    console.log('location update failed: ' + error)
+  }
+  dialog.value = false;
+};
+
+const cancelEdit = () => {
+  dialog.value = false;
 };
 
 onMounted(() => {
@@ -159,7 +199,7 @@ const sendMessage = async () => {
                     <v-icon>mdi-alert</v-icon>
                     {{ emergencyData.value0.keyword }} - {{ emergencyData.value0.emergencyCallState.emergencyCallStateEnum }}
                   </v-list-item>
-                  <v-list-item>
+                  <v-list-item @click="openEditDialog" style="cursor: pointer;">
                     <v-icon>mdi-map-marker</v-icon>
                     {{ emergencyData.value0.location }}
                   </v-list-item>
@@ -230,6 +270,19 @@ const sendMessage = async () => {
         </v-card-text>
       </v-card>
     </v-container>
+    <v-dialog v-model="dialog" persistent max-width="600px">
+      <v-card>
+        <v-card-title class="headline">{{ t('updateLocationTitle') }}</v-card-title>
+        <v-card-text>
+          <v-text-field v-model="editedLocation" label="Location"></v-text-field>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="red darken-1" text @click="cancelEdit">{{ t('buttonCancel') }}</v-btn>
+          <v-btn color="green darken-1" text @click="confirmEdit">{{ t('buttonSave') }}</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
     <Footer/>
   </v-app>
 </template>

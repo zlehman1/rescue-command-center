@@ -1,11 +1,22 @@
 <script setup>
-import { ref, onMounted } from 'vue';
-import { VAppBar, VToolbarTitle, VContainer, VIcon, VList, VListItem, VBtn, VRow, VCol, VNavigationDrawer } from 'vuetify/components';
-import { useTokenData } from '../../composables/useTokenData.js';
-import { useI18n } from 'vue-i18n';
+import {ref, onMounted, onBeforeUnmount} from 'vue';
+import {
+  VAppBar,
+  VToolbarTitle,
+  VContainer,
+  VIcon,
+  VList,
+  VListItem,
+  VBtn,
+  VRow,
+  VCol,
+  VNavigationDrawer
+} from 'vuetify/components';
+import {useTokenData} from '../../composables/useTokenData.js';
+import {useI18n} from 'vue-i18n';
 import ProfileCard from './ProfileCard.vue';
 
-const { t } = useI18n();
+const {t} = useI18n();
 const props = defineProps({
   componentName: {
     type: String,
@@ -47,23 +58,42 @@ const profileCardRef = ref(null);
 const toggleProfileCard = () => {
   profileCardRef.value.toggleProfileCard();
 };
+
+const isMobile = ref(window.innerWidth <= 768);
+
+const handleResize = () => {
+  isMobile.value = window.innerWidth <= 768;
+};
+
+onMounted(() => {
+  window.addEventListener('resize', handleResize);
+  handleResize();
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', handleResize);
+});
 </script>
 
 <template>
   <v-navigation-drawer v-model="drawer" app>
     <v-list dense>
-      <v-list-item />
+      <v-list-item/>
       <v-list-item to="/">
-        <v-icon>mdi-view-dashboard</v-icon> {{t('dashboardTitle')}}
+        <v-icon>mdi-view-dashboard</v-icon>
+        {{ t('dashboardTitle') }}
       </v-list-item>
       <v-list-item to="/emergency/create">
-        <v-icon>mdi-bell-plus</v-icon> {{t('emergencyFormTitle')}}
+        <v-icon>mdi-bell-plus</v-icon>
+        {{ t('emergencyFormTitle') }}
       </v-list-item>
       <v-list-item to="/emergency/overview">
-        <v-icon>mdi-eye</v-icon> {{t('emergencyDashboardTitle')}}
+        <v-icon>mdi-eye</v-icon>
+        {{ t('emergencyDashboardTitle') }}
       </v-list-item>
       <v-list-item to="/map">
-        <v-icon>mdi-map</v-icon> {{t('mapTitle')}}
+        <v-icon>mdi-map</v-icon>
+        {{ t('mapTitle') }}
       </v-list-item>
     </v-list>
   </v-navigation-drawer>
@@ -75,7 +105,7 @@ const toggleProfileCard = () => {
           <v-btn icon @click="drawer = !drawer">
             <v-icon>mdi-menu</v-icon>
           </v-btn>
-          <v-toolbar-title class="ml-3">{{ componentName }}</v-toolbar-title>
+          <v-toolbar-title v-show="!isMobile" class="ml-3">{{ componentName }}</v-toolbar-title>
         </v-col>
         <v-col cols="auto">
           {{ currentTime }}
@@ -87,7 +117,7 @@ const toggleProfileCard = () => {
     </v-container>
   </v-app-bar>
 
-  <ProfileCard ref="profileCardRef" />
+  <ProfileCard ref="profileCardRef"/>
 </template>
 
 <style scoped>

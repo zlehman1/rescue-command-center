@@ -13,6 +13,7 @@ export default {
     const username = ref('');
     const district = ref('');
     const tokenData = useTokenData();
+    const loading = ref(true);
 
     username.value = tokenData.username.value;
     district.value = tokenData.district.value;
@@ -48,9 +49,11 @@ export default {
           fetchWeatherData(lat, lon);
         } else {
           console.error('No coordinates found for the specified district.');
+          loading.value = false;
         }
       } catch (error) {
         console.error('Error fetching coordinates:', error);
+        loading.value = false;
       }
     };
 
@@ -67,6 +70,8 @@ export default {
         };
       } catch (error) {
         console.error('Error fetching weather data:', error);
+      } finally {
+        loading.value = false;
       }
     };
 
@@ -77,7 +82,8 @@ export default {
       username,
       district,
       weatherData,
-      weatherIcon
+      weatherIcon,
+      loading
     };
   }
 };
@@ -85,25 +91,40 @@ export default {
 
 <template>
   <v-container>
-    <v-row justify="center">
+    <v-row justify="center" align="center">
       <v-col cols="12" md="5">
-        <v-card>
+        <v-card class="d-flex flex-column align-center">
           <v-card-title>
-            {{ weatherData.location }}
+            <v-skeleton-loader :loading="loading" type="text">
+              {{ weatherData.location }}
+            </v-skeleton-loader>
           </v-card-title>
           <v-card-subtitle>
-            {{ weatherData.description }}
+            <v-skeleton-loader :loading="loading" type="text">
+              {{ weatherData.description }}
+            </v-skeleton-loader>
           </v-card-subtitle>
           <v-card-text>
             <v-row justify="center" align="center">
               <v-col class="d-flex justify-center" cols="12">
-                <v-icon large>
-                  {{ weatherIcon }}
-                </v-icon>
+                <v-skeleton-loader :loading="loading" type="avatar">
+                  <v-icon large>
+                    {{ weatherIcon }}
+                  </v-icon>
+                </v-skeleton-loader>
               </v-col>
               <v-col cols="12">
-                <div>{{ t('temperature') }}: {{ weatherData.temperature }}°C</div>
-                <div>{{ t('humidity') }}: {{ weatherData.humidity }}%</div>
+                <div class="d-flex justify-center">
+                  <v-skeleton-loader :loading="loading" type="text">
+                    {{ t('temperature') }}: {{ weatherData.temperature }}°C
+                  </v-skeleton-loader>
+                </div>
+                <div class="d-flex justify-center">
+                  <v-skeleton-loader :loading="loading" type="text">
+                    {{ t('humidity') }}: {{ weatherData.humidity }}%
+                  </v-skeleton-loader>
+                </div>
+
               </v-col>
             </v-row>
           </v-card-text>
@@ -120,5 +141,8 @@ export default {
 }
 .v-icon {
   font-size: 80px;
+}
+.v-col.text-center {
+  text-align: center;
 }
 </style>

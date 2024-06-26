@@ -1,8 +1,9 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import { VAppBar, VToolbarTitle, VContainer, VIcon, VList, VListItem, VBtn, VCard, VCardText, VCardActions, VRow, VCol, VNavigationDrawer } from 'vuetify/components';
+import { VAppBar, VToolbarTitle, VContainer, VIcon, VList, VListItem, VBtn, VRow, VCol, VNavigationDrawer } from 'vuetify/components';
 import { useTokenData } from '../../composables/useTokenData.js';
 import { useI18n } from 'vue-i18n';
+import ProfileCard from './ProfileCard.vue';
 
 const { t } = useI18n();
 const props = defineProps({
@@ -14,12 +15,10 @@ const props = defineProps({
 
 let tokenData;
 const backgroundColor = ref('#1976d2');
-const username = ref('');
 
 try {
   tokenData = useTokenData();
   backgroundColor.value = tokenData.color.value;
-  username.value = tokenData.username.value;
 } catch (error) {
   console.error(error.message);
 }
@@ -42,17 +41,11 @@ onMounted(() => {
   setInterval(updateTime, 1000);
 });
 
-const logout = () => {
-  localStorage.removeItem('jwt');
-  localStorage.removeItem('emergencyData');
-  window.location.reload();
-};
-
-const profileCardVisible = ref(false);
 const drawer = ref(false);
+const profileCardRef = ref(null);
 
 const toggleProfileCard = () => {
-  profileCardVisible.value = !profileCardVisible.value;
+  profileCardRef.value.toggleProfileCard();
 };
 </script>
 
@@ -94,19 +87,7 @@ const toggleProfileCard = () => {
     </v-container>
   </v-app-bar>
 
-  <v-card v-if="profileCardVisible" class="profile-card" style="position: absolute; top: 60px; right: 20px; width: 300px;">
-    <v-card-text class="d-flex align-center">
-      <v-avatar class="mr-3" size="40">
-        <v-icon>mdi-account-circle</v-icon>
-      </v-avatar>
-      <span class="username-text">{{ username }}</span>
-    </v-card-text>
-    <v-card-actions>
-      <v-list-item @click="logout" style="width: 100%; cursor: pointer;">
-        <v-list-item-title>{{ t('logoutTitle') }}</v-list-item-title>
-      </v-list-item>
-    </v-card-actions>
-  </v-card>
+  <ProfileCard ref="profileCardRef" />
 </template>
 
 <style scoped>
@@ -122,15 +103,5 @@ const toggleProfileCard = () => {
   height: 100%;
   background: rgba(0, 0, 0, 0.5);
   z-index: 999;
-}
-
-.profile-card {
-  z-index: 1000;
-}
-
-.username-text {
-  font-weight: bold;
-  font-size: 16px;
-  color: black;
 }
 </style>

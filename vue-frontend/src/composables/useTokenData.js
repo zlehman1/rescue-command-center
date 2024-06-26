@@ -11,6 +11,7 @@ export function useTokenData() {
     const color = ref('');
     const path = ref('');
     const organization = ref('');
+    const district = ref('');
     const tokenValid = ref(false);
 
     if (!token.value) {
@@ -24,6 +25,7 @@ export function useTokenData() {
         isAdmin.value = roles.value.includes('ADMIN');
         username.value = decodedToken.value.sub;
         organization.value = decodedToken.value.organization;
+        district.value = decodedToken.value.district;
 
         const currentTime = Date.now() / 1000;
         tokenValid.value = currentTime < decodedToken.value.exp;
@@ -50,6 +52,7 @@ export function useTokenData() {
         path,
         username,
         organization,
-        tokenValid
+        tokenValid,
+        district
     };
 }

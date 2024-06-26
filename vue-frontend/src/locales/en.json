@@ -9,6 +9,7 @@
   "dispatcherUsername": "Dispatcher",
   "emergencyCallState": "State",
   "emergencyDashboardTitle": "Emergency Overview",
+  "emergencyDashboardSubtitle": "Navigate to the emergency overview",
   "emergencyFormTitle": "Create emergency",
   "emergencyDetailsTitle": "Emergency details",
   "emergencyKeywordTitle": "Emergency keyword",
@@ -19,5 +20,12 @@
   "loginError": "Login failed. Please check your credentials and try again.",
   "logoutTitle": "Logout",
   "mapTitle": "Map",
-  "updateLocationTitle": "Edit location"
+  "updateLocationTitle": "Edit location",
+  "goodMorning": "Good morning",
+  "goodAfternoon": "Good afternoon",
+  "goodEvening": "Good evening",
+  "welcomeMessageFire": "Today is a wonderful day to save lives!",
+  "welcomeMessagePolice": "Today is a wonderful day to chase criminals!",
+  "temperature": "Temperature",
+  "humidity": "Humidity"
 }

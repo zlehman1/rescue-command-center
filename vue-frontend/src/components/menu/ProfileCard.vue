@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import { VCard, VCardText, VCardActions, VAvatar, VIcon, VListItem, VListItemTitle } from 'vuetify/components';
 import { useTokenData } from '../../composables/useTokenData.js';
 import { useI18n } from 'vue-i18n';
+import router from "../../router/index.js";
 
 const { t } = useI18n();
 const profileCardVisible = ref(false);
@@ -23,6 +24,10 @@ const logout = () => {
   window.location.reload();
 };
 
+const settingsHandler = () => {
+  router.push({name: 'Setting'});
+};
+
 const toggleProfileCard = () => {
   profileCardVisible.value = !profileCardVisible.value;
 };
@@ -41,8 +46,11 @@ defineExpose({
       </v-avatar>
       <span class="username-text">{{ username }}</span>
     </v-card-text>
-    <v-card-actions>
-      <v-list-item @click="logout" style="width: 100%; cursor: pointer;">
+    <v-card-actions class="actions-container">
+      <v-list-item @click="settingsHandler" class="action-item" style="cursor: pointer;">
+        <v-list-item-title>{{ t('settings') }}</v-list-item-title>
+      </v-list-item>
+      <v-list-item @click="logout" class="action-item" style="cursor: pointer;">
         <v-list-item-title>{{ t('logoutTitle') }}</v-list-item-title>
       </v-list-item>
     </v-card-actions>
@@ -58,5 +66,15 @@ defineExpose({
   font-weight: bold;
   font-size: 16px;
   color: black;
+}
+
+.actions-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.action-item {
+  display: flex;
+  width: 100%;
 }
 </style>

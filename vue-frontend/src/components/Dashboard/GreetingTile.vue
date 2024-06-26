@@ -26,7 +26,7 @@ if (currentHour < 12) {
 <template>
   <v-container>
     <v-row justify="center">
-      <v-col cols="12" md="4">
+      <v-col cols="12" md="5">
         <v-card>
           <v-card-title>
             {{ greetingMessage }}, {{ username }}!

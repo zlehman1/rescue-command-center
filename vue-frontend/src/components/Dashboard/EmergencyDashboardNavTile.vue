@@ -12,7 +12,7 @@ function handleCardClick() {
 <template>
   <v-container>
     <v-row justify="center">
-      <v-col cols="12" md="3">
+      <v-col cols="12" md="4">
         <v-card
             @click="handleCardClick()"
             height="100px"

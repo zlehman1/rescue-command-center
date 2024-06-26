@@ -12,10 +12,10 @@ import EmergencyCreationNavTile from "./EmergencyCreationNavTile.vue";
     <Header componentName="Dashboard" />
     <v-main class="main-content">
       <div class="card-container">
-        <Greeting />
-        <WeatherCard />
-        <EmergencyDashboard/>
-        <EmergencyCreationNavTile/>
+        <Greeting class="greeting" />
+        <WeatherCard class="weather" />
+        <EmergencyDashboard class="emergency-dashboard" />
+        <EmergencyCreationNavTile class="emergency-creation" />
       </div>
     </v-main>
     <Footer />
@@ -28,6 +28,20 @@ import EmergencyCreationNavTile from "./EmergencyCreationNavTile.vue";
 }
 
 .card-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 1rem;
+}
 
+.greeting {
+  grid-column: span 2;
+}
+
+.weather {
+  grid-column: span 2;
+}
+
+.emergency-dashboard, .emergency-creation {
+  grid-column: span 1;
 }
 </style>

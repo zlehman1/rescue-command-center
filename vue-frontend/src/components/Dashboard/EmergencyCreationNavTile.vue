@@ -5,14 +5,14 @@ import { useI18n } from "vue-i18n";
 const { t } = useI18n();
 
 function handleCardClick() {
-  router.push({name: 'EmergencyDashboard'});
+  router.push({name: 'EmergencyForm'});
 };
 </script>
 
 <template>
   <v-container>
     <v-row justify="center">
-      <v-col cols="12" md="3">
+      <v-col cols="12" md="4">
         <v-card
             @click="handleCardClick()"
             height="100px"

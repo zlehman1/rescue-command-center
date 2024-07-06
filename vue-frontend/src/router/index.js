@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import Dashboard from '../components/Dashboard/Dashboard.vue';
+import Dashboard from '../components/dashboard/Dashboard.vue';
 import Login from '../components/Login/Login.vue';
 import EmergencyDashboard from "../components/emergency/EmergencyDashboard.vue";
 import EmergencyForm from "../components/emergency/EmergencyForm.vue";

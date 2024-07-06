@@ -1,5 +1,5 @@
 <script setup>
-import router from "../../router/index.js";
+import router from "../../../../router/index.js";
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();

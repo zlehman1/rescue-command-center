@@ -2,10 +2,10 @@
 import { useI18n } from "vue-i18n";
 import Header from '../menu/Header.vue'
 import Footer from '../menu/Footer.vue'
-import WeatherCard from "./WeatherTile.vue";
-import Greeting from "./GreetingTile.vue";
-import EmergencyDashboard from "./EmergencyDashboardNavTile.vue";
-import EmergencyCreationNavTile from "./EmergencyCreationNavTile.vue";
+import WeatherCard from "./tiles/feature/WeatherTile.vue";
+import Greeting from "./tiles/feature/GreetingTile.vue";
+import EmergencyDashboard from "./tiles/navigation/EmergencyDashboardNavTile.vue";
+import EmergencyCreationNavTile from "./tiles/navigation/EmergencyCreationNavTile.vue";
 
 const { t } = useI18n();
 </script>

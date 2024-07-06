@@ -1,5 +1,5 @@
 <script setup>
-import {useTokenData} from '../../composables/useTokenData.js';
+import {useTokenData} from '../../../../composables/useTokenData.js';
 import {useI18n} from 'vue-i18n';
 import {ref} from 'vue';
 

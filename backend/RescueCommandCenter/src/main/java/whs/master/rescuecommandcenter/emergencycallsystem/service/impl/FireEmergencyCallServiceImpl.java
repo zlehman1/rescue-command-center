@@ -211,6 +211,9 @@ public class FireEmergencyCallServiceImpl implements FireEmergencyCallService {
             case 3:
                 fireEmergencyCall.setCommunicatorPhoneNumber(requestDto.getValue());
                 break;
+            case 4:
+                fireEmergencyCall.setKeyword(FireEmergencyCallKeyword.valueOf(requestDto.getValue().toUpperCase()));
+                break;
         }
 
         fireEmergencyCallRepository.save(fireEmergencyCall);

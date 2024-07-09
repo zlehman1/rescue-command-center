@@ -207,6 +207,9 @@ public class PoliceEmergencyCallServiceImpl implements PoliceEmergencyCallServic
             case 3:
                 policeEmergencyCall.setCommunicatorPhoneNumber(requestDto.getValue());
                 break;
+            case 4:
+                policeEmergencyCall.setKeyword(PoliceEmergencyCallKeyword.valueOf(requestDto.getValue().toUpperCase()));
+                break;
         }
 
         policeEmergencyCallRepository.save(policeEmergencyCall);

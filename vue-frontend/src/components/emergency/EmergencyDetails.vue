@@ -6,6 +6,8 @@ import { VIcon, VList, VListItem, VBtn, VContainer, VCard, VCardText, VRow, VCol
 import Footer from "../../components/menu/Footer.vue";
 import { useTokenData } from "../../composables/useTokenData.js";
 import MapComponent from "../Map/MapComponent.vue";
+import {useFetch} from "@vueuse/core";
+import Papa from "papaparse";
 
 const { t } = useI18n();
 const emergencyData = ref(null);
@@ -23,13 +25,37 @@ const dialog = ref(false);
 const editedLocation = ref('');
 const editedCommunicatorName = ref('');
 const editedCommunicatorPhoneNumber = ref('');
+const editedKeyword = ref('');
 const editField = ref('');
+const organization = ref('');
+const keywords = ref([]);
 
 path.value = useTokenData().path.value;
 username.value = useTokenData().username.value;
 isDispatcher.value = useTokenData().isDispatcher.value;
+organization.value = useTokenData().organization.value;
 color.value = useTokenData().color.value;
 token.value = useTokenData().token.value;
+
+const loadKeywords = async (filePath) => {
+  const { data } = await useFetch(filePath).get().text();
+
+  Papa.parse(data.value, {
+    header: true,
+    complete: (results) => {
+      keywords.value = results.data.map(row => row.Stichwort);
+    },
+    error: (error) => {
+      console.error('Error parsing CSV file:', error);
+    }
+  });
+};
+
+if (organization.value === 'Feuerwehr') {
+  loadKeywords('/datafiles/emergency/fireEmergencyKeywords.csv');
+} else {
+  loadKeywords('/datafiles/emergency/policeEmergencyKeywords.csv');
+}
 
 const scrollToBottom = () => {
   nextTick(() => {
@@ -50,6 +76,9 @@ const openEditDialog = (field) => {
       break;
     case 'communicatorPhoneNumber':
       editedCommunicatorPhoneNumber.value = emergencyData.value.value0.communicatorPhoneNumber;
+      break;
+    case 'keyword':
+      editedKeyword.value = emergencyData.value.value0.keyword;
       break;
   }
   dialog.value = true;
@@ -75,6 +104,11 @@ const confirmEdit = async () => {
       field = 'communicatorPhoneNumber';
       value = editedCommunicatorPhoneNumber.value;
       number = 3;
+      break;
+    case 'keyword':
+      field = 'keyword';
+      value = editedKeyword.value;
+      number = 4;
       break;
   }
 
@@ -231,7 +265,7 @@ const sendMessage = async () => {
             <v-row>
               <v-col cols="4">
                 <v-list dense>
-                  <v-list-item>
+                  <v-list-item @click="() => openEditDialog('keyword')" style="cursor: pointer;">
                     <v-icon>mdi-alert</v-icon>
                     {{ emergencyData.value0.keyword }} -
                     {{ emergencyData.value0.emergencyCallState.emergencyCallStateEnum }}
@@ -309,11 +343,15 @@ const sendMessage = async () => {
     </v-container>
     <v-dialog v-model="dialog" persistent max-width="600px">
       <v-card>
-        <v-card-title class="headline">{{ t('updateLocationTitle') }}</v-card-title>
+        <v-card-title v-if="editField === 'location'" class="headline">{{ t('updateLocationTitle') }}</v-card-title>
+        <v-card-title v-if="editField === 'communicatorName'" class="headline">{{ t('updateCommunicatorNameTitle') }}</v-card-title>
+        <v-card-title v-if="editField === 'communicatorPhoneNumber'" class="headline">{{ t('updateCommunicatorPhoneNumberTitle') }}</v-card-title>
+        <v-card-title v-if="editField === 'keyword'" class="headline">{{ t('updateEmergencyKeywordTitle') }}</v-card-title>
         <v-card-text>
-          <v-text-field v-if="editField === 'location'" v-model="editedLocation" label="Location"></v-text-field>
-          <v-text-field v-if="editField === 'communicatorName'" v-model="editedCommunicatorName" label="Communicator Name"></v-text-field>
-          <v-text-field v-if="editField === 'communicatorPhoneNumber'" v-model="editedCommunicatorPhoneNumber" label="Communicator Phone Number"></v-text-field>
+          <v-text-field v-if="editField === 'location'" v-model="editedLocation" :label="t('emergencyLocationTitle')"></v-text-field>
+          <v-text-field v-if="editField === 'communicatorName'" v-model="editedCommunicatorName" :label="t('communicatorName')"></v-text-field>
+          <v-text-field v-if="editField === 'communicatorPhoneNumber'" v-model="editedCommunicatorPhoneNumber" :label="t('communicatorPhoneNumber')"></v-text-field>
+          <v-autocomplete v-if="editField === 'keyword'" v-model="editedKeyword" :label="t('emergencyKeywordTitle')" :items="keywords"></v-autocomplete>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>

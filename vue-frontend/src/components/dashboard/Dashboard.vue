@@ -6,8 +6,31 @@ import WeatherCard from "./tiles/feature/WeatherTile.vue";
 import Greeting from "./tiles/feature/GreetingTile.vue";
 import EmergencyDashboard from "./tiles/navigation/EmergencyDashboardNavTile.vue";
 import EmergencyCreationNavTile from "./tiles/navigation/EmergencyCreationNavTile.vue";
+import { ref, onMounted, onUnmounted } from "vue";
 
 const { t } = useI18n();
+
+const isDarkMode = ref(localStorage.getItem('theme') === 'dark');
+
+const setTheme = () => {
+  document.documentElement.setAttribute('data-theme', isDarkMode.value ? 'dark' : 'light');
+}
+
+const handleStorageChange = (event) => {
+  if (event.key === 'theme') {
+    isDarkMode.value = event.newValue === 'dark';
+    setTheme();
+  }
+};
+
+onMounted(() => {
+  window.addEventListener('storage', handleStorageChange);
+  setTheme();
+});
+
+onUnmounted(() => {
+  window.removeEventListener('storage', handleStorageChange);
+});
 </script>
 
 <template>
@@ -25,9 +48,23 @@ const { t } = useI18n();
   </v-app>
 </template>
 
-<style scoped>
+<style>
+:root {
+  --background-color-light: white;
+  --background-color-dark: #181818;
+}
+
+[data-theme="light"] {
+  --background-color: var(--background-color-light);
+}
+
+[data-theme="dark"] {
+  --background-color: var(--background-color-dark);
+}
+
 .main-content {
   padding-bottom: 3rem;
+  background-color: var(--background-color);
 }
 
 .card-container {

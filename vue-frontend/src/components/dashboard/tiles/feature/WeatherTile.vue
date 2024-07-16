@@ -95,12 +95,12 @@ export default {
       <v-col cols="12" md="5">
         <v-card class="d-flex flex-column align-center">
           <v-card-title>
-            <v-skeleton-loader :loading="loading" type="text">
+            <v-skeleton-loader class="weather-style" :loading="loading" type="text">
               {{ weatherData.location }}
             </v-skeleton-loader>
           </v-card-title>
           <v-card-subtitle>
-            <v-skeleton-loader :loading="loading" type="text">
+            <v-skeleton-loader class="weather-style" :loading="loading" type="text">
               {{ weatherData.description }}
             </v-skeleton-loader>
           </v-card-subtitle>
@@ -115,16 +115,15 @@ export default {
               </v-col>
               <v-col cols="12">
                 <div class="d-flex justify-center">
-                  <v-skeleton-loader :loading="loading" type="text">
+                  <v-skeleton-loader class="weather-style" :loading="loading" type="text">
                     {{ t('temperature') }}: {{ weatherData.temperature }}°C
                   </v-skeleton-loader>
                 </div>
                 <div class="d-flex justify-center">
-                  <v-skeleton-loader :loading="loading" type="text">
+                  <v-skeleton-loader class="weather-style" :loading="loading" type="text">
                     {{ t('humidity') }}: {{ weatherData.humidity }}%
                   </v-skeleton-loader>
                 </div>
-
               </v-col>
             </v-row>
           </v-card-text>
@@ -138,11 +137,37 @@ export default {
 .v-card {
   text-align: center;
   padding: 20px;
+  background-color: var(--background-weather-color);
 }
 .v-icon {
   font-size: 80px;
+  background-color: var(--background-weather-color);
+  color: var(--weather-color);
 }
 .v-col.text-center {
   text-align: center;
+}
+.weather-style{
+  background-color: var(--background-weather-color);
+  color: var(--weather-color);
+}
+</style>
+
+<style>
+:root {
+  --background-weather-color-light: white;
+  --background-weather-color-dark: #8e8e8e;
+  --weather-color-light: black;
+  --weather-color-dark: white;
+}
+
+[data-theme="light"] {
+  --background-weather-color: var(--background-weather-color-light);
+  --weather-color: var(--weather-color-light);
+}
+
+[data-theme="dark"] {
+  --background-weather-color: var(--background-weather-color-dark);
+  --weather-color: var(--weather-color-dark);
 }
 </style>

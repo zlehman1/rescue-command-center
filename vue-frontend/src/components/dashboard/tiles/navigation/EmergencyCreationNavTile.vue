@@ -16,6 +16,7 @@ function handleCardClick() {
         <v-card
             @click="handleCardClick()"
             height="100px"
+            class="creation-nav-tile"
         >
           <v-card-title class="text-center">
             {{ t('emergencyFormTitle') }}
@@ -30,6 +31,21 @@ function handleCardClick() {
 </template>
 
 <style scoped>
+[data-theme="light"] {
+  --background-greeting-color: white;
+  --text-greeting-color: black;
+}
+
+[data-theme="dark"] {
+  --background-greeting-color: #8e8e8e;
+  --text-greeting-color: white;
+}
+
+.creation-nav-tile{
+  background-color: var(--background-greeting-color);
+  color: var(--text-greeting-color);
+}
+
 .text-center {
   text-align: center;
 }

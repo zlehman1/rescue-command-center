@@ -27,7 +27,7 @@ if (currentHour < 12) {
   <v-container>
     <v-row justify="center">
       <v-col cols="12" md="5">
-        <v-card>
+        <v-card class="greeting-tile">
           <v-card-title>
             {{ greetingMessage }}, {{ username }}!
           </v-card-title>
@@ -43,9 +43,21 @@ if (currentHour < 12) {
   </v-container>
 </template>
 
-<style scoped>
-.v-card {
+<style>
+[data-theme="light"] {
+  --background-greeting-color: white;
+  --text-greeting-color: black;
+}
+
+[data-theme="dark"] {
+  --background-greeting-color: #8e8e8e;
+  --text-greeting-color: white;
+}
+
+.greeting-tile {
   text-align: center;
   padding: 20px;
+  background-color: var(--background-greeting-color);
+  color: var(--text-greeting-color);
 }
 </style>

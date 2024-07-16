@@ -147,7 +147,11 @@ const confirmEdit = async () => {
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-    emergencyData.value.value0[field] = value;
+
+    if (field === 'state')
+      emergencyData.value.value0.emergencyCallState.emergencyCallStateEnum = value;
+    else
+      emergencyData.value.value0[field] = value;
 
     localStorage.setItem('emergencyData', JSON.stringify(emergencyData.value));
   } catch (error) {

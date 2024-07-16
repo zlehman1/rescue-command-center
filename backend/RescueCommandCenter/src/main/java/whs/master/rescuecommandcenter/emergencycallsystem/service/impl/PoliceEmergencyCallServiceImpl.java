@@ -210,6 +210,11 @@ public class PoliceEmergencyCallServiceImpl implements PoliceEmergencyCallServic
             case 4:
                 policeEmergencyCall.setKeyword(PoliceEmergencyCallKeyword.valueOf(requestDto.getValue().toUpperCase()));
                 break;
+            case 5:
+                EmergencyCallState emergencyCallState = new EmergencyCallState();
+                emergencyCallState.setEmergencyCallStateEnum(EmergencyCallStateEnum.valueOf(requestDto.getValue().toUpperCase()));
+                policeEmergencyCall.setEmergencyCallState(emergencyCallState);
+                break;
         }
 
         policeEmergencyCallRepository.save(policeEmergencyCall);

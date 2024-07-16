@@ -214,6 +214,11 @@ public class FireEmergencyCallServiceImpl implements FireEmergencyCallService {
             case 4:
                 fireEmergencyCall.setKeyword(FireEmergencyCallKeyword.valueOf(requestDto.getValue().toUpperCase()));
                 break;
+            case 5:
+                EmergencyCallState emergencyCallState = new EmergencyCallState();
+                emergencyCallState.setEmergencyCallStateEnum(EmergencyCallStateEnum.valueOf(requestDto.getValue().toUpperCase()));
+                fireEmergencyCall.setEmergencyCallState(emergencyCallState);
+                break;
         }
 
         fireEmergencyCallRepository.save(fireEmergencyCall);

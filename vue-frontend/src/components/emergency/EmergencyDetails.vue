@@ -2,11 +2,11 @@
 import { onMounted, ref, onBeforeUnmount, nextTick, watch } from 'vue';
 import Header from "../menu/Header.vue";
 import { useI18n } from "vue-i18n";
-import { VIcon, VList, VListItem, VBtn, VContainer, VCard, VCardText, VRow, VCol, VTextarea, VDialog, VCardActions, VTextField } from "vuetify/components";
+import { VIcon, VList, VListItem, VBtn, VContainer, VCard, VCardText, VRow, VCol, VTextarea, VDialog, VCardActions, VTextField, VAutocomplete } from "vuetify/components";
 import Footer from "../../components/menu/Footer.vue";
 import { useTokenData } from "../../composables/useTokenData.js";
 import MapComponent from "../Map/MapComponent.vue";
-import {useFetch} from "@vueuse/core";
+import { useFetch } from "@vueuse/core";
 import Papa from "papaparse";
 
 const { t } = useI18n();
@@ -27,8 +27,19 @@ const editedCommunicatorName = ref('');
 const editedCommunicatorPhoneNumber = ref('');
 const editedKeyword = ref('');
 const editField = ref('');
+const editedState = ref('');
 const organization = ref('');
 const keywords = ref([]);
+
+const state = {
+  CREATED: 'CREATED',
+  DISPATCHED: 'DISPATCHED',
+  RUNNING: 'RUNNING',
+  COMPLETED: 'COMPLETED',
+  FINISHED: 'FINISHED'
+};
+
+const stateOptions = Object.values(state);
 
 path.value = useTokenData().path.value;
 username.value = useTokenData().username.value;
@@ -80,6 +91,9 @@ const openEditDialog = (field) => {
     case 'keyword':
       editedKeyword.value = emergencyData.value.value0.keyword;
       break;
+    case 'state':
+      editedState.value = emergencyData.value.value0.emergencyCallState.emergencyCallStateEnum;
+      break;
   }
   dialog.value = true;
 };
@@ -109,6 +123,11 @@ const confirmEdit = async () => {
       field = 'keyword';
       value = editedKeyword.value;
       number = 4;
+      break;
+    case 'state':
+      field = 'state';
+      value = editedState.value;
+      number = 5;
       break;
   }
 
@@ -267,8 +286,7 @@ const sendMessage = async () => {
                 <v-list dense>
                   <v-list-item @click="() => openEditDialog('keyword')" style="cursor: pointer;">
                     <v-icon>mdi-alert</v-icon>
-                    {{ emergencyData.value0.keyword }} -
-                    {{ emergencyData.value0.emergencyCallState.emergencyCallStateEnum }}
+                    {{ emergencyData.value0.keyword }}
                   </v-list-item>
                   <v-list-item @click="() => openEditDialog('location')" style="cursor: pointer;">
                     <v-icon>mdi-map-marker</v-icon>
@@ -285,6 +303,10 @@ const sendMessage = async () => {
                   <v-list-item>
                     <v-icon>mdi-clock</v-icon>
                     {{ formatTimestamp(emergencyData.value0.timestamp) }}
+                  </v-list-item>
+                  <v-list-item @click="() => openEditDialog('state')" style="cursor: pointer;">
+                    <v-icon>mdi-timelapse</v-icon>
+                    {{ emergencyData.value0.emergencyCallState.emergencyCallStateEnum }}
                   </v-list-item>
                   <v-list-item @click="() => openEditDialog('communicatorName')" style="cursor: pointer;">
                     <v-icon>mdi-account</v-icon>
@@ -347,11 +369,13 @@ const sendMessage = async () => {
         <v-card-title v-if="editField === 'communicatorName'" class="headline">{{ t('updateCommunicatorNameTitle') }}</v-card-title>
         <v-card-title v-if="editField === 'communicatorPhoneNumber'" class="headline">{{ t('updateCommunicatorPhoneNumberTitle') }}</v-card-title>
         <v-card-title v-if="editField === 'keyword'" class="headline">{{ t('updateEmergencyKeywordTitle') }}</v-card-title>
+        <v-card-title v-if="editField === 'state'" class="headline">{{ t('updateEmergencyStateTitle') }}</v-card-title>
         <v-card-text>
           <v-text-field v-if="editField === 'location'" v-model="editedLocation" :label="t('emergencyLocationTitle')"></v-text-field>
           <v-text-field v-if="editField === 'communicatorName'" v-model="editedCommunicatorName" :label="t('communicatorName')"></v-text-field>
           <v-text-field v-if="editField === 'communicatorPhoneNumber'" v-model="editedCommunicatorPhoneNumber" :label="t('communicatorPhoneNumber')"></v-text-field>
           <v-autocomplete v-if="editField === 'keyword'" v-model="editedKeyword" :label="t('emergencyKeywordTitle')" :items="keywords"></v-autocomplete>
+          <v-autocomplete v-if="editField === 'state'" v-model="editedState" :label="t('emergencyStateTitle')" :items="stateOptions"></v-autocomplete>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>

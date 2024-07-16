@@ -1,5 +1,12 @@
 package whs.master.rescuecommandcenter.usermanagement.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import whs.master.rescuecommandcenter.usermanagement.dto.base.HttpResponseCodeDto;
 import whs.master.rescuecommandcenter.usermanagement.dto.base.UserDto;
 import whs.master.rescuecommandcenter.usermanagement.dto.request.CreateUserRequestDto;
@@ -19,6 +26,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/users")
+@Tag(name = "Users API")
 public class UserController {
 
     private final UserService userService;
@@ -28,10 +36,17 @@ public class UserController {
         this.userService = userService;
     }
 
+    @Operation(summary = "Get a user by its username")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found the user",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = UserResponseDto.class)) }),
+            @ApiResponse(responseCode = "404", description = "User not found",
+                    content = @Content) })
     @GetMapping("/user")
     public ResponseEntity<?> getUserById(
-            @RequestParam String username,
-            @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+            @Parameter(description = "username of the user to be searched") @RequestParam String username,
+            @Parameter(description = "Json Web Token (JWT)")@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
         UserResponseDto responseDto = userService.getUserByUsername(username, token.substring(7).trim());
 
         if(responseDto.getHttpCodeDetails().getCode() == 404)

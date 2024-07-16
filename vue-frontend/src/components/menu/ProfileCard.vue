@@ -60,12 +60,20 @@ defineExpose({
 <style scoped>
 .profile-card {
   z-index: 1000;
+  background-color: var(--profile-card-background-color);
+  color: var(--profile-card-text-color);
+}
+
+.v-icon{
+  background-color: var(--profile-card-background-color);
+  color: var(--profile-card-text-color);
 }
 
 .username-text {
   font-weight: bold;
   font-size: 16px;
-  color: black;
+  background-color: var(--profile-card-background-color);
+  color: var(--profile-card-text-color);
 }
 
 .actions-container {
@@ -76,5 +84,24 @@ defineExpose({
 .action-item {
   display: flex;
   width: 100%;
+}
+</style>
+
+<style>
+:root {
+  --profile-card-background-color-light: white;
+  --profile-card-text-color-light: black;
+  --profile-card-background-color-dark: #818181;
+  --profile-card-text-color-dark: white;
+}
+
+[data-theme="light"] {
+  --profile-card-background-color: white;
+  --profile-card-text-color: black;
+}
+
+[data-theme="dark"] {
+  --profile-card-background-color: #818181;
+  --profile-card-text-color: white;
 }
 </style>

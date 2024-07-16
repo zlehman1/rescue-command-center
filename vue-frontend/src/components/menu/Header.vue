@@ -149,16 +149,6 @@ onMounted(() => {
   color: white;
 }
 
-[data-theme="light"] {
-  --background-color: white;
-  --text-color: black;
-}
-
-[data-theme="dark"] {
-  --background-color: black;
-  --text-color: white;
-}
-
 .backdrop {
   position: fixed;
   top: 0;
@@ -172,5 +162,22 @@ onMounted(() => {
 .v-app {
   background-color: var(--background-color);
   color: var(--text-color);
+}
+
+.v-navigation-drawer{
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+</style>
+
+<style>
+[data-theme="light"] {
+  --background-color: white;
+  --text-color: black;
+}
+
+[data-theme="dark"] {
+  --background-color: black;
+  --text-color: white;
 }
 </style>

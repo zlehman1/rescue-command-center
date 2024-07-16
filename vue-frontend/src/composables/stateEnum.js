@@ -1,0 +1,7 @@
+export const stateEnum = {
+    CREATED: 'CREATED',
+    DISPATCHED: 'DISPATCHED',
+    RUNNING: 'RUNNING',
+    COMPLETED: 'COMPLETED',
+    FINISHED: 'FINISHED'
+};

@@ -4,6 +4,7 @@ import {ref, onMounted} from 'vue';
 import {useI18n} from 'vue-i18n';
 import {useTokenData} from '../../composables/useTokenData.js';
 import { useRouter } from 'vue-router';
+import { stateEnum } from "../../composables/stateEnum.js";
 import Footer from "../../components/menu/Footer.vue";
 
 const {t} = useI18n();
@@ -80,8 +81,26 @@ onMounted(() => {
                 {{ emergency.keyword }} - {{ emergency.location }}
               </v-card-title>
               <v-card-subtitle>
-                {{ new Date(emergency.timestamp).toLocaleString() }} -
-                {{ emergency.emergencyCallState.emergencyCallStateEnum }} - {{ emergency.dispatcherUsername }}
+                <p v-if="emergency.emergencyCallState.emergencyCallStateEnum == stateEnum.CREATED">
+                  {{ new Date(emergency.timestamp).toLocaleString() }} -
+                  {{ t('CREATED') }} - {{ emergency.dispatcherUsername }}
+                </p>
+                <p v-else-if="emergency.emergencyCallState.emergencyCallStateEnum == stateEnum.DISPATCHED">
+                  {{ new Date(emergency.timestamp).toLocaleString() }} -
+                  {{ t('DISPATCHED') }} - {{ emergency.dispatcherUsername }}
+                </p>
+                <p v-else-if="emergency.emergencyCallState.emergencyCallStateEnum == stateEnum.RUNNING">
+                  {{ new Date(emergency.timestamp).toLocaleString() }} -
+                  {{ t('RUNNING') }} - {{ emergency.dispatcherUsername }}
+                </p>
+                <p v-else-if="emergency.emergencyCallState.emergencyCallStateEnum == stateEnum.COMPLETED">
+                  {{ new Date(emergency.timestamp).toLocaleString() }} -
+                  {{ t('COMPLETED') }} - {{ emergency.dispatcherUsername }}
+                </p>
+                <p v-else-if="emergency.emergencyCallState.emergencyCallStateEnum == stateEnum.FINISHED">
+                  {{ new Date(emergency.timestamp).toLocaleString() }} -
+                  {{ t('FINISHED') }} - {{ emergency.dispatcherUsername }}
+                </p>
               </v-card-subtitle>
               <v-card-text>
                 <p>

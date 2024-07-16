@@ -5,6 +5,7 @@ import { useI18n } from "vue-i18n";
 import { VIcon, VList, VListItem, VBtn, VContainer, VCard, VCardText, VRow, VCol, VTextarea, VDialog, VCardActions, VTextField, VAutocomplete } from "vuetify/components";
 import Footer from "../../components/menu/Footer.vue";
 import { useTokenData } from "../../composables/useTokenData.js";
+import { stateEnum } from "../../composables/stateEnum.js";
 import MapComponent from "../Map/MapComponent.vue";
 import { useFetch } from "@vueuse/core";
 import Papa from "papaparse";
@@ -31,15 +32,7 @@ const editedState = ref('');
 const organization = ref('');
 const keywords = ref([]);
 
-const state = {
-  CREATED: 'CREATED',
-  DISPATCHED: 'DISPATCHED',
-  RUNNING: 'RUNNING',
-  COMPLETED: 'COMPLETED',
-  FINISHED: 'FINISHED'
-};
-
-const stateOptions = Object.values(state);
+const stateOptions = Object.values(stateEnum);
 
 path.value = useTokenData().path.value;
 username.value = useTokenData().username.value;
@@ -309,8 +302,11 @@ const sendMessage = async () => {
                     {{ formatTimestamp(emergencyData.value0.timestamp) }}
                   </v-list-item>
                   <v-list-item @click="() => openEditDialog('state')" style="cursor: pointer;">
-                    <v-icon>mdi-timelapse</v-icon>
-                    {{ emergencyData.value0.emergencyCallState.emergencyCallStateEnum }}
+                    <p v-if="emergencyData.value0.emergencyCallState.emergencyCallStateEnum === stateEnum.CREATED"><v-icon>mdi-timelapse</v-icon> {{t('CREATED')}}</p>
+                    <p v-else-if="emergencyData.value0.emergencyCallState.emergencyCallStateEnum === stateEnum.DISPATCHED"><v-icon>mdi-timelapse</v-icon> {{t('DISPATCHED')}}</p>
+                    <p v-else-if="emergencyData.value0.emergencyCallState.emergencyCallStateEnum === stateEnum.RUNNING"><v-icon >mdi-timelapse</v-icon> {{t('RUNNING')}}</p>
+                    <p v-else-if="emergencyData.value0.emergencyCallState.emergencyCallStateEnum === stateEnum.COMPLETED"><v-icon>mdi-timelapse</v-icon> {{t('COMPLETED')}}</p>
+                    <p v-else><v-icon>mdi-timelapse</v-icon> {{t('FINISHED')}}</p>
                   </v-list-item>
                   <v-list-item @click="() => openEditDialog('communicatorName')" style="cursor: pointer;">
                     <v-icon>mdi-account</v-icon>

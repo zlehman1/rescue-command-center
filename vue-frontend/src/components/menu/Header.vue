@@ -25,11 +25,13 @@ const props = defineProps({
 });
 
 let tokenData;
-const backgroundColor = ref('#1976d2');
+const backgroundColor = ref('');
+const defaultBackgroundColor = ref('');
 
 try {
   tokenData = useTokenData();
   backgroundColor.value = tokenData.color.value;
+  defaultBackgroundColor.value = tokenData.color.value;
 } catch (error) {
   console.error(error.message);
 }
@@ -73,6 +75,41 @@ onMounted(() => {
 onBeforeUnmount(() => {
   window.removeEventListener('resize', handleResize);
 });
+
+const isDarkMode = ref(localStorage.getItem('theme') === 'dark');
+
+function darkenColor(color, percent) {
+  const num = parseInt(color.slice(1), 16),
+      amt = Math.round(2.55 * percent),
+      R = (num >> 16) - amt,
+      G = ((num >> 8) & 0x00FF) - amt,
+      B = (num & 0x0000FF) - amt;
+  return (
+      "#" +
+      (0x1000000 +
+          (R < 255 ? (R < 1 ? 0 : R) : 255) * 0x10000 +
+          (G < 255 ? (G < 1 ? 0 : G) : 255) * 0x100 +
+          (B < 255 ? (B < 1 ? 0 : B) : 255))
+          .toString(16)
+          .slice(1)
+  );
+}
+
+const toggleDarkMode = () => {
+  isDarkMode.value = !isDarkMode.value;
+  localStorage.setItem('theme', isDarkMode.value ? 'dark' : 'light');
+  document.documentElement.setAttribute('data-theme', isDarkMode.value ? 'dark' : 'light');
+  backgroundColor.value = isDarkMode.value ? darkenColor(defaultBackgroundColor.value, 20) : defaultBackgroundColor.value;
+};
+
+onMounted(() => {
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme) {
+    isDarkMode.value = savedTheme === 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    backgroundColor.value = isDarkMode.value ? darkenColor(defaultBackgroundColor.value, 20) : defaultBackgroundColor.value;
+  }
+});
 </script>
 
 <template>
@@ -109,6 +146,9 @@ onBeforeUnmount(() => {
         </v-col>
         <v-col cols="auto">
           {{ currentTime }}
+          <v-btn icon @click="toggleDarkMode">
+            <v-icon>{{ isDarkMode ? 'mdi-weather-night' : 'mdi-white-balance-sunny' }}</v-icon>
+          </v-btn>
           <v-btn icon @click="toggleProfileCard">
             <v-icon>mdi-account</v-icon>
           </v-btn>
@@ -125,6 +165,16 @@ onBeforeUnmount(() => {
   color: white;
 }
 
+[data-theme="light"] {
+  --background-color: white;
+  --text-color: black;
+}
+
+[data-theme="dark"] {
+  --background-color: black;
+  --text-color: white;
+}
+
 .backdrop {
   position: fixed;
   top: 0;
@@ -133,5 +183,10 @@ onBeforeUnmount(() => {
   height: 100%;
   background: rgba(0, 0, 0, 0.5);
   z-index: 999;
+}
+
+.v-app {
+  background-color: var(--background-color);
+  color: var(--text-color);
 }
 </style>

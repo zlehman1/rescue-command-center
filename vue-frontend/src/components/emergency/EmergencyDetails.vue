@@ -281,11 +281,19 @@ const sendMessage = async () => {
             <v-row>
               <v-col cols="4">
                 <v-list dense>
-                  <v-list-item @click="() => openEditDialog('keyword')" style="cursor: pointer;">
+                  <v-list-item v-if="isDispatcher" @click="() => openEditDialog('keyword')" style="cursor: pointer;">
                     <v-icon>mdi-alert</v-icon>
                     {{ emergencyData.value0.keyword }}
                   </v-list-item>
-                  <v-list-item @click="() => openEditDialog('location')" style="cursor: pointer;">
+                  <v-list-item v-else>
+                    <v-icon>mdi-alert</v-icon>
+                    {{ emergencyData.value0.keyword }}
+                  </v-list-item>
+                  <v-list-item v-if="isDispatcher" @click="() => openEditDialog('location')" style="cursor: pointer;">
+                    <v-icon>mdi-map-marker</v-icon>
+                    {{ emergencyData.value0.location }}
+                  </v-list-item>
+                  <v-list-item v-else>
                     <v-icon>mdi-map-marker</v-icon>
                     {{ emergencyData.value0.location }}
                   </v-list-item>
@@ -301,18 +309,33 @@ const sendMessage = async () => {
                     <v-icon>mdi-clock</v-icon>
                     {{ formatTimestamp(emergencyData.value0.timestamp) }}
                   </v-list-item>
-                  <v-list-item @click="() => openEditDialog('state')" style="cursor: pointer;">
+                  <v-list-item v-if="isDispatcher" @click="() => openEditDialog('state')" style="cursor: pointer;">
                     <p v-if="emergencyData.value0.emergencyCallState.emergencyCallStateEnum === stateEnum.CREATED"><v-icon>mdi-timelapse</v-icon> {{t('CREATED')}}</p>
                     <p v-else-if="emergencyData.value0.emergencyCallState.emergencyCallStateEnum === stateEnum.DISPATCHED"><v-icon>mdi-timelapse</v-icon> {{t('DISPATCHED')}}</p>
                     <p v-else-if="emergencyData.value0.emergencyCallState.emergencyCallStateEnum === stateEnum.RUNNING"><v-icon >mdi-timelapse</v-icon> {{t('RUNNING')}}</p>
                     <p v-else-if="emergencyData.value0.emergencyCallState.emergencyCallStateEnum === stateEnum.COMPLETED"><v-icon>mdi-timelapse</v-icon> {{t('COMPLETED')}}</p>
                     <p v-else><v-icon>mdi-timelapse</v-icon> {{t('FINISHED')}}</p>
                   </v-list-item>
-                  <v-list-item @click="() => openEditDialog('communicatorName')" style="cursor: pointer;">
+                  <v-list-item v-else>
+                    <p v-if="emergencyData.value0.emergencyCallState.emergencyCallStateEnum === stateEnum.CREATED"><v-icon>mdi-timelapse</v-icon> {{t('CREATED')}}</p>
+                    <p v-else-if="emergencyData.value0.emergencyCallState.emergencyCallStateEnum === stateEnum.DISPATCHED"><v-icon>mdi-timelapse</v-icon> {{t('DISPATCHED')}}</p>
+                    <p v-else-if="emergencyData.value0.emergencyCallState.emergencyCallStateEnum === stateEnum.RUNNING"><v-icon >mdi-timelapse</v-icon> {{t('RUNNING')}}</p>
+                    <p v-else-if="emergencyData.value0.emergencyCallState.emergencyCallStateEnum === stateEnum.COMPLETED"><v-icon>mdi-timelapse</v-icon> {{t('COMPLETED')}}</p>
+                    <p v-else><v-icon>mdi-timelapse</v-icon> {{t('FINISHED')}}</p>
+                  </v-list-item>
+                  <v-list-item v-if="isDispatcher" @click="() => openEditDialog('communicatorName')" style="cursor: pointer;">
                     <v-icon>mdi-account</v-icon>
                     {{ emergencyData.value0.communicatorName }}
                   </v-list-item>
-                  <v-list-item @click="() => openEditDialog('communicatorPhoneNumber')" style="cursor: pointer;">
+                  <v-list-item v-else>
+                    <v-icon>mdi-account</v-icon>
+                    {{ emergencyData.value0.communicatorName }}
+                  </v-list-item>
+                  <v-list-item v-if="isDispatcher" @click="() => openEditDialog('communicatorPhoneNumber')" style="cursor: pointer;">
+                    <v-icon>mdi-phone</v-icon>
+                    {{ emergencyData.value0.communicatorPhoneNumber }}
+                  </v-list-item>
+                  <v-list-item v-else>
                     <v-icon>mdi-phone</v-icon>
                     {{ emergencyData.value0.communicatorPhoneNumber }}
                   </v-list-item>

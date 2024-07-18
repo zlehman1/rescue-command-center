@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  neo4j:
+    image: neo4j:5.3.0
+    environment:
+      - NEO4J_AUTH=neo4j/password123
+      - NEO4J_dbms_connector_bolt_advertised__address=:7689
+      - NEO4J_dbms_connector_bolt_listen__address=:7689
+    ports:
+      - "7689:7689"
+      - "7474:7474"
+    volumes:
+      - neo4j_data:/data
+    networks:
+      - neo4j_network
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - SPRING_NEO4J_URI=bolt://neo4j:7689
+      - SPRING_NEO4J_USERNAME=neo4j
+      - SPRING_NEO4J_PASSWORD=password123
+    ports:
+      - "9191:9191"
+    depends_on:
+      - neo4j
+    networks:
+      - neo4j_network
+
+volumes:
+  neo4j_data:
+
+networks:
+  neo4j_network:
+    driver: bridge

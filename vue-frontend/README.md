@@ -27,3 +27,13 @@ npm run dev
 ```sh
 npm run build
 ```
+
+### Docker
+
+```
+docker build -t vue-rcc .
+```
+
+```
+docker run -p 5173:5173 vue-rcc
+```

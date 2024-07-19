@@ -1,5 +1,6 @@
 package whs.master.rescuecommandcenter.emergencycallsystem.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.javatuples.Pair;
 
 import whs.master.rescuecommandcenter.emergencycallsystem.dto.base.PoliceEmergencyDto;
@@ -19,6 +20,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/emergency/police")
+@Tag(name = "Police Emergency System API")
 public class PoliceEmergencyController {
 
     private final PoliceEmergencyCallService policeEmergencyCallService;

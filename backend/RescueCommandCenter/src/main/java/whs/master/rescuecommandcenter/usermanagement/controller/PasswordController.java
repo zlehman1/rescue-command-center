@@ -1,5 +1,6 @@
 package whs.master.rescuecommandcenter.usermanagement.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -8,6 +9,7 @@ import whs.master.rescuecommandcenter.usermanagement.service.PasswordService;
 
 @RestController
 @RequestMapping("/api/v1/users/password")
+@Tag(name = "Users API")
 public class PasswordController {
 
     private final PasswordService passwordService;

@@ -43,6 +43,6 @@ public class AuthenticationController {
         if(token.isEmpty())
             return ResponseEntity.notFound().build();
 
-        return ResponseEntity.ok("{\"token\": \"" + token + "\"}");
+        return ResponseEntity.ok(token);
     }
 }

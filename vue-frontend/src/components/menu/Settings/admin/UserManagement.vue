@@ -3,11 +3,21 @@ import Footer from "../../Footer.vue";
 import Header from "../../Header.vue";
 import { useI18n } from "vue-i18n";
 import { onMounted, ref } from "vue";
+import { useToast } from 'vue-toastification';
 
 const { t } = useI18n();
 const users = ref([]);
 const editedUser = ref({});
+const newUser = ref({
+  username: '',
+  firstName: '',
+  lastName: '',
+  password: '',
+  repeatedPassword: ''
+});
 const isEditDialogOpen = ref(false);
+const isAddDialogOpen = ref(false);
+const toast = useToast();
 
 const fetchUsers = async () => {
   try {
@@ -32,7 +42,7 @@ const fetchUsers = async () => {
 };
 
 const editUser = (user) => {
-  editedUser.value = { ...user };
+  editedUser.value = {...user};
   isEditDialogOpen.value = true;
 };
 
@@ -85,6 +95,47 @@ const deleteUser = async (username) => {
   }
 };
 
+const addUser = async () => {
+  if (newUser.value.password !== newUser.value.repeatedPassword) {
+    toast.error('Passwords do not match');
+    return;
+  }
+  try {
+    const token = localStorage.getItem('jwt');
+    const response = await fetch(`/api/v1/users`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        user: {
+          username: newUser.value.username,
+          firstName: newUser.value.firstName,
+          lastName: newUser.value.lastName,
+        },
+        password: newUser.value.password
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+
+    fetchUsers();
+    isAddDialogOpen.value = false;
+    newUser.value = {
+      username: '',
+      firstName: '',
+      lastName: '',
+      password: '',
+      repeatedPassword: ''
+    };
+  } catch (error) {
+    console.error('Error adding user:', error);
+  }
+};
+
 onMounted(() => {
   fetchUsers();
 });
@@ -92,7 +143,7 @@ onMounted(() => {
 
 <template>
   <v-app>
-    <Header :componentName="t('userManagementSettingsTitle')" />
+    <Header :componentName="t('userManagementSettingsTitle')"/>
     <v-main class="main-content">
       <v-container>
         <v-row>
@@ -124,22 +175,45 @@ onMounted(() => {
           </v-col>
         </v-row>
       </v-container>
+      <v-btn icon="" @click="isAddDialogOpen = true" class="add-user-btn">
+        <v-icon>mdi-account-plus</v-icon>
+      </v-btn>
     </v-main>
-    <Footer />
+    <Footer/>
 
     <v-dialog v-model="isEditDialogOpen" max-width="500">
       <v-card>
         <v-card-title>
-          {{ t('editUser') }}
+          {{ t('userManagementEditUserTitle') }}
         </v-card-title>
         <v-card-text>
-          <v-text-field v-model="editedUser.firstName" label="First Name" />
-          <v-text-field v-model="editedUser.lastName" label="Last Name" />
+          <v-text-field v-model="editedUser.firstName" :label="t('userManagementFirstnameLabelTitle')"/>
+          <v-text-field v-model="editedUser.lastName" :label="t('userManagementLastnameLabelTitle')"/>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="isEditDialogOpen = false">{{ t('buttonCancel') }}</v-btn>
-          <v-btn color="blue darken-1" text @click="saveUser">{{ t('buttonSave') }}</v-btn>
+          <v-btn color="red darken-1" text @click="isEditDialogOpen = false">{{ t('buttonCancel') }}</v-btn>
+          <v-btn color="green darken-1" text @click="saveUser">{{ t('buttonSave') }}</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="isAddDialogOpen" max-width="500">
+      <v-card>
+        <v-card-title>
+          {{ t('addUserDialogTitle') }}
+        </v-card-title>
+        <v-card-text>
+          <v-text-field v-model="newUser.username" :label="t('userManagementUsernameLabelTitle')"/>
+          <v-text-field v-model="newUser.firstName" :label="t('userManagementFirstnameLabelTitle')"/>
+          <v-text-field v-model="newUser.lastName" :label="t('userManagementLastnameLabelTitle')"/>
+          <v-text-field v-model="newUser.password" :label="t('userManagementPasswordLabelTitle')" type="password"/>
+          <v-text-field v-model="newUser.repeatedPassword" :label="t('userManagementPasswordRepeatedLabelTitle')" type="password"/>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="red darken-1" text @click="isAddDialogOpen = false">{{ t('buttonCancel') }}</v-btn>
+          <v-btn color="green darken-1" text @click="addUser">{{ t('buttonSave') }}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -157,6 +231,12 @@ onMounted(() => {
   cursor: pointer;
   background-color: var(--background-greeting-color);
   color: var(--text-greeting-color);
+}
+
+.add-user-btn {
+  position: fixed;
+  bottom: 64px;
+  right: 16px;
 }
 </style>
 

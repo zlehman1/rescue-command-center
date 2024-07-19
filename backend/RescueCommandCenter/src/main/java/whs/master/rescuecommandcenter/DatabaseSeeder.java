@@ -11,6 +11,7 @@ import whs.master.rescuecommandcenter.emergencycallsystem.repository.DistrictRep
 import whs.master.rescuecommandcenter.usermanagement.enums.RoleType;
 import whs.master.rescuecommandcenter.usermanagement.model.Role;
 import whs.master.rescuecommandcenter.usermanagement.model.User;
+import whs.master.rescuecommandcenter.usermanagement.model.UserState;
 import whs.master.rescuecommandcenter.usermanagement.repository.RoleRepository;
 import whs.master.rescuecommandcenter.usermanagement.repository.UserRepository;
 
@@ -30,6 +31,7 @@ import whs.master.rescuecommandcenter.emergencycallsystem.repository.police.Poli
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+import whs.master.rescuecommandcenter.usermanagement.repository.UserStateRepository;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -48,6 +50,7 @@ public class DatabaseSeeder implements CommandLineRunner {
     private final EmergencyCallStateRepository emergencyCallStateRepository;
     private final DistrictRepository districtRepository;
     private final RoleRepository roleRepository;
+    private final UserStateRepository userStateRepository;
 
     public DatabaseSeeder(
             UserRepository userRepository,
@@ -58,7 +61,8 @@ public class DatabaseSeeder implements CommandLineRunner {
             PoliceMessageRepository policeMessageRepository,
             EmergencyCallStateRepository emergencyCallStateRepository,
             DistrictRepository districtRepository,
-            RoleRepository roleRepository) {
+            RoleRepository roleRepository,
+            UserStateRepository userStateRepository) {
         this.userRepository = userRepository;
         this.bOSOrganizationRepository = bOSOrganizationRepository;
         this.fireEmergencyCallRepository = fireEmergencyCallRepository;
@@ -68,6 +72,7 @@ public class DatabaseSeeder implements CommandLineRunner {
         this.emergencyCallStateRepository = emergencyCallStateRepository;
         this.districtRepository = districtRepository;
         this.roleRepository = roleRepository;
+        this.userStateRepository = userStateRepository;
     }
 
     @Override
@@ -273,5 +278,22 @@ public class DatabaseSeeder implements CommandLineRunner {
         userRepository.save(user2);
         userRepository.save(user3);
         userRepository.save(user4);
+
+        UserState activeState = new UserState();
+        activeState.setState("active");
+
+        Set<User> activeUsers = new HashSet<>();
+        activeUsers.add(user1);
+        activeUsers.add(user2);
+        activeUsers.add(user3);
+        activeUsers.add(user4);
+
+        activeState.setUsers(activeUsers);
+
+        UserState inactiveState = new UserState();
+        inactiveState.setState("inactive");
+
+        userStateRepository.save(activeState);
+        userStateRepository.save(inactiveState);
     }
 }

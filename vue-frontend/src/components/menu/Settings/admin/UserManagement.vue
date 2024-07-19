@@ -2,12 +2,92 @@
 import Footer from "../../Footer.vue";
 import Header from "../../Header.vue";
 import { useI18n } from "vue-i18n";
-import {useTokenData} from '../../../../composables/useTokenData.js';
-import {ref} from "vue";
+import { onMounted, ref } from "vue";
 
 const { t } = useI18n();
+const users = ref([]);
+const editedUser = ref({});
+const isEditDialogOpen = ref(false);
 
-const tokenData = useTokenData();
+const fetchUsers = async () => {
+  try {
+    const token = localStorage.getItem('jwt');
+    const response = await fetch(`/api/v1/users`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+
+    const data = await response.json();
+    users.value = data.user;
+  } catch (error) {
+    console.error('Error fetching users:', error);
+  }
+};
+
+const editUser = (user) => {
+  editedUser.value = { ...user };
+  isEditDialogOpen.value = true;
+};
+
+const saveUser = async () => {
+  try {
+    const token = localStorage.getItem('jwt');
+    const response = await fetch(`/api/v1/users/user?username=${editedUser.value.username}`, {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        updateType: 'USER',
+        firstName: editedUser.value.firstName,
+        lastName: editedUser.value.lastName,
+        password: ''
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+
+    fetchUsers();
+    isEditDialogOpen.value = false;
+  } catch (error) {
+    console.error('Error saving user:', error);
+  }
+};
+
+const deleteUser = async (username) => {
+  try {
+    const token = localStorage.getItem('jwt');
+    const response = await fetch(`/api/v1/users/user?username=${username}`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+
+    fetchUsers();
+  } catch (error) {
+    console.error('Error deleting user:', error);
+  }
+};
+
+onMounted(() => {
+  fetchUsers();
+});
 </script>
 
 <template>
@@ -15,10 +95,54 @@ const tokenData = useTokenData();
     <Header :componentName="t('userManagementSettingsTitle')" />
     <v-main class="main-content">
       <v-container>
-
+        <v-row>
+          <v-col
+              v-for="user in users"
+              :key="user.username"
+              cols="12"
+              md="6"
+          >
+            <v-card class="d-flex flex-column fill-height">
+              <v-card-title>
+                {{ user.username }}
+              </v-card-title>
+              <v-card-subtitle>
+                <p>
+                  <v-icon>mdi-account-circle</v-icon>
+                  {{ user.firstName }} {{ user.lastName }}
+                </p>
+              </v-card-subtitle>
+              <v-card-text>
+                <v-btn icon @click="editUser(user)">
+                  <v-icon>mdi-pencil</v-icon>
+                </v-btn>
+                <v-btn icon @click="deleteUser(user.username)">
+                  <v-icon>mdi-delete</v-icon>
+                </v-btn>
+              </v-card-text>
+            </v-card>
+          </v-col>
+        </v-row>
       </v-container>
     </v-main>
     <Footer />
+
+    <v-dialog v-model="isEditDialogOpen" max-width="500">
+      <v-card>
+        <v-card-title>
+          {{ t('editUser') }}
+        </v-card-title>
+        <v-card-text>
+          <v-text-field v-model="editedUser.firstName" label="First Name" />
+          <v-text-field v-model="editedUser.lastName" label="Last Name" />
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" text @click="isEditDialogOpen = false">{{ t('buttonCancel') }}</v-btn>
+          <v-btn color="blue darken-1" text @click="saveUser">{{ t('buttonSave') }}</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-app>
 </template>
 
@@ -26,6 +150,13 @@ const tokenData = useTokenData();
 .main-content {
   padding-bottom: 3rem;
   background-color: var(--background-color);
+}
+
+.v-card {
+  min-height: 100px;
+  cursor: pointer;
+  background-color: var(--background-greeting-color);
+  color: var(--text-greeting-color);
 }
 </style>
 

@@ -272,12 +272,12 @@ const sendMessage = async () => {
 </script>
 
 <template>
-  <v-app>
+  <v-app class="main-content">
     <Header :componentName="t('emergencyDetailsTitle')"/>
     <v-container class="content-container">
       <v-card>
         <v-card-text>
-          <div v-if="emergencyData">
+          <div v-if="emergencyData" class="emergencyData">
             <v-row>
               <v-col cols="4">
                 <v-list dense>
@@ -371,7 +371,7 @@ const sendMessage = async () => {
           </v-list>
         </v-card-text>
       </v-card>
-      <v-card v-if="isDispatcher">
+      <v-card v-if="isDispatcher" class="message-box">
         <v-card-text>
           <v-textarea
               v-model="newMessage"
@@ -380,7 +380,7 @@ const sendMessage = async () => {
               variant="outlined"
               full-width
               placeholder="Neue Bemerkung..."
-              class="mb-2"
+              class="mb-2 textarea-box"
           />
           <v-btn :color="color" @click="sendMessage">{{ t('buttonSend') }}</v-btn>
         </v-card-text>
@@ -415,6 +415,7 @@ const sendMessage = async () => {
 .content-container {
   padding-top: 80px;
   padding-bottom: 3rem;
+  background-color: var(--background-color);
 }
 
 .mb-4 {
@@ -424,5 +425,61 @@ const sendMessage = async () => {
 .scrollable-box {
   max-height: 300px;
   overflow-y: auto;
+  background-color: var(--background-emergency-detail-color);
+  color: var(--text-emergency-detail-color);
+}
+
+.v-card {
+  background-color: var(--background-emergency-detail-color);
+  color: var(--text-emergency-detail-color);
+}
+
+.main-content{
+  background-color: var(--background-color);
+}
+
+.emergencyData{
+  background-color: var(--background-emergency-detail-color);
+  color: var(--text-emergency-detail-color);
+}
+
+.message-box{
+  background-color: var(--background-emergency-detail-color);
+  color: var(--text-emergency-detail-color);
+}
+
+.textarea-box {
+  background-color: var(--background-emergency-detail-color) !important;
+  color: var(--text-emergency-detail-color) !important;
+}
+
+.v-list-item{
+  background-color: var(--background-emergency-detail-color);
+  color: var(--text-emergency-detail-color);
+}
+
+.v-list{
+  background-color: var(--background-emergency-detail-color);
+  color: var(--text-emergency-detail-color);
+}
+</style>
+
+<style>
+:root {
+  --background-color-light: white;
+  --background-color-dark: #181818;
+  --background-color: white;
+}
+
+[data-theme="light"] {
+  --background-emergency-detail-color: white;
+  --text-emergency-detail-color: black;
+  --background-color: var(--background-color-light);
+}
+
+[data-theme="dark"] {
+  --background-emergency-detail-color: #8e8e8e;
+  --text-emergency-detail-color: white;
+  --background-color: var(--background-color-dark);
 }
 </style>

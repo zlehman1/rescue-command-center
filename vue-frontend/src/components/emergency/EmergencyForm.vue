@@ -146,5 +146,19 @@ const sendEmergencyRequest = async () => {
 <style scoped>
 .main-content {
   padding-bottom: 3rem;
+  background-color: var(--background-emergency-form-color);
+  color: var(--text-emergency-form-color);
+}
+</style>
+
+<style>
+[data-theme="light"] {
+  --background-emergency-form-color: white;
+  --text-emergency-form-color: black;
+}
+
+[data-theme="dark"] {
+  --background-emergency-form-color: #8e8e8e;
+  --text-emergency-form-color: white;
 }
 </style>

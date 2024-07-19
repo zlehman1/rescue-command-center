@@ -62,4 +62,21 @@ const updateMapSize = () => {
   align-items: center;
   width: 100%;
 }
+
+.v-text-field{
+  background-color: var(--background-map-color);
+  color: var(--text-map-color);
+}
+</style>
+
+<style>
+[data-theme="light"] {
+  --background-map-color: white;
+  --text-map-color: black;
+}
+
+[data-theme="dark"] {
+  --background-map-color: #8e8e8e;
+  --text-map-color: white;
+}
 </style>

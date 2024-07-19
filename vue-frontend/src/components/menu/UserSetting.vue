@@ -64,7 +64,7 @@ const handleSubmit = async () => {
   <v-app>
     <Header :componentName="t('userSettingsTitle')" />
     <v-main class="main-content">
-      <v-container>
+      <v-container class="form-container">
         <v-alert
             v-if="showAlert"
             :type="alertType"
@@ -101,12 +101,48 @@ const handleSubmit = async () => {
 </template>
 
 <style scoped>
-.v-card {
-  min-height: 200px;
-  cursor: pointer;
-}
-
 .main-content {
   padding-bottom: 3rem;
+  background-color: var(--background-color);
+}
+
+.form-container {
+  padding: 1rem;
+  background-color: var(--background-color);
+}
+
+.v-text-field {
+  background-color: var(--background-color-card);
+  color: var(--text-color);
+  margin-bottom: 0;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+</style>
+
+<style>
+:root {
+  --background-color-light: white;
+  --background-color-dark: #181818;
+  --background-color-card-light: white;
+  --background-color-card-dark: #8e8e8e;
+  --text-color-light: black;
+  --text-color-dark: white;
+}
+
+[data-theme="light"] {
+  --text-color: var(--text-color-light);
+  --background-color: var(--background-color-light);
+  --background-color-card: var(--background-color-card-light);
+}
+
+[data-theme="dark"] {
+  --text-color: var(--text-color-dark);
+  --background-color: var(--background-color-dark);
+  --background-color-card: var(--background-color-card-dark);
 }
 </style>

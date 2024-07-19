@@ -51,9 +51,35 @@ const navigateToAdminSettings = () => {
 .v-card {
   min-height: 200px;
   cursor: pointer;
+  background-color: var(--background-color-card);
+  color: var(--text-color);
 }
 
 .main-content {
   padding-bottom: 3rem;
+  background-color: var(--background-color);
+}
+</style>
+
+<style>
+:root {
+  --background-color-light: white;
+  --background-color-dark: #181818;
+  --background-color-card-light: white;
+  --background-color-card-dark: #8e8e8e;
+  --text-color-light: black;
+  --text-color-dark: white;
+}
+
+[data-theme="light"] {
+  --text-color: var(--text-color-light);
+  --background-color: var(--background-color-light);
+  --background-color-card: var(--background-color-card-light);
+}
+
+[data-theme="dark"] {
+  --text-color: var(--text-color-dark);
+  --background-color: var(--background-color-dark);
+  --background-color-card: var(--background-color-card-dark);
 }
 </style>

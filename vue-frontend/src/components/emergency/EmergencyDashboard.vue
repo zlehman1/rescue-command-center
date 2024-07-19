@@ -130,9 +130,23 @@ onMounted(() => {
 .v-card {
   min-height: 200px;
   cursor: pointer;
+  background-color: var(--background-greeting-color);
+  color: var(--text-greeting-color);
 }
 
 .main-content {
   padding-bottom: 3rem;
+}
+</style>
+
+<style>
+[data-theme="light"] {
+  --background-greeting-color: white;
+  --text-greeting-color: black;
+}
+
+[data-theme="dark"] {
+  --background-greeting-color: #8e8e8e;
+  --text-greeting-color: white;
 }
 </style>

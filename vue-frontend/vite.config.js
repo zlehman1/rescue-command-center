@@ -11,10 +11,9 @@ export default defineConfig({
     sourcemap: true,
   },
   server: {
-    host: true,
     proxy: {
       '/api': {
-        target: 'http://host.docker.internal:9191',
+        target: 'http://localhost:9191',
         changeOrigin: true,
         secure: false
       }

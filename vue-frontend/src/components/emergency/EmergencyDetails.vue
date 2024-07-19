@@ -157,26 +157,7 @@ const cancelEdit = () => {
   dialog.value = false;
 };
 
-async function handleRefresh() {
-  console.log(`${emergencyData.value}`);
-  const token = localStorage.getItem('jwt');
-  const response = await fetch(`/api/v1/emergency/${path.value}/${emergencyData.value.value0.id}`, {
-    method: 'GET',
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json'
-    }
-  });
-
-  const result = await response.json();
-  console.log('ok?' + response.ok)
-
-  localStorage.setItem('emergencyData', JSON.stringify(result.data));
-}
-
 onMounted(() => {
-  window.addEventListener('beforeunload', handleRefresh());
-
   const storedData = localStorage.getItem('emergencyData');
   if (storedData) {
     emergencyData.value = JSON.parse(storedData);
@@ -218,8 +199,6 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
-  window.removeEventListener('beforeunload', handleRefresh());
-
   if (socket) {
     socket.close();
   }

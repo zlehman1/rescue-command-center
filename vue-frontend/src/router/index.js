@@ -6,9 +6,10 @@ import EmergencyForm from "../components/emergency/EmergencyForm.vue";
 import EmergencyDetails from "../components/emergency/EmergencyDetails.vue";
 import Map from "../components/Map/Map.vue";
 import { useTokenData } from '../composables/useTokenData.js'
-import Settings from "../components/menu/SettingsDashboard.vue";
-import UserSetting from "../components/menu/UserSetting.vue";
-import AdminSetting from "../components/menu/AdminSetting.vue";
+import Settings from "../components/menu/Settings/SettingsDashboard.vue";
+import UserSetting from "../components/menu/Settings/user/UserSetting.vue";
+import AdminSetting from "../components/menu/Settings/admin/AdminSetting.vue";
+import UserManagement from "../components/menu/Settings/admin/UserManagement.vue";
 
 const requireAuth = (to, from, next) => {
     const token = localStorage.getItem('jwt');
@@ -71,6 +72,12 @@ const routes = [
         path: '/setting/admin',
         name: 'AdminSetting',
         component: AdminSetting,
+        beforeEnter: requireAuth
+    },
+    {
+        path: '/setting/admin/usermanagement',
+        name: 'UserManagement',
+        component: UserManagement,
         beforeEnter: requireAuth
     },
     {

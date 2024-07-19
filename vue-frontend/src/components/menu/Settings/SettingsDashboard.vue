@@ -1,9 +1,9 @@
 <script setup>
-import Footer from "../menu/Footer.vue";
-import Header from "../menu/Header.vue";
+import Footer from "../Footer.vue";
+import Header from "../Header.vue";
 import { useI18n } from "vue-i18n";
 import { useRouter } from 'vue-router';
-import {useTokenData} from '../../composables/useTokenData.js';
+import {useTokenData} from '../../../composables/useTokenData.js';
 import {ref} from "vue";
 
 const { t } = useI18n();

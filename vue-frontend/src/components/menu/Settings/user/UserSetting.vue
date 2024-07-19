@@ -1,8 +1,8 @@
 <script setup>
 import { useI18n } from "vue-i18n";
-import { useTokenData } from '../../composables/useTokenData.js';
-import Footer from "../menu/Footer.vue";
-import Header from "../menu/Header.vue";
+import { useTokenData } from '../../../../composables/useTokenData.js';
+import Footer from "../../Footer.vue";
+import Header from "../../Header.vue";
 import { ref } from "vue";
 
 const { t } = useI18n();

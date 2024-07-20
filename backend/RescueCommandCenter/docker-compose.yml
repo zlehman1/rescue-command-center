@@ -14,6 +14,11 @@ services:
       - neo4j_data:/data
     networks:
       - neo4j_network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:7474 || wget -q -O- http://localhost:7474"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
 
   backend:
     build:
@@ -26,9 +31,31 @@ services:
     ports:
       - "9191:9191"
     depends_on:
-      - neo4j
+      neo4j:
+        condition: service_healthy
     networks:
       - neo4j_network
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:9191/api/v1/rescuecommandcenter/swagger-ui/index.html || wget -q -O- http://localhost:9191/api/v1/rescuecommandcenter/swagger-ui/index.html" ]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+
+  frontend:
+    build:
+      context: ../../vue-frontend
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    depends_on:
+      backend:
+        condition: service_healthy
+    volumes:
+      - ../../vue-frontend:/app
+      - /app/node_modules
+    command: [ "npm", "run", "dev:docker", "--", "--host" ]
+    environment:
+      NODE_ENV: development
 
 volumes:
   neo4j_data:

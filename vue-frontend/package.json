@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:docker": "vite --config vite.config-docker.js",
     "build": "vite build",
     "preview": "vite preview"
   },

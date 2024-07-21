@@ -1,17 +1,20 @@
 package whs.master.rescuecommandcenter.emergencycallsystem.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Component;
+
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
+
 import whs.master.rescuecommandcenter.authentication.service.JwtTokenService;
 import whs.master.rescuecommandcenter.emergencycallsystem.dto.base.SocketMessage;
 import whs.master.rescuecommandcenter.emergencycallsystem.enums.BOSOrganizationEnum;
 import whs.master.rescuecommandcenter.emergencycallsystem.handler.attributes.EmergencyDetailsSessionAttributes;
 
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -56,10 +59,10 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
-        broadcastMessage(message.getPayload(), session);
+        broadcastMessage(message.getPayload());
     }
 
-    public void broadcastMessage(String messageContent, WebSocketSession senderSession) {
+    public void broadcastMessage(String messageContent) {
         try {
             SocketMessage socketMessage = objectMapper.readValue(messageContent, SocketMessage.class);
 

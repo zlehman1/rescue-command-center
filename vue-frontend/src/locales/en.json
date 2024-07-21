@@ -33,6 +33,7 @@
   "humidity": "Humidity",
   "information": "Emergency information",
   "loginError": "Login failed. Please check your credentials and try again.",
+  "loginForbidden": "You are no longer authorized to access the system!",
   "loginTitle": "Login",
   "logoutTitle": "Logout",
   "mapTitle": "Map",

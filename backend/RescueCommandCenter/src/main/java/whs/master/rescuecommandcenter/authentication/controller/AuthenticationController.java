@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.HttpStatus;
 import whs.master.rescuecommandcenter.authentication.dto.request.LoginRequestDto;
 import whs.master.rescuecommandcenter.authentication.service.AuthenticationService;
 
@@ -40,7 +41,9 @@ public class AuthenticationController {
             @Parameter(description = "Login request containing username and password") @RequestBody LoginRequestDto loginRequest){
         String token = authenticationService.login(loginRequest);
 
-        if(token.isEmpty())
+        if (token == null)
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        else if(token.isEmpty())
             return ResponseEntity.notFound().build();
 
         return ResponseEntity.ok(token);

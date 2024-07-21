@@ -44,4 +44,8 @@ public interface UserRepository extends Neo4jRepository<User, String> {
     @Query("MATCH (user:User {username: $username})-[:has_role]->(role:Role {name: 'DISPATCHER'})\n" +
             "RETURN COUNT(user) > 0 AS relationshipExists\n")
     Boolean isDispatcher(String username);
+
+    @Query("MATCH (user:User {username: $username})-[:is]->(state:UserState {name: 'active'})\n" +
+            "RETURN COUNT(user) > 0 AS relationshipExists")
+    Boolean isActive(String username);
 }

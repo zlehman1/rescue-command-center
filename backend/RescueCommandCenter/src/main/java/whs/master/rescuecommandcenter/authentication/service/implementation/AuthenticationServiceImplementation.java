@@ -59,6 +59,9 @@ public class AuthenticationServiceImplementation implements AuthenticationServic
         if (user == null)
             return "";
 
+        if(!userRepository.isActive(loginRequestDto.getUsername()))
+            return null;
+
         BOSOrganization organization = organizationRepository.findByUserUsername(user.getUsername());
 
         String district = districtRepository.findDistrictNameByUsername(user.getUsername());

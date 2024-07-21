@@ -33,6 +33,7 @@
   "humidity": "Luftfeuchtigkeit",
   "information": "Einsatzinformationen",
   "loginError": "Anmeldung fehlgeschlagen. Bitte überprüfen Sie Ihre Anmeldedaten und versuchen Sie es erneut.",
+  "loginForbidden": "Sie sind nicht mehr dazu berechtigt auf das System zuzugreifen!",
   "loginTitle": "Anmelden",
   "logoutTitle": "Abmelden",
   "mapTitle": "Karte",

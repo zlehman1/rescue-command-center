@@ -43,18 +43,28 @@ const login = async () => {
       },
       body: JSON.stringify({ username: username.value, password: password.value })
     })
+
     if (!response.ok) {
-      throw new Error('Login failed')
+      let errorMessage;
+      switch (response.status) {
+        case 403:
+          errorMessage = t('loginForbidden');
+          break;
+        default:
+          errorMessage = t('loginError');
+      }
+      throw new Error(errorMessage);
     }
+
     const token = await response.text()
     localStorage.setItem('jwt', token)
     router.push({ name: 'Home' })
   } catch (error) {
-    errorMessage.value = t('loginError')
-    showError.value = true
+    errorMessage.value = error.message;
+    showError.value = true;
     setTimeout(() => {
-      showError.value = false
-    }, 10000)
+      showError.value = false;
+    }, 10000);
   }
 }
 

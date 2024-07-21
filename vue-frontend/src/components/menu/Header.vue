@@ -28,11 +28,14 @@ const props = defineProps({
 let tokenData;
 const backgroundColor = ref('');
 const defaultBackgroundColor = ref('');
+const isDispatcher = ref(false);
 
 try {
   tokenData = useTokenData();
   backgroundColor.value = tokenData.color.value;
   defaultBackgroundColor.value = tokenData.color.value;
+  isDispatcher.value = tokenData.isDispatcher.value;
+  console.log('bool ' + tokenData.isDispatcher.value)
 } catch (error) {
   console.error(error.message);
 }
@@ -104,7 +107,7 @@ onMounted(() => {
         <v-icon>mdi-view-dashboard</v-icon>
         {{ t('dashboardTitle') }}
       </v-list-item>
-      <v-list-item to="/emergency/create">
+      <v-list-item v-if="isDispatcher" to="/emergency/create">
         <v-icon>mdi-bell-plus</v-icon>
         {{ t('emergencyFormTitle') }}
       </v-list-item>

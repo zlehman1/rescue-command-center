@@ -7,6 +7,12 @@ import Greeting from "./tiles/feature/GreetingTile.vue";
 import EmergencyDashboard from "./tiles/navigation/EmergencyDashboardNavTile.vue";
 import EmergencyCreationNavTile from "./tiles/navigation/EmergencyCreationNavTile.vue";
 import { ref, onMounted, onUnmounted } from "vue";
+import {useTokenData} from "../../composables/useTokenData.js";
+
+const isDispatcher = ref(false);
+
+const tokenData = useTokenData();
+isDispatcher.value = tokenData.isDispatcher.value;
 
 const { t } = useI18n();
 
@@ -41,7 +47,7 @@ onUnmounted(() => {
         <Greeting class="greeting" />
         <WeatherCard class="weather" />
         <EmergencyDashboard class="emergency-dashboard" />
-        <EmergencyCreationNavTile class="emergency-creation" />
+        <EmergencyCreationNavTile v-if="isDispatcher" class="emergency-creation" />
       </div>
     </v-main>
     <Footer />

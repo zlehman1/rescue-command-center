@@ -344,7 +344,7 @@ const sendMessage = async () => {
               </v-col>
               <v-col cols="4">
                 <v-list dense>
-                  <MapComponent :location="emergencyData.value0.location" :height="200" :width="400"/>
+                  <MapComponent :location="emergencyData.value0.location" :height="200" :width="'100%'"/>
                 </v-list>
               </v-col>
             </v-row>

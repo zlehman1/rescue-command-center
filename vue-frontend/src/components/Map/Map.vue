@@ -6,12 +6,10 @@ import Footer from "../../components/menu/Footer.vue";
 import MapComponent from "./MapComponent.vue";
 
 const { t } = useI18n();
-const mapWidth = ref(1200);
 const mapHeight = ref(600);
 const location = ref('');
 
 const updateMapSize = () => {
-  mapWidth.value = window.innerWidth * 0.8;
   mapHeight.value = window.innerHeight * 0.8;
 };
 
@@ -35,7 +33,7 @@ const updateMapSize = () => {
           </v-row>
           <v-row>
             <v-col cols="12">
-              <MapComponent :height="mapHeight" :width="mapWidth" :location="location" />
+              <MapComponent :height="mapHeight" :width="'100%'" :location="location" />
             </v-col>
           </v-row>
         </v-container>

@@ -260,7 +260,8 @@ const sendMessage = async () => {
       emergencyId: emergencyData.value.value0.id,
       text: newMessage.value,
       dispatcherName: username.value,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      jwt: jwt
     };
     socket.send(JSON.stringify(socketMessage));
     newMessage.value = '';

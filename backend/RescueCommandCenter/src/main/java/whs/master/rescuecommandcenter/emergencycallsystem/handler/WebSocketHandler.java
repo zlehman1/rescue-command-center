@@ -87,6 +87,6 @@ public class WebSocketHandler extends TextWebSocketHandler {
     private boolean isAuthorizedForSession(EmergencyDetailsSessionAttributes sessionAttributes, String district, BOSOrganizationEnum organization, String emergencyId) {
         return sessionAttributes.getDistrict().equals(district)
                 && sessionAttributes.getOrganization().equals(organization)
-                && sessionAttributes.getId().equals(emergencyId);
+                && sessionAttributes.getEmergencyId().equals(emergencyId);
     }
 }

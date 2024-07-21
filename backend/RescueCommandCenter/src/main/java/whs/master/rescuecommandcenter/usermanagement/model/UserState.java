@@ -14,7 +14,7 @@ import java.util.Set;
 @Getter @Setter
 public class UserState {
     @Id
-    private String state;
+    private String name;
 
     @Relationship(type = "is", direction = Relationship.Direction.INCOMING)
     private Set<User> users = new HashSet<>();

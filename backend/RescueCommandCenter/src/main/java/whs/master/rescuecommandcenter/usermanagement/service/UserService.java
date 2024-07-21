@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface UserService {
 
-    UserResponseDto<UserDto> saveUser(CreateUserRequestDto createUserRequestDto);
+    UserResponseDto<UserDto> saveUser(CreateUserRequestDto createUserRequestDto, String token);
 
     UserResponseDto<UserDto> getUserByUsername(String username, String token);
 

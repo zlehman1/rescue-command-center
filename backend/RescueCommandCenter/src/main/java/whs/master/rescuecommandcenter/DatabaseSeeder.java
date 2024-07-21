@@ -270,6 +270,7 @@ public class DatabaseSeeder implements CommandLineRunner {
         user1.addRole(roleDispatcher);
         user2.addRole(roleUser);
         user2.addRole(roleDispatcher);
+        user3.addRole(roleAdmin);
         user3.addRole(roleUser);
         user3.addRole(roleDispatcher);
         user4.addRole(roleUser);
@@ -280,7 +281,7 @@ public class DatabaseSeeder implements CommandLineRunner {
         userRepository.save(user4);
 
         UserState activeState = new UserState();
-        activeState.setState("active");
+        activeState.setName("active");
 
         Set<User> activeUsers = new HashSet<>();
         activeUsers.add(user1);
@@ -291,7 +292,7 @@ public class DatabaseSeeder implements CommandLineRunner {
         activeState.setUsers(activeUsers);
 
         UserState inactiveState = new UserState();
-        inactiveState.setState("inactive");
+        inactiveState.setName("inactive");
 
         userStateRepository.save(activeState);
         userStateRepository.save(inactiveState);

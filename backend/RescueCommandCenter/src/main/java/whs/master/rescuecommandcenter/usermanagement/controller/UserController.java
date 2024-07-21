@@ -111,8 +111,10 @@ public class UserController {
                     content = @Content) })
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<?> createUser(@RequestBody CreateUserRequestDto requestDto) {
-        UserResponseDto responseDto = userService.saveUser(requestDto);
+    public ResponseEntity<?> createUser(
+            @Parameter(description = "Json Web Token (JWT)") @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
+            @RequestBody CreateUserRequestDto requestDto) {
+        UserResponseDto responseDto = userService.saveUser(requestDto, token.substring(7).trim());
 
         if(responseDto.getHttpCodeDetails().getCode() == 409)
             return ResponseEntity.status(HttpStatus.CONFLICT).build();

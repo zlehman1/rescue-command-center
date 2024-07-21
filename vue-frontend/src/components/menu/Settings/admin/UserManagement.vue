@@ -13,7 +13,8 @@ const newUser = ref({
   firstName: '',
   lastName: '',
   password: '',
-  repeatedPassword: ''
+  repeatedPassword: '',
+  isDispatcher: false
 });
 const isEditDialogOpen = ref(false);
 const isAddDialogOpen = ref(false);
@@ -113,6 +114,7 @@ const addUser = async () => {
           username: newUser.value.username,
           firstName: newUser.value.firstName,
           lastName: newUser.value.lastName,
+          isDispatcher: Boolean(newUser.value.isDispatcher)
         },
         password: newUser.value.password
       })
@@ -129,7 +131,8 @@ const addUser = async () => {
       firstName: '',
       lastName: '',
       password: '',
-      repeatedPassword: ''
+      repeatedPassword: '',
+      isDispatcher: false
     };
   } catch (error) {
     console.error('Error adding user:', error);
@@ -208,7 +211,9 @@ onMounted(() => {
           <v-text-field v-model="newUser.firstName" :label="t('userManagementFirstnameLabelTitle')"/>
           <v-text-field v-model="newUser.lastName" :label="t('userManagementLastnameLabelTitle')"/>
           <v-text-field v-model="newUser.password" :label="t('userManagementPasswordLabelTitle')" type="password"/>
-          <v-text-field v-model="newUser.repeatedPassword" :label="t('userManagementPasswordRepeatedLabelTitle')" type="password"/>
+          <v-text-field v-model="newUser.repeatedPassword" :label="t('userManagementPasswordRepeatedLabelTitle')"
+                        type="password"/>
+          <v-checkbox v-model="newUser.isDispatcher" :label="t('userManagementIsDispatcherLabelTitle')"/>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>

@@ -90,6 +90,7 @@ public class UserServiceImplementation implements UserService {
                     userDto.setUsername(user.getUsername());
                     userDto.setFirstName(user.getFirstName());
                     userDto.setLastName(user.getLastName());
+                    userDto.setIsDispatcher(userRepository.isDispatcher(user.getUsername()).toString());
                     list.add(userDto);
                 }
 

@@ -40,4 +40,8 @@ public interface UserRepository extends Neo4jRepository<User, String> {
             ")\n" +
             "RETURN user")
     User createUser(String username, String firstName, String lastName, String password, boolean isDispatcher, String district, String organization);
+
+    @Query("MATCH (user:User {username: $username})-[:has_role]->(role:Role {name: 'DISPATCHER'})\n" +
+            "RETURN COUNT(user) > 0 AS relationshipExists\n")
+    Boolean isDispatcher(String username);
 }

@@ -172,7 +172,7 @@ onMounted(() => {
   }
 
   try {
-    socket = new WebSocket('ws://localhost:9191/ws');
+    socket = new WebSocket(`ws://localhost:9191/ws?jwt=${token.value}&id=${emergencyData.value.value0.id}`);
 
     socket.onopen = () => {
       console.log("WebSocket connection established.");

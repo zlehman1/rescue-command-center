@@ -1,5 +1,6 @@
 package whs.master.rescuecommandcenter.emergencycallsystem.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Configuration;
 
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
@@ -12,13 +13,15 @@ import whs.master.rescuecommandcenter.emergencycallsystem.handler.WebSocketHandl
 @EnableWebSocket
 public class WebSocketConfig implements WebSocketConfigurer {
     private final JwtTokenService jwtTokenService;
+    private final ObjectMapper objectMapper;
 
-    public WebSocketConfig(JwtTokenService jwtTokenService) {
+    public WebSocketConfig(JwtTokenService jwtTokenService, ObjectMapper objectMapper) {
         this.jwtTokenService = jwtTokenService;
+        this.objectMapper = objectMapper;
     }
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(new WebSocketHandler(jwtTokenService), "/ws").setAllowedOrigins("*");
+        registry.addHandler(new WebSocketHandler(jwtTokenService, objectMapper), "/ws").setAllowedOrigins("*");
     }
 }

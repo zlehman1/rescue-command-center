@@ -403,8 +403,8 @@ const sendMessage = async () => {
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="red darken-1" text @click="cancelEdit">{{ t('buttonCancel') }}</v-btn>
-          <v-btn color="green darken-1" text @click="confirmEdit">{{ t('buttonSave') }}</v-btn>
+          <v-btn class="dialog-button-cancel" text @click="cancelEdit">{{ t('buttonCancel') }}</v-btn>
+          <v-btn class="dialog-button-save" text @click="confirmEdit">{{ t('buttonSave') }}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -463,6 +463,14 @@ const sendMessage = async () => {
   background-color: var(--background-emergency-detail-color);
   color: var(--text-emergency-detail-color);
 }
+
+.dialog-button-save{
+  color: var(--dialog-button-save-color);
+}
+
+.dialog-button-cancel{
+  color: var(--dialog-button-cancel-color);
+}
 </style>
 
 <style>
@@ -470,17 +478,25 @@ const sendMessage = async () => {
   --background-color-light: white;
   --background-color-dark: #181818;
   --background-color: white;
+  --dialog-button-cancel-color-light: red;
+  --dialog-button-cancel-color-dark: #a10000;
+  --dialog-button-save-color-light: green;
+  --dialog-button-save-color-dark: #52fb52;
 }
 
 [data-theme="light"] {
   --background-emergency-detail-color: white;
   --text-emergency-detail-color: black;
   --background-color: var(--background-color-light);
+  --dialog-button-cancel-color: var(--dialog-button-cancel-color-light);
+  --dialog-button-save-color: var(--dialog-button-save-color-light);
 }
 
 [data-theme="dark"] {
   --background-emergency-detail-color: #8e8e8e;
   --text-emergency-detail-color: white;
   --background-color: var(--background-color-dark);
+  --dialog-button-cancel-color: var(--dialog-button-cancel-color-dark);
+  --dialog-button-save-color: var(--dialog-button-save-color-dark);
 }
 </style>

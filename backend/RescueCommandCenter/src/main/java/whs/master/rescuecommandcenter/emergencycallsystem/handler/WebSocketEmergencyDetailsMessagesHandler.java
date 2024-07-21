@@ -19,7 +19,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
-public class WebSocketHandler extends TextWebSocketHandler {
+public class WebSocketEmergencyDetailsMessagesHandler extends TextWebSocketHandler {
     private static final Set<WebSocketSession> sessions = ConcurrentHashMap.newKeySet();
     private final JwtTokenService jwtTokenService;
     private final ObjectMapper objectMapper;
@@ -27,7 +27,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
     private final String sessionAttributesName = "emergencyDetailsSessionAttributes";
 
     @Autowired
-    public WebSocketHandler(JwtTokenService jwtTokenService, ObjectMapper objectMapper) {
+    public WebSocketEmergencyDetailsMessagesHandler(JwtTokenService jwtTokenService, ObjectMapper objectMapper) {
         this.jwtTokenService = jwtTokenService;
         this.objectMapper = objectMapper;
     }

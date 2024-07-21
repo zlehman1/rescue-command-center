@@ -7,7 +7,7 @@ import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 import whs.master.rescuecommandcenter.authentication.service.JwtTokenService;
-import whs.master.rescuecommandcenter.emergencycallsystem.handler.WebSocketHandler;
+import whs.master.rescuecommandcenter.emergencycallsystem.handler.WebSocketEmergencyDetailsMessagesHandler;
 
 @Configuration
 @EnableWebSocket
@@ -22,6 +22,6 @@ public class WebSocketConfig implements WebSocketConfigurer {
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(new WebSocketHandler(jwtTokenService, objectMapper), "/ws").setAllowedOrigins("*");
+        registry.addHandler(new WebSocketEmergencyDetailsMessagesHandler(jwtTokenService, objectMapper), "/ws").setAllowedOrigins("*");
     }
 }

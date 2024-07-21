@@ -167,10 +167,10 @@ onMounted(() => {
                 </p>
               </v-card-subtitle>
               <v-card-text>
-                <v-btn icon @click="editUser(user)">
+                <v-btn class="icons" icon @click="editUser(user)">
                   <v-icon>mdi-pencil</v-icon>
                 </v-btn>
-                <v-btn icon @click="deleteUser(user.username)">
+                <v-btn class="icons" icon @click="deleteUser(user.username)">
                   <v-icon>mdi-delete</v-icon>
                 </v-btn>
               </v-card-text>
@@ -243,6 +243,11 @@ onMounted(() => {
   bottom: 64px;
   right: 16px;
 }
+
+.icons{
+  background-color: var(--icon-background-color);
+  margin-left: 10px;
+}
 </style>
 
 <style>
@@ -253,17 +258,21 @@ onMounted(() => {
   --background-color-card-dark: #8e8e8e;
   --text-color-light: black;
   --text-color-dark: white;
+  --icon-background-color-light: white;
+  --icon-background-color-dark: #575757;
 }
 
 [data-theme="light"] {
   --text-color: var(--text-color-light);
   --background-color: var(--background-color-light);
   --background-color-card: var(--background-color-card-light);
+  --icon-background-color: var(--icon-background-color-light);
 }
 
 [data-theme="dark"] {
   --text-color: var(--text-color-dark);
   --background-color: var(--background-color-dark);
   --background-color-card: var(--background-color-card-dark);
+  --icon-background-color: var(--icon-background-color-dark);
 }
 </style>

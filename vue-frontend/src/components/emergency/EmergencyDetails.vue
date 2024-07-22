@@ -157,9 +157,43 @@ const cancelEdit = () => {
   dialog.value = false;
 };
 
-onMounted(() => {
+async function fetchData() {
+  const localstoragePath = localStorage.getItem('path');
+  const localstorageId = localStorage.getItem('id');
+
+  const response = await fetch(`/api/v1/emergency/${localstoragePath}/${localstorageId}`, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${token.value}`,
+      'Content-Type': 'application/json'
+    }
+  });
+
+  localStorage.removeItem('path');
+  localStorage.removeItem('id');
+
+  console.log("test")
+
+  const routingResult = await response.json();
+  localStorage.setItem('emergencyData', JSON.stringify(routingResult.data));
+
+  emergencyData.value = routingResult.data;
+
+  if (emergencyData.value && emergencyData.value.value1) {
+    messages.value = emergencyData.value.value1.map((msg) => ({
+      text: msg.text,
+      dispatcherName: msg.dispatcherName,
+      timestamp: msg.timestamp,
+    })).sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+  }
+}
+
+onMounted(async () => {
   const storedData = localStorage.getItem('emergencyData');
-  if (storedData) {
+
+  if (!storedData) {
+    await fetchData();
+  } else {
     emergencyData.value = JSON.parse(storedData);
 
     if (emergencyData.value && emergencyData.value.value1) {
@@ -199,12 +233,21 @@ onMounted(() => {
     console.error("WebSocket connection failed:", error);
   }
   scrollToBottom();
+  window.addEventListener('beforeunload', handleBeforeUnload);
 });
+
+function handleBeforeUnload() {
+  localStorage.removeItem('emergencyData');
+  localStorage.setItem('path', path.value);
+  localStorage.setItem('id', emergencyData.value.value0.id);
+}
 
 onBeforeUnmount(() => {
   if (socket) {
     socket.close();
   }
+  localStorage.removeItem('emergencyData');
+  window.removeEventListener('beforeunload', handleBeforeUnload);
 });
 
 watch(messages, (newMessages, oldMessages) => {

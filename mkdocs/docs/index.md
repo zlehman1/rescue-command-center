@@ -38,3 +38,14 @@ Add the following lines to mkdocs.yml:
 theme:
     name: material
 ```
+
+## Frontend
+
+GitHub: https://github.com/LibreTranslate/LibreTranslate
+
+### Installation
+
+```
+pip install libretranslate
+libretranslate
+```

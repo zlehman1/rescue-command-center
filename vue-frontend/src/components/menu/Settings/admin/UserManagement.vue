@@ -195,8 +195,8 @@ onMounted(() => {
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="red darken-1" text @click="isEditDialogOpen = false">{{ t('buttonCancel') }}</v-btn>
-          <v-btn color="green darken-1" text @click="saveUser">{{ t('buttonSave') }}</v-btn>
+          <v-btn class="dialog-button-cancel" text @click="isEditDialogOpen = false">{{ t('buttonCancel') }}</v-btn>
+          <v-btn class="dialog-button-save" text @click="saveUser">{{ t('buttonSave') }}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -217,8 +217,8 @@ onMounted(() => {
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="red darken-1" text @click="isAddDialogOpen = false">{{ t('buttonCancel') }}</v-btn>
-          <v-btn color="green darken-1" text @click="addUser">{{ t('buttonSave') }}</v-btn>
+          <v-btn class="dialog-button-cancel" text @click="isAddDialogOpen = false">{{ t('buttonCancel') }}</v-btn>
+          <v-btn class="dialog-button-save" text @click="addUser">{{ t('buttonSave') }}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -248,6 +248,14 @@ onMounted(() => {
   background-color: var(--icon-background-color);
   margin-left: 10px;
 }
+
+.dialog-button-save{
+  color: var(--dialog-button-save-color);
+}
+
+.dialog-button-cancel{
+  color: var(--dialog-button-cancel-color);
+}
 </style>
 
 <style>
@@ -260,6 +268,10 @@ onMounted(() => {
   --text-color-dark: white;
   --icon-background-color-light: white;
   --icon-background-color-dark: #575757;
+  --dialog-button-cancel-color-light: red;
+  --dialog-button-cancel-color-dark: #a10000;
+  --dialog-button-save-color-light: green;
+  --dialog-button-save-color-dark: #52fb52;
 }
 
 [data-theme="light"] {
@@ -267,6 +279,8 @@ onMounted(() => {
   --background-color: var(--background-color-light);
   --background-color-card: var(--background-color-card-light);
   --icon-background-color: var(--icon-background-color-light);
+  --dialog-button-cancel-color: var(--dialog-button-cancel-color-light);
+  --dialog-button-save-color: var(--dialog-button-save-color-light);
 }
 
 [data-theme="dark"] {
@@ -274,5 +288,7 @@ onMounted(() => {
   --background-color: var(--background-color-dark);
   --background-color-card: var(--background-color-card-dark);
   --icon-background-color: var(--icon-background-color-dark);
+  --dialog-button-cancel-color: var(--dialog-button-cancel-color-dark);
+  --dialog-button-save-color: var(--dialog-button-save-color-dark);
 }
 </style>

@@ -30,7 +30,7 @@ export default {
   data() {
     return {
       map: null,
-      apiKey: '8632dd4ed2ad48ccb6c52216742b6c88',
+      apiKey: import.meta.env.VITE_BACKEND_MAP_API_KEY,
       lat: 52.5200,
       lng: 13.4050,
       marker: null

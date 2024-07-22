@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch } from 'vue';
+import { ref } from 'vue';
 import Header from "../menu/Header.vue";
 import { useI18n } from 'vue-i18n';
 import Footer from "../../components/menu/Footer.vue";

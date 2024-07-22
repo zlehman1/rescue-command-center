@@ -172,8 +172,6 @@ async function fetchData() {
   localStorage.removeItem('path');
   localStorage.removeItem('id');
 
-  console.log("test")
-
   const routingResult = await response.json();
   localStorage.setItem('emergencyData', JSON.stringify(routingResult.data));
 

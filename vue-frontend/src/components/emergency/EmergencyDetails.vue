@@ -172,7 +172,10 @@ onMounted(() => {
   }
 
   try {
-    socket = new WebSocket(`ws://localhost:9191/ws?jwt=${token.value}&id=${emergencyData.value.value0.id}`);
+    const backendIp = import.meta.env.VITE_BACKEND_IP;
+    const backendPort = import.meta.env.VITE_BACKEND_PORT;
+
+    socket = new WebSocket(`ws://${backendIp}:${backendPort}/ws?jwt=${token.value}&id=${emergencyData.value.value0.id}`);
 
     socket.onopen = () => {
       console.log("WebSocket connection established.");

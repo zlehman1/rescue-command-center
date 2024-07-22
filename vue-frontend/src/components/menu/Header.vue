@@ -35,7 +35,6 @@ try {
   backgroundColor.value = tokenData.color.value;
   defaultBackgroundColor.value = tokenData.color.value;
   isDispatcher.value = tokenData.isDispatcher.value;
-  console.log('bool ' + tokenData.isDispatcher.value)
 } catch (error) {
   console.error(error.message);
 }

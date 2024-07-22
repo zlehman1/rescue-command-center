@@ -9,12 +9,11 @@ const apiKey = 'c36abce7f0c3f9ab3d85773f9c000959';
 export default {
   name: 'WeatherCard',
   setup() {
-    const { t, locale } = useI18n();
+    const { t } = useI18n();
     const username = ref('');
     const district = ref('');
     const tokenData = useTokenData();
     const loading = ref(true);
-    const translatedWeatherDescription = ref('');
 
     username.value = tokenData.username.value;
     district.value = tokenData.district.value;
@@ -62,32 +61,13 @@ export default {
       try {
         const response = await axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`);
         const data = response.data;
-
-        try{
-          const res = await fetch("http://127.0.0.1:5000/translate", {
-            method: "POST",
-            body: JSON.stringify({
-              q: data.weather[0].description,
-              source: "en",
-              target: locale.value
-            }),
-            headers: { "Content-Type": "application/json" }
-          });
-
-          const translated = await res.json();
-          translatedWeatherDescription.value = translated.translatedText;
-        } catch (error){
-          translatedWeatherDescription.value = data.weather[0].description;
-        }
-
         weatherData.value = {
           location: data.name,
-          description: translatedWeatherDescription.value,
+          description: data.weather[0].description,
           temperature: data.main.temp,
           humidity: data.main.humidity,
           condition: data.weather[0].main
         };
-
       } catch (error) {
         console.error('Error fetching weather data:', error);
       } finally {

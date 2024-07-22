@@ -316,6 +316,10 @@ const sendMessage = async () => {
     console.error('Error sending message', error);
   }
 };
+
+function formatMessageText(text) {
+  return text.replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\n/g, "<br>");
+}
 </script>
 
 <template>
@@ -408,7 +412,7 @@ const sendMessage = async () => {
                 :key="message.timestamp"
                 class="mb-4"
             >
-              <v-list-item-title>{{ message.text }}</v-list-item-title>
+              <v-list-item-title v-html="formatMessageText(message.text)" class="message-text"></v-list-item-title>
               <v-list-item-subtitle>{{ message.dispatcherName }} - {{
                   formatTimestamp(message.timestamp)
                 }}
@@ -516,6 +520,12 @@ const sendMessage = async () => {
 
 .dialog-button-cancel{
   color: var(--dialog-button-cancel-color);
+}
+
+.message-text {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 </style>
 

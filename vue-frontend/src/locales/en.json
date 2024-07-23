@@ -61,5 +61,8 @@
   "userSettingsSubtitle": "You can change your password here!",
   "userSettingsTitle": "User settings",
   "welcomeMessageFire": "Today is a wonderful day to save lives!",
-  "welcomeMessagePolice": "Today is a wonderful day to chase criminals!"
+  "welcomeMessagePolice": "Today is a wonderful day to chase criminals!",
+  "username": "Username",
+  "password": "Password",
+  "login": "Login"
 }

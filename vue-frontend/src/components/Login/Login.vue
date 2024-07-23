@@ -87,7 +87,7 @@ const requiredRule = value => !!value || 'Required.'
               {{ errorMessage }}
             </v-alert>
             <v-text-field
-                label="Username"
+                :label="t('username')"
                 v-model="username"
                 prepend-inner-icon="mdi-account"
                 type="text"
@@ -95,14 +95,14 @@ const requiredRule = value => !!value || 'Required.'
                 :rules="[requiredRule]"
             />
             <v-text-field
-                label="Password"
+                :label="t('password')"
                 v-model="password"
                 prepend-inner-icon="mdi-lock"
                 type="password"
                 @keyup.enter="login"
                 :rules="[requiredRule]"
             />
-            <v-btn color="primary" @click="login" block>Login</v-btn>
+            <v-btn color="primary" @click="login" block>{{ t('login') }}</v-btn>
           </v-card-text>
         </v-card>
       </v-col>

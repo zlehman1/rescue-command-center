@@ -1,0 +1,27 @@
+name: GitGuardian Scan
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  gitguardian-scan:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Install GitGuardian CLI
+      run: |
+        curl -sSL https://api.gitguardian.com/ggshield/install | sh
+    
+    - name: Run GitGuardian scan
+      env:
+        GITGUARDIAN_API_KEY: ${{ secrets.GITGUARDIAN_API_KEY }}
+      run: |
+        ./ggshield scan repo .

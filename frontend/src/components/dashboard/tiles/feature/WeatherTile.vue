@@ -4,7 +4,7 @@ import { ref, computed, onMounted } from 'vue';
 import axios from 'axios';
 import { useI18n } from "vue-i18n";
 
-const apiKey = 'c36abce7f0c3f9ab3d85773f9c000959';
+const apiKey = import.meta.env.VITE_BACKEND_WEATHER_API_KEY;
 
 export default {
   name: 'WeatherCard',

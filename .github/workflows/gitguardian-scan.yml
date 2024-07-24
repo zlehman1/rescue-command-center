@@ -16,14 +16,13 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    - name: Install GitGuardian CLI
-      shell: bash
-      run: |
-        curl -sSL https://api.gitguardian.com/ggshield/install | sh
-    
+    - name: Download GitGuardian CLI installation script
+      run: curl -sSL -o ggshield_install.sh https://api.gitguardian.com/ggshield/install
+
+    - name: Verify and run GitGuardian CLI installation script
+      run: bash ggshield_install.sh
+
     - name: Run GitGuardian scan
-      shell: bash
       env:
         GITGUARDIAN_API_KEY: ${{ secrets.GITGUARDIAN_API_KEY }}
-      run: |
-        ggshield scan repo .
+      run: ggshield scan repo .

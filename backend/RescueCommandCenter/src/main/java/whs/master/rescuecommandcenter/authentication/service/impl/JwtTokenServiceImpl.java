@@ -2,12 +2,15 @@ package whs.master.rescuecommandcenter.authentication.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.github.cdimascio.dotenv.Dotenv;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import whs.master.rescuecommandcenter.authentication.service.JwtTokenService;
 import whs.master.rescuecommandcenter.emergencycallsystem.enums.BOSOrganizationEnum;
 import whs.master.rescuecommandcenter.emergencycallsystem.model.BOSOrganization;
@@ -23,9 +26,14 @@ import java.util.function.Function;
 
 @Component
 public class JwtTokenServiceImpl implements JwtTokenService {
-
-    private String secretKey = "NllmZHptNVVrNG9RRUs3NllmZHptNVVrNG9RRUs3NllmZHptNVVrNG9RRUs3NllmZHptNVVrNG9RRUs3NllmZHptNVVrNG9RRUs3NllmZHptNVVrNG9RRUs3NllmZHptNVVrNG9RRUs3Nl";
+    private final Dotenv dotenv;
+    private String secretKey = "";
     private static final long ACCESS_TOKEN_VALIDITY_SECONDS = 86400; // 24 hours
+
+    @Autowired
+    public JwtTokenServiceImpl(Dotenv dotenv){
+        this.dotenv = dotenv;
+    }
 
     public String generateToken(String username, Set<Role> authorities, BOSOrganization organization, String districtName) {
         return Jwts.builder().subject(username)
@@ -92,6 +100,7 @@ public class JwtTokenServiceImpl implements JwtTokenService {
     }
 
     private SecretKey getSecretKey() {
+        this.secretKey = dotenv.get("JWT_SECRET_KEY");
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }

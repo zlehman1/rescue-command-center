@@ -41,11 +41,13 @@ services:
       interval: 30s
       timeout: 10s
       retries: 10
+    volumes:
+      - ./.env:/app/.env
 
   frontend:
     image: studentwhs/rescuecommandcenter-frontend:latest
     build:
-      context: ../../vue-frontend
+      context: ../frontend
       dockerfile: Dockerfile
     ports:
       - "5173:5173"
@@ -53,7 +55,7 @@ services:
       backend:
         condition: service_healthy
     volumes:
-      - ../../vue-frontend:/app
+      - ../frontend:/app
       - /app/node_modules
     command: [ "npm", "run", "dev:docker", "--", "--host" ]
     environment:

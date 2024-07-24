@@ -1,28 +1,17 @@
-name: GitGuardian Scan
+name: GitGuardian scan
 
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+on: [push, pull_request]
 
 jobs:
-  gitguardian-scan:
+  scanning:
+    name: GitGuardian scan
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
-
-    - name: Download GitGuardian CLI installation script
-      run: curl -sSL -o ggshield_install.sh https://api.gitguardian.com/ggshield/install
-
-    - name: Verify and run GitGuardian CLI installation script
-      run: bash ggshield_install.sh
-
-    - name: Run GitGuardian scan
-      env:
-        GITGUARDIAN_API_KEY: ${{ secrets.GITGUARDIAN_API_KEY }}
-      run: ggshield scan repo .
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: GitGuardian scan
+        uses: GitGuardian/gg-shield-action@master
+        env:
+          GITGUARDIAN_API_KEY: ${{ secrets.GITGUARDIAN_API_KEY }}

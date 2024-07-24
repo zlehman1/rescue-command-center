@@ -23,7 +23,7 @@ jobs:
         password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
 
     - name: Build and push
-      working-directory: ./backend/RescueCommandCenter
+      working-directory: ./backend
       run: |
         docker-compose -f docker-compose.yml build
         docker-compose -f docker-compose.yml push

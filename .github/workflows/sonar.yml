@@ -30,6 +30,14 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
+      - name: Create .env file
+        run: |
+          echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> backend/.env
+          echo "NEO4J_HOST=${{ secrets.NEO4J_HOST }}" >> backend/.env
+          echo "NEO4J_PASSWORD=${{ secrets.NEO4J_PASSWORD }}" >> backend/.env
+          echo "NEO4J_PORT=${{ secrets.NEO4J_PORT }}" >> backend/.env
+          echo "NEO4J_USERNAME=${{ secrets.NEO4J_USERNAME }}" >> backend/.env
+
       - name: Build and analyze
         working-directory: backend
         env:

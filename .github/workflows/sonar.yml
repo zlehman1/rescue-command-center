@@ -14,7 +14,7 @@ jobs:
         image: neo4j:latest
         ports:
           - 7474:7474
-          - 7689:7689
+          - 7689:7687
         options: --env NEO4J_AUTH=neo4j/password123
     steps:
       - uses: actions/checkout@v3

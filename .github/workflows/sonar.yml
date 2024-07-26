@@ -60,4 +60,4 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           NEO4J_HOST: localhost
           NEO4J_PORT: 7689
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=softwaredevelopment_rescuecommandcenter
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=softwaredevelopment_rescuecommandcenter -Dsonar.branch.name=main

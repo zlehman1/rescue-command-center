@@ -15,7 +15,7 @@ jobs:
         ports:
           - 7474:7474
           - ${{ secrets.NEO4J_PORT }}:${{ secrets.NEO4J_PORT }}
-        options: --env NEO4J_AUTH=${{ secrets.NEO4J_USERNAME }}/${{ secrets.NEO4J_PASSWORD }}
+        options: --env NEO4J_AUTH=neo4j/${{ secrets.NEO4J_PASSWORD }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -37,16 +37,19 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
-      - name: Create .env file
+      - name: Set environment variables
         run: |
           echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> backend/.env
-          echo "NEO4J_HOST=${{ secrets.NEO4J_HOST }}" >> backend/.env
+          echo "NEO4J_HOST=localhost" >> backend/.env
           echo "NEO4J_PASSWORD=${{ secrets.NEO4J_PASSWORD }}" >> backend/.env
           echo "NEO4J_PORT=${{ secrets.NEO4J_PORT }}" >> backend/.env
           echo "NEO4J_USERNAME=${{ secrets.NEO4J_USERNAME }}" >> backend/.env
+        env:
+          NEO4J_HOST: localhost
+          NEO4J_PORT: ${{ secrets.NEO4J_PORT }}
       - name: Wait for Neo4j to be ready
         run: |
-          until curl -s http://${{ secrets.NEO4J_HOST }}:${{ secrets.NEO4J_PORT }}; do
+          until curl -s http://localhost:${{ secrets.NEO4J_PORT }}; do
             echo "Waiting for Neo4j to be ready..."
             sleep 5
           done
@@ -55,4 +58,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          NEO4J_HOST: localhost
+          NEO4J_PORT: ${{ secrets.NEO4J_PORT }}
         run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=softwaredevelopment_rescuecommandcenter

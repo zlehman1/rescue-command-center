@@ -9,6 +9,13 @@ jobs:
   build:
     name: Build and analyze
     runs-on: ubuntu-latest
+    services:
+      neo4j:
+        image: neo4j:latest
+        ports:
+          - 7474:7474
+          - ${{ secrets.NEO4J_PORT }}:${{ secrets.NEO4J_PORT }}
+        options: --env NEO4J_AUTH=${{ secrets.NEO4J_USERNAME }}/${{ secrets.NEO4J_PASSWORD }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -37,7 +44,12 @@ jobs:
           echo "NEO4J_PASSWORD=${{ secrets.NEO4J_PASSWORD }}" >> backend/.env
           echo "NEO4J_PORT=${{ secrets.NEO4J_PORT }}" >> backend/.env
           echo "NEO4J_USERNAME=${{ secrets.NEO4J_USERNAME }}" >> backend/.env
-
+      - name: Wait for Neo4j to be ready
+        run: |
+          until curl -s http://${{ secrets.NEO4J_HOST }}:${{ secrets.NEO4J_PORT }}; do
+            echo "Waiting for Neo4j to be ready..."
+            sleep 5
+          done
       - name: Build and analyze
         working-directory: backend
         env:

@@ -95,29 +95,35 @@ const confirmEdit = async () => {
   let field;
   let value;
   let number;
+  let systemMessage;
 
   switch (editField.value) {
     case 'location':
+      systemMessage = `'${username.value}' hat die Einsatzadresse von '${emergencyData.value.value0.location}' auf '${editedLocation.value}' geändert!`;
       field = 'location';
       value = editedLocation.value;
       number = 1;
       break;
     case 'communicatorName':
+      systemMessage = `'${username.value}' hat den Mitteilernamen von '${emergencyData.value.value0.communicatorName}' auf '${editedCommunicatorName.value}' geändert!`;
       field = 'communicatorName';
       value = editedCommunicatorName.value;
       number = 2;
       break;
     case 'communicatorPhoneNumber':
+      systemMessage = `'${username.value}' hat die Mitteilerrufnummer von '${emergencyData.value.value0.communicatorPhoneNumber}' auf '${editedCommunicatorPhoneNumber.value}' geändert!`;
       field = 'communicatorPhoneNumber';
       value = editedCommunicatorPhoneNumber.value;
       number = 3;
       break;
     case 'keyword':
+      systemMessage = `'${username.value}' hat das Einsatzstichwort von '${emergencyData.value.value0.keyword}' auf '${editedKeyword.value}' geändert!`;
       field = 'keyword';
       value = editedKeyword.value;
       number = 4;
       break;
     case 'state':
+      systemMessage = `'${username.value}' hat den Status vom Einsatz von '${emergencyData.value.value0.emergencyCallState.emergencyCallStateEnum}' auf '${editedState.value}' geändert!`;
       field = 'state';
       value = editedState.value;
       number = 5;
@@ -134,6 +140,7 @@ const confirmEdit = async () => {
       body: JSON.stringify({
         number: number,
         value,
+        message: systemMessage
       })
     });
 
@@ -147,6 +154,16 @@ const confirmEdit = async () => {
       emergencyData.value.value0[field] = value;
 
     localStorage.setItem('emergencyData', JSON.stringify(emergencyData.value));
+    const jwt = localStorage.getItem('jwt');
+
+    const socketMessage = {
+      emergencyId: emergencyData.value.value0.id,
+      text: systemMessage,
+      dispatcherName: 'system',
+      timestamp: new Date().toISOString(),
+      jwt: jwt
+    };
+    socket.send(JSON.stringify(socketMessage));
   } catch (error) {
     console.log(`${field} update failed: ` + error)
   }
@@ -318,6 +335,13 @@ const sendMessage = async () => {
 function formatMessageText(text) {
   return text.replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\n/g, "<br>");
 }
+
+function formatCursiveMessageText(text) {
+  let formatedText = '<i>';
+  formatedText += text.replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\n/g, "<br>");
+  formatedText += '</i>';
+  return formatedText;
+}
 </script>
 
 <template>
@@ -410,7 +434,8 @@ function formatMessageText(text) {
                 :key="message.timestamp"
                 class="mb-4"
             >
-              <v-list-item-title v-html="formatMessageText(message.text)" class="message-text"></v-list-item-title>
+              <v-list-item-title v-if="message.dispatcherName === 'system'" v-html="formatCursiveMessageText(message.text)" class="message-text-system"/>
+              <v-list-item-title v-else v-html="formatMessageText(message.text)" class="message-text"/>
               <v-list-item-subtitle>{{ message.dispatcherName }} - {{
                   formatTimestamp(message.timestamp)
                 }}
@@ -525,12 +550,21 @@ function formatMessageText(text) {
   word-wrap: break-word;
   overflow-wrap: break-word;
 }
+
+.message-text-system {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  color: var(--color-mode);
+}
 </style>
 
 <style>
 :root {
   --background-color-light: white;
   --background-color-dark: #181818;
+  --color-light: rgba(0, 0, 0, 0.45);
+  --color-dark: rgba(198, 198, 198, 0.9);
   --background-color: white;
   --dialog-button-cancel-color-light: red;
   --dialog-button-cancel-color-dark: #a10000;
@@ -544,6 +578,7 @@ function formatMessageText(text) {
   --background-color: var(--background-color-light);
   --dialog-button-cancel-color: var(--dialog-button-cancel-color-light);
   --dialog-button-save-color: var(--dialog-button-save-color-light);
+  --color-mode: var(--color-light)
 }
 
 [data-theme="dark"] {
@@ -552,5 +587,6 @@ function formatMessageText(text) {
   --background-color: var(--background-color-dark);
   --dialog-button-cancel-color: var(--dialog-button-cancel-color-dark);
   --dialog-button-save-color: var(--dialog-button-save-color-dark);
+  --color-mode: var(--color-dark)
 }
 </style>

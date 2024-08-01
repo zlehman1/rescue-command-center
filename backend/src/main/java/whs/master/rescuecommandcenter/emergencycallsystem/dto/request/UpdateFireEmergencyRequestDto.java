@@ -7,4 +7,5 @@ import lombok.Setter;
 public class UpdateFireEmergencyRequestDto {
     private int number;
     private String value;
+    private String message;
 }

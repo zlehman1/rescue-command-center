@@ -223,6 +223,11 @@ public class FireEmergencyCallServiceImpl implements FireEmergencyCallService {
 
         fireEmergencyCallRepository.save(fireEmergencyCall);
 
+        User systemUser = userRepository.findByUsername("system");
+
+        FireMessage fireMessage = new FireMessage(LocalDateTime.now(), requestDto.getMessage(), systemUser, fireEmergencyCall);
+        fireMessageRepository.save(fireMessage);
+
         return true;
     }
 

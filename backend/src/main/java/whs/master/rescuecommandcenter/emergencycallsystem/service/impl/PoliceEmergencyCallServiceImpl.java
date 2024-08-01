@@ -219,6 +219,11 @@ public class PoliceEmergencyCallServiceImpl implements PoliceEmergencyCallServic
 
         policeEmergencyCallRepository.save(policeEmergencyCall);
 
+        User systemUser = userRepository.findByUsername("system");
+
+        PoliceMessage PoliceMessage = new PoliceMessage(LocalDateTime.now(), requestDto.getMessage(), systemUser, policeEmergencyCall);
+        policeMessageRepository.save(PoliceMessage);
+
         return true;
     }
 

@@ -242,28 +242,34 @@ public class DatabaseSeeder implements CommandLineRunner {
         User user2 = new User("janedoe", "Jane", "Doe",encoder.encode("Password123!"));
         User user3 = new User("maxmustermann", "Max", "Mustermann",encoder.encode("Password123!"));
         User user4 = new User("erikamustermann", "Erika", "Mustermann",encoder.encode("Password123!"));
+        User system = new User("system", "System", "Account",encoder.encode("Password123!"));
 
         userRepository.save(user1);
         userRepository.save(user2);
         userRepository.save(user3);
         userRepository.save(user4);
+        userRepository.save(system);
 
         Role role1 = new Role(RoleType.USER);
         Role role2 = new Role(RoleType.ADMIN);
         Role role3 = new Role(RoleType.DISPATCHER);
+        Role role4 = new Role(RoleType.SYSTEM);
 
         roleRepository.save(role1);
         roleRepository.save(role2);
         roleRepository.save(role3);
+        roleRepository.save(role4);
 
         Role roleUser = roleRepository.findByName(RoleType.USER);
         Role roleAdmin = roleRepository.findByName(RoleType.ADMIN);
         Role roleDispatcher = roleRepository.findByName(RoleType.DISPATCHER);
+        Role roleSystem = roleRepository.findByName(RoleType.SYSTEM);
 
         user1 = userRepository.findById(user1.getUsername()).orElseThrow();
         user2 = userRepository.findById(user2.getUsername()).orElseThrow();
         user3 = userRepository.findById(user3.getUsername()).orElseThrow();
         user4 = userRepository.findById(user4.getUsername()).orElseThrow();
+        system = userRepository.findById(system.getUsername()).orElseThrow();
 
         user1.addRole(roleAdmin);
         user1.addRole(roleUser);
@@ -274,11 +280,13 @@ public class DatabaseSeeder implements CommandLineRunner {
         user3.addRole(roleUser);
         user3.addRole(roleDispatcher);
         user4.addRole(roleUser);
+        system.addRole(roleSystem);
 
         userRepository.save(user1);
         userRepository.save(user2);
         userRepository.save(user3);
         userRepository.save(user4);
+        userRepository.save(system);
 
         UserState activeState = new UserState();
         activeState.setName("active");
@@ -288,6 +296,7 @@ public class DatabaseSeeder implements CommandLineRunner {
         activeUsers.add(user2);
         activeUsers.add(user3);
         activeUsers.add(user4);
+        activeUsers.add(system);
 
         activeState.setUsers(activeUsers);
 
